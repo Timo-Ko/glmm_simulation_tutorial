@@ -1,0 +1,71 @@
+GLMM Power Simulation Case Study
+
+Potential journals: 
+BRM?
+Advances in Methods and Practices in Psychological Science (neues, cooles Journal!) - Most Tutorials should be brief (< 3,000 words)
+Timeline: Submit in spring 2023
+
+
+Title:
+
+Introduction
+- Sample size planning is increasingly important
+    - high fdr with low powered studies (see replication crisis)
+    - power simulation is required by journals and funding agencies
+- Power simulations are hard
+    - use friendly software is available for simple statistical models (t-Tests, ANOVA, linear regression)
+    - more and more psychological study designs are analyzed with (generalized) linear mixed models
+    - power calculation becomes much more difficult for GLMMs:
+        - simulations required, assumptions for both fixed and random effects necessary
+        - most tutorials on GLMMs focus on the most common designs (LMM with a limited number of fixed and random effects)
+        - tutorials focus on heuristics for random effect standard deviations and/or metaanalytic results for both random and fixed effects
+- Research Gap: What to do when planning a psychological experiment which the following complexities: requires GLMM; non standard design (complex fixed effects with higher level interactions and/or missing by design condition; metaanalytic results unavailable
+    - design too complex to use software packages designed to help in power simulations for LMM
+    - only solution: building a bespoke data simulation tailored towards the concrete study design
+    - unfortunately there are no more general recommendations: you have to learn the necessary skils based on a concrete application
+    - ->we present a case study, demonstrating how to perform such a simulation for a concrete study
+
+Methods:
+- the current data example
+    - describe study idea
+    - describe study design and sample size restrictions
+    - describe research question (i.e. the coefficients targeted by power simulation)
+- basics of power simulation in GLMMs (with the concrete example in mind)
+    - describe model equation
+    - list all necessary assumptions and their interpretations
+- the lme4 package:
+    - state-of-the-art package for frequentist GLMMs
+    - can models with normally distributed random intercepts and random slopes
+    - provides a simulate function that can be used to simulate the dependent variable based on the same model formula used for model fitting
+    - explain the parametrization used by lme4 (beta and theta vector)
+        - for only random intercepts: theta is equal to the standard deviation of the random intercepts
+        - excursus for random slopes: link to the complex meaning of theta and outline the basic principles (note that we will only deal with the simpler case of only random intercepts in our tutorial)
+- main part of the tutorial with concrete R-code displayed in the paper
+    - build the format of the predictor variables
+    - find the appropriate lme4 formula (simple models first, more complex models later)
+        - discuss the specific missing by design complexity
+        - discuss different possible parametrizations of the fixed effects
+    - simulate random values for the dependent variable so that testing model formulas is easier
+    - determine the correct labels for model coefficients in the lme4 output
+    - determine assumptions for fixed effects
+        - discuss useful strategies for determining meaningful assumptions and outline the repeated discussions with content partners
+    - determine assumptions for random intercepts
+        - discuss useful strategies for determining meaningful assumptions and outline the repeated discussions with content partners
+    - simulate datasets (perhaps discuss parallelization in R)
+    - test the correctness of the assumed coefficient values by comparing descriptive statistics of the simulated datasets with original assumptions
+    - build function to compute the power for the coefficients/contrasts of interest
+        - estimate power for different sample sizes and number of stimuli
+        - excursus: estimate expected with of confidence intervals for different sample sizes and number of stimuli
+
+Results:
+- how many participants and or stimuli are needed for the concrete example?
+- present the results of power sensitivity analyses for deviations from the assumptions with different magnitudes
+
+Discussion:
+- discuss that bespoke power simulations are often necessary when planning psychological experiments
+- heuristics or helper programs for simple designs and models are often not sufficient
+- the simulations are manageable when the predictor variables are all discrete and fixed by the study design -> predictor values must not be simulated (which would require further assumptions)
+- discuss how the skills demonstrated in this tutorial should be taught to psychologists
+- discuss the mismatch between the amount of effort required to perform bespoke power simulations and the assumed effort estimated by content researchers and collaborators which do request power simulations from their associated statisticians or methodological psychologists
+- bespoke power simulations are valuable research contributions, often worth a separate publication or should play a major role in the stage 1 of preregistered reports
+- bespoke power simulations tie in well with open science and preregistration practices -> when simulated data is available, running the prespecified model on the collected dataset is easy and unambiguous
