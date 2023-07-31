@@ -1,0 +1,424 @@
+---
+title: "Power simulation section"
+author: "Florian Pargent"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, message = FALSE)
+library(tidyverse)
+```
+
+## Generalized linear mixed models
+
+In a Generalized linear mixed model (GLMM), the expected value of the dependent variable Y conditioned on the vector of predictor variables $\mathbf{X}$ and random effects $\mathbf{U}$, transformed by a link function $g()$ is modeled as a linear combination $\eta$ of the predictor variables $\mathbf{X}$, the random effects $\mathbf{U}$ and the model parameters $\mathbf{\beta}$.
+
+
+$$
+g(E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = \eta
+$$
+Equivalently, the conditional expected value is modeled as the linear combination $\eta$, transformed by the inverse link function $g^{-1}()$.
+
+$$
+E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = g^{-1}(\eta)
+$$
+
+If the dependent variable $Y$ is a binary variable with values $0$ or $1$, the conditional expected value is equivalent to the probability:
+
+$$
+P_{si} = P(Y = 1|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})
+$$
+In our case study, $P_{si}$ is the conditional probability that subject $s$ gives the correct response to item $i$.
+
+In such a setting, we model the probability as
+
+$$
+P_{si} = inverse\_logit(\eta_{si})
+$$
+
+with the inverse-logit link $g^{-1}(\eta_{si}) = inverse\_logit(\eta_{si}) = \frac{exp(\eta_{si})}{1 + exp(\eta_{si})}$ or equivalently
+
+$$
+logit(P_{si}) = \eta_{si}
+$$
+with the logit link $g(P_{si}) = logit(P_{si}) = ln \left( \frac{P_{si}}{1 - P_{si}} \right)$.
+
+In our case study, the probability to give a correct response is assumed to depend on the predictors:
+
+- $advice\_present_{si}$: whether subject $s$ was presented with algorithmic advice (1) or not (0) when asked to asses item $i$
+- $advice\_correct_{si}$: whether this advice was correct (1) or not (0)
+- $expert_s$: whether subject $s$ was a professional neurologist (1) or not (0)
+
+and the random effects:
+
+- $u_{0s}$: the deviation of suject $s$ from the average ability to solve an item with average difficulty; assumed to be distributed as $u_{0s} \sim N(0, \sigma_S^2)$
+- $u_{0i}$: the deviation of item $i$ from the average difficulty to be solved by a person with average ability; assumed to be distributed as $u_{0i} \sim N(0, \sigma_I^2)$
+
+In total, we assume the model
+$$
+logit\left[P_{si}\right] = (\beta_0 + u_{0s} + u_{0i}) + \\
+\beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
+\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}
+$$
+
+or equivalently
+
+$$
+P_{si} = inverse\_logit\left[(\beta_0 + u_{0s} + u_{0i}) + \\
+\beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
+\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}\right]
+$$
+
+with model parameters $\beta_0$, $\beta_e$, $\beta_a$, $\beta_c$, $\beta_{ea}$, $\beta_{ec}$, $\sigma_S$, and $\sigma_I$.
+
+In the GLMM literature, this would be called a binomial GLMM with two random intercepts (for subjects and items), two level-1 predictors ($advice\_present$, $advice\_correct$), one level-2 predictor ($expert$) and two cross-level interactions ($expert \cdot advice\_present$, $expert \cdot advice\_correct$).
+
+To limit complexity, we do not consider random slopes, additional predictors or higher-level interactions here.
+
+## Data Simulation
+
+The following R function simulates a full dataset structured according to our case study.
+The faux package contains useful functions when simulating factorial designs including random effects.
+
+```{r}
+simulate <- function(n_subjects = 100, n_items = 50,
+  b_0 = 0.847, b_e = 1.350, b_a = -1.253, b_c = 2.603, b_ea = 0.790, b_ec = -1.393,
+  sd_u0s = 0.5, sd_u0i = 0.5, ...){
+  require(dplyr)
+  require(faux)
+  # simulate design
+  dat <- add_random(subject = n_subjects, item = n_items) %>%
+    add_between("subject", expert = c(1, 0), .prob = c(0.25, 0.75)) %>%
+    mutate(advice_present = rbinom(n(), 1, prob = 2/3)) %>%
+    mutate(advice_correct = if_else(advice_present == 1, rbinom(n(), 1, prob = 0.8), 0)) %>%
+    # add random effects
+    add_ranef("subject", u0s = sd_u0s) %>%
+    add_ranef("item", u0i = sd_u0i) %>%
+    # compute dependent variable
+    mutate(linpred = b_0 + u0i + u0s +
+        b_e * expert + b_a * advice_present + b_c * advice_correct +
+        b_ea * expert * advice_present + b_ec * expert * advice_correct) %>%
+    mutate(y_prob = plogis(linpred)) %>%
+    mutate(y_bin = rbinom(n = n(), size = 1, prob = y_prob))
+  dat
+}
+```
+
+In our case study, each subject (`n_subjects` in total) is assumed to respond to each item (`n_items` in total).
+Thus the `add_random` command creates a fully-crossed `data.frame` with `n_subjects` $\times$ `n_items` rows.
+We add a between subject effect with the `add_between` command, simulating that about $25%$ of subjects are experts.
+The next two lines simulate that in about $\frac{2}{3}$ of trials, subjects will be presented with AI advice and if advice is presented, the advice will be correct in about $80%$ of cases (the variable `advice_correct` is always 0 when no advice is presented).
+Next we simulate one random effect each subject (`u0s`) and for each item (`u0i`).
+As assumed by standard GLMMs, the `add_ranef` function draws the random effects from a normal distribution with mean 0 and a standard deviation specified by the user.
+With all design variables done, we are ready to simulate our model equation as outlined in equation X.
+The linear predictor variable `linpred` ($\eta$ in the GLMM model equations), combines the predictor variables, random effects and model parameters as assumed by our model.
+We then transform the linear predictor with the inverse-link function to compute `y_prob`, the probability that the subject correctly solved the item (in R the inverse-logit link is computed with `plogis` and the logit link with `qlogis`).
+In the final step, we simulate the binary dependent variable `y_bin` by -- for each trial -- drawing from a bernoulli distribution with success probability `y_prob`.
+
+## Model fitting
+
+In this section, we show how to fit a GLMM with lme4, interpret the model and test hypotheses derived from a research question.
+
+We simulate data according to our model, in which 100 subjects respond to 50 items (we use `set.seed` to make the simulation reproducible).
+However, for the sake of the exercise, we can imagine that this would be real data resulting from our future experiment and think about how we would analyse this data.
+```{r, message=FALSE}
+set.seed(1)
+dat <- simulate(n_subjects = 100, n_items = 50)
+```
+The lme4 package uses a special syntax for model specification.
+Our assumed GLMM is represented by the formula:
+```{r, message=FALSE}
+library(lme4)
+f <- y_bin ~ 1 + expert + advice_present + advice_correct + 
+  expert:advice_present + expert:advice_correct +
+  (1|subject) + (1|item)
+```
+The first two lines looks similar to any linear model in R (general intercept indicated by `1`; main effects indicated by variable names in the dataset; interactions indicated by `variable1:variable2`).
+The third line specifies a random intercept for each subject `(1|subject)` and for each item `(1|item)`.
+The complete set of rules for the syntax are outlined in (CITE LME4 PAPER) and in the documentation of the lme4 package.
+
+In lme4, a GLMM is fitted with the `glmer` function.
+By setting `family =  "binomial"` we request a binomial GLMM, appropriate for our binary dependent variable `y_bin` (the binomial GLMM used the canonical logit link by default).
+```{r}
+fit <- glmer(f, data = dat, family = "binomial")
+```
+
+## Model interpretation
+
+We can inspect the estimated model parameters with the `summary` command:
+```{r}
+summary(fit)
+```
+The output shows the estimates for all model parameters:
+the `Estimate` column in the `Fixed effects` table contains the estimates for the $\beta$ parameters, while the `Std.Dev.` column in the `Random effects` table contains the estimates for $\sigma_S$ and $\sigma_I$.
+
+Unfortunately, the model parameters in a binomial GLMM are hard to interpret, because 1) the $\beta$ parameters are connected to the modeled probability via the non-linear inverse-logit link, and 2) we also have to consider the random effects.
+The most simple interpretation works by imagining a subject with average ability ($u0s = 0$) responding to an item with average difficulty ($u0i = 0$).
+Then the model implied probability that such a person solves such an item is given by:
+$$
+P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0}) = inverse\_logit\left[\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
+\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}\right]
+$$
+In fact, we would only need the full equation if the subject is an expert and correct advice is presented.
+In all other experimental conditions, some terms drop from the equation because they are multiplied by $0$.
+The other extreme case would be the probability that a non-expert with average ability solves and item with average difficulty when presented without any advice:
+
+$$
+P(Y=1|expert = 0, advice\_present = 0, advice\_correct = 0, u_{0s} = 0, u_{0i} = 0) = inverse\_logit\left[\beta_0\right]
+$$
+
+Due to this complicated relationship, many experts argue not to focus too much on interpreting single model parameters when working with GLMMs.
+Instead, it can be more intuitive to consider the implied predicted distribution of the dependent variable for each experimental conditions across all subjects and items.
+
+With the marginaleffects package, we can easily compute predictions for all observations in the dataset based on the fitted GLMM (including all fixed **and** random effects), and plot the average probability with confidence intervals for each experimental condition:
+
+```{r, message=FALSE}
+library(marginaleffects)
+plot_predictions(fit, by = c("advice_present", "advice_correct", "expert"),
+  type = "response") + ylim(c(0.3, 1))
+```
+
+## Hypothesis testing
+
+However, we need to think about the model parameters again when wanting to test hypotheses which we have theoretically derived from some research question.
+Because the inverse-logit link is still a continuously increasing function, positive parameter values always correspond to increases in probability and vice versa.
+
+The `Fixed effects` table in Figure X also includes p-values for hypothesis tests with null hypotheses of the style $H_0: \beta = 0$.
+However, for many research questions of interest, we are not interested in these two-sided tests referring to only one parameter.
+
+For our case study, imagine the following combined hypothesis:
+*We expect that for both experts and non-experts, correct advice leads to a higher probability to solve an item compared to no advice presented, AND, we expect that for both experts and non-experts, incorrect advice leads to a lower probability to solve an item compared to no advice presented.*
+
+This combined hypothesis leads to the following four separate null hypotheses to be tested:
+
+$$
+H_{01}: \beta_{a} + \beta_{c} + \beta_{ea} + \beta_{ec} \leq 0 \\
+H_{02}: \beta_{a} + \beta_{c} \leq 0 \\
+H_{03}: \beta_{a} + \beta_{ea} \geq 0 \\
+H_{04}: \beta_{a} \geq 0
+$$
+We arrive at these inequalities based on the following logic, exemplified here only for $H_{01}$:
+The first null hypothesis states that *an expert responding to an item while presented with correct advice has lower or equal probability to solve the item compared to the same expert facing the same item without any advice.*
+This implies the following inequality for each subject $s$ and item $i$
+
+$$
+inverse\_logit\left[(\beta_0 + u_{0s} + u_{0i}) + \beta_e + \beta_{a} + \beta_{c} + \beta_{ea} + \beta_{ec}\right] \leq inverse\_logit\left[(\beta_0 + u_{0s} + u_{0i}) + \beta_e\right]
+$$
+
+which simplifies to $\beta_{a} + \beta_{c} + \beta_{ea} + \beta_{ec} \leq 0$.
+
+We can specify and test hypotheses like these with the multcomp package as follows:
+```{r, message=FALSE}
+library(multcomp)
+null_hypotheses <- c(
+  "advice_present + advice_correct + expert:advice_present + expert:advice_correct <= 0",
+  "advice_present + advice_correct <= 0",
+  "-1 * (advice_present + expert:advice_present) <= 0",
+  "-1 * (advice_present) <= 0")
+glht <- glht(fit, linfct = null_hypotheses)
+summary(glht, test = univariate())$test$pvalues
+```
+Because all hypotheses tested simultaneously with the `glht` function must have the same direction, we flip the sign of inequalities three and four by multiplying them with $-1$.
+The multcomp package automatically adjusts p-values when multiple hypotheses are tested simultaneously.
+However, the combined null hypothesis in our exemplary research question should only be rejected if **all** individual null hypotheses are rejected.
+In such cases, the error probabilities do not accumulate and we would waste power when correcting for multiple testing.
+Thus, we request unadjusted p-values by setting `test = univariate()` in the `summary` command.
+With a standard significance level of $\alpha = 0.05$, we would reject all four null hypotheses and therefore also reject the combined null hypothesis for this simulated dataset.
+
+## Specification of plausible parameter values
+
+When introducing our simulation function and simulating data for the above example, we have used theoretically plausible values as defaults for all model parameters ($\beta_0$, $\beta_e$, $\beta_a$, $\beta_c$, $\beta_{ea}$, $\beta_{ec}$, $\sigma_S$, and $\sigma_I$), but have not talked about where the numbers came from.
+All parameter values have been determined in repeated exchanges with our affiliated domain experts and we here outline a few strategies on how to determine plausible parameter values.
+
+We have already seen in our discussion of model interpretation, how we can derive the model implied probability for each experimental condition, that a subject with average ability solves an item with average difficulty.
+We can revert this perspective by choosing plausible probability values and deriving the parameter values implied by these probabilities (for an average subject and an average item).
+
+Table X shows our set of assumptions concerning the probability that an average subject solves an average item for each experimental condition, as well as the corresponding equations implied by the model:
+
+| _Experimental condition_ | _$P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0})$_ | _Implied equation_ |
+|---|:---:|---|
+| no advice, no expert | 0.70 | $logit(0.70) = \beta_0$ |
+| no advice, expert | 0.90 | $logit(0.90) = \beta_0 + \beta_e$ |
+| false advice, no expert | 0.40 | $logit(0.40) = \beta_0 + \beta_a$ |
+| false advice, expert | 0.85 | $logit(0.85) = \beta_0 + \beta_e + \beta_{a} + \beta_{ea}$ |
+| correct advice, no expert | 0.90 | $logit(0.90) = \beta_0 + \beta_a + \beta_c$ |
+| correct advice, expert | 0.95 | $logit(0.95) = \beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}$ |
+
+This table can be used to compute the implied values for the $\beta$ parameters, starting with the first equation and reinserting the computed $\beta$ values in all following equations:
+
+```{r}
+b_0 <- qlogis(0.7)
+b_e <- qlogis(0.9) - b_0
+b_a <- qlogis(0.4) - b_0
+b_ea <- qlogis(0.85) - b_0 - b_e - b_a
+b_c <- qlogis(0.9) - b_0 - b_a
+b_ec <- qlogis(0.95) - b_0 - b_e - b_a - b_c - b_ea
+c(b_0 = b_0, b_e = b_e, b_a = b_a, b_c = b_c, b_ea = b_ea, b_ec = b_ec)
+```
+
+It is always possible to double-check these computations by transforming the parameter values back to probabilities, e.g.
+$$P(Y=1|expert = 1, advice\_present = 1, advice\_correct = 1, u_{0s} = 0, u_{0i} = 0) = inverse\_logit\left[\beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}\right]$$
+```{r}
+plogis(b_0 + b_e + b_a + b_c + b_ea + b_ec)
+```
+
+Although the derivations above are straightforward, it is important not to misinterpret their implications:
+In binomial GLMMs, the average probability to solve an item (averaged across persons of varying ability and items of varying difficulty) is **not** equal to the probability that a person with average ability solves an item with average difficulty.
+For example, we determined the $\beta$ parameters in a way that correspond to a desired probability, that an expert with average ability solves an item with average difficulty when presented with a correct advice.
+However even if the model were true, we would not observe this probability if we estimated the probability in a group of expert responding to items presented with correct advice from a big sample of subjects drawn from their natural distribution of ability and items drawn from their natural distribution of difficulty.
+This implies that one must be careful when specifying parameter values based on previous studies or pilot data.
+
+The well known inequality of conditional and marginal effects in GLMMs makes their interpretation more difficult, however, this does not mean that we cannot use the marginal interpretation (average probability across persons and items) to inform plausible parameter values:
+When parameter values have selected, we can compute the implied marginal distributions and compare this information to our domain knowledge.
+Then we can iteratively adjust the parameter values until we are satisfied with the implied distributions.
+
+Earlier, we have already encountered one way to visualize the implied marginal distributions:
+We can fit our model to a simulated dataset and use the convenience functions from the marginaleffects package to compute averaged predictions that correspond to our quantities of interest.
+However, the model predictions will only be close to the true distribution if the simulated dataset is very large, but then the model fitting consumes a lot of time and memory.
+A more sophisticated strategy is to simulate a large dataset and directly compute the averages, contrasts and distributions we are interested in.
+
+```{r}
+library(tidyverse)
+library(ggdist)
+dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0s = 0.5, sd_u0i = 0.5)
+dat %>% 
+  mutate(condition = fct_cross(
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+  mutate(condition = fct_recode(condition,
+    "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+    "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
+  ggplot(aes(x = y_prob, y = condition)) +
+  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
+  scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
+```
+
+Figure X shows the model implied marginal distributions, including the mean, 66% and 95% intervals.
+We can see that indeed, the average probabilities (block dots) differ from the probabilities of average subjects and items considered in the previous section.
+This difference increases with the variability of the random effects.
+
+In fact, up to this point we have not talked about plausible values for the standard deviations of the subject and item random intercepts ($\sigma_S$ and $\sigma_I$).
+Plots like the one above are a useful tool to decide whether the specified standard deviations are reasonable, by comparing the ranges and overlap between conditions to domain knowledge.
+
+In the next plot, we have set the item standard deviation to almost zero ($\sigma_I = 0.01$).
+This gives us a better way to see the variability between persons.
+
+```{r, echo=FALSE}
+dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0i = 0.01)
+dat %>% 
+  mutate(condition = fct_cross(
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+  mutate(condition = fct_recode(condition,
+    "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+    "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
+  ggplot(aes(x = y_prob, y = condition)) +
+  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
+  scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
+```
+
+In the next plot, we have set the subject standard deviation to almost zero ($\sigma_S = 0.01$.
+This gives us a better way to see the variability between items.
+
+```{r, echo=FALSE}
+dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0s = 0.01)
+dat %>% 
+  mutate(condition = fct_cross(
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+  mutate(condition = fct_recode(condition,
+    "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+    "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
+  ggplot(aes(x = y_prob, y = condition)) +
+  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
+  scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
+```
+
+The final plot demonstrates, that these plots are also useful to spot standard deviations specified to high.
+For example, if we set $\sigma_S = 3$ and $\sigma_I = 3$ this implies that in each experimental condition, the probabilities that a subject solves an item are always close to either 0 or 1, which is not a plausible assumption.
+
+```{r, echo=FALSE}
+dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0s = 3, sd_u0i = 3)
+dat %>% 
+  mutate(condition = fct_cross(
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+  mutate(condition = fct_recode(condition,
+    "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+    "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
+  ggplot(aes(x = y_prob, y = condition)) +
+  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
+  scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
+```
+
+## Power simulation
+
+With all these considerations out of the way, we are finally ready to perform a power simulation.
+Wrapping the `simulate` function already introduced earlier, the helper function `sim_and_analyse` performs all previous steps (simulate a dataset, fit a GLMM, compute p-values) in a single command.
+```{r}
+sim_and_analyse <- function(formula_chr = "y_bin ~ 1 + expert + advice_present + advice_correct + expert:advice_present + expert:advice_correct + (1|subject) + (1|item)", 
+  null_hypotheses = c(
+    "advice_present + advice_correct + expert:advice_present + expert:advice_correct <= 0",
+    "advice_present + advice_correct <= 0",
+    "-1 * (advice_present + expert:advice_present) <= 0",
+    "-1 * (advice_present) <= 0"), ...){
+  require(lme4)
+  require(multcomp)
+  # simulate data
+  dat <- simulate(...)
+  # fit model
+  model <- glmer(as.formula(formula_chr), data = dat, family = "binomial")
+  # compute p-values
+  glht <- glht(model, linfct = null_hypotheses)
+  pvalues <- summary(glht, test = univariate())$test$pvalues
+  setNames(pvalues, paste0("p_H0", 1:length(null_hypotheses)))
+}
+```
+
+Power analysis can quickly become computationally intensive, when we repeatedly simulate data and fit model for different parameter combinations or sample sizes.
+Here, we use the future and furr packages to perform computations in parallel.
+First, we enable parallelization and specify how many parallel cores of our computer to use (users can find out the maximum number of cores on their computer with the command `parallel::detectCores()`), and set a seed to make the simulation reproducible.
+
+```{r, message=FALSE}
+library(future)
+plan("multisession", workers = 4)
+set.seed(2)
+```
+
+The next code chunk, specifies a simulation design with different settings for both the number of subjects (`n_subjects`) and the number of items (`n_items`), each combination being repeated `rep` times.
+```{r}
+library(furrr)
+sim_design <- crossing(
+  rep = 1:250,
+  n_subjects = c(100, 150, 200),
+  n_items = c(10, 30, 50)
+) %>%
+  mutate(pvalues = future_pmap(., sim_and_analyse, 
+    .options = furrr_options(seed = TRUE))) %>%
+  unnest_wider(pvalues)
+```
+The result of the computation is a data.frame that contains the p-values of all tested hypotheses for each simulated dataset. 
+
+For our exemplary combined hypothesis, power is defined as the (long-run) percentage of simulations, in which all four p-values of our component hypotheses are significant at the $\alpha = 0.05$ level.
+Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% confidence intervals) and visualize the results with the following code (heavily inspired by the "Mixed Design Simulation" vignette of the faux package at <https://debruine.github.io/faux/articles/sim_mixed.html>).
+
+```{r}
+library(binom)
+alpha <- 0.05
+power <- sim_design %>%
+  group_by(n_subjects, n_items) %>% 
+  summarise(power = mean(p_H01 < alpha & p_H02 < alpha & p_H03 < alpha & p_H04 < alpha), 
+    n_sig = sum(p_H01 < alpha & p_H02 < alpha & p_H03 < alpha & p_H04 < alpha),
+    n = n(),
+    ci.lwr = binom.confint(n_sig, n, method = "wilson")$lower,
+    ci.upr = binom.confint(n_sig, n, method = "wilson")$upper, 
+    .groups = "drop")
+power %>%
+  mutate(across(c(n_subjects, n_items), factor)) %>%
+  ggplot(aes(n_subjects, n_items, fill = power)) +
+  geom_tile() +
+  geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", power, ci.lwr, ci.upr)), 
+    color = "white", size = 6) +
+  scale_fill_viridis_c(limits = c(0, 1))
+```
