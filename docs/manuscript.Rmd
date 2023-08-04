@@ -534,20 +534,20 @@ Power analysis can quickly become computationally intensive, when we repeatedly 
 Here, we use the future and furr packages to perform computations in parallel.
 First, we enable parallelization and specify how many parallel cores of our computer to use (users can find out the maximum number of cores on their computer with the command `parallel::detectCores()`), and set a seed to make the simulation reproducible.
 
-```{r, message=FALSE, eval=FALSE}
+```{r, message=FALSE, eval=TRUE}
 library(future)
-plan("multisession", workers = 4)
+plan("multisession", workers = 6)
 set.seed(2)
 ```
 
 The next code chunk, specifies a simulation design with different settings for both the number of subjects (`n_subjects`) and the number of items (`n_items`), each combination being repeated `rep` times.
 
-```{r, eval=FALSE}
+```{r, message=FALSE, eval=TRUE}
 library(furrr)
 sim_design <- crossing(
-  rep = 1:250,
-  n_subjects = c(100, 150, 200),
-  n_items = c(10, 30, 50)
+  rep = 1:300,
+  n_subjects = c(100, 150, 200, 250),
+  n_items = c(10, 30, 50, 70)
 ) %>%
   mutate(pvalues = future_pmap(., sim_and_analyse, 
     .options = furrr_options(seed = TRUE))) %>%
@@ -559,7 +559,7 @@ The result of the computation is a data.frame that contains the p-values of all 
 For our exemplary combined hypothesis, power is defined as the (long-run) percentage of simulations, in which all four p-values of our component hypotheses are significant at the $\alpha = 0.05$ level.
 Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% confidence intervals) and visualize the results with the following code (heavily inspired by the "Mixed Design Simulation" vignette of the faux package at <https://debruine.github.io/faux/articles/sim_mixed.html>).
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 library(binom)
 alpha <- 0.05
 power <- sim_design %>%
