@@ -617,6 +617,22 @@ Human-AI interaction research requires meticulous planning and consideration of 
 
 6.  Integration with Open Science and Preregistration Practices: Bespoke power simulations align well with the principles of open science and preregistration in Human-AI interaction research. When researchers have access to simulated data based on their prespecified model, analyzing the collected dataset becomes straightforward and unambiguous. By preregistering their power simulations, researchers enhance transparency and accountability in their experimental procedures, contributing to the credibility and reproducibility of Human-AI interaction research.
 
+## Expected effect size vs. smallest effect size of interest: sensitivity power analysis
+
+In our case study, we have performed power simulations based on a single set of parameter values that reflect our assumptions of an expected effect size.
+Instead of extracting this expected effect size from meta-analyses or pilot data which has been the main focus of previous tutorials, we have demonstrated some strategies to determine plausible parameter values in GLMMs based on domain knowledge which can be considered a vague theoretical model about the data-generating process.
+When sample sizes are chosen based on the results of our power simulations, a future study will be informative to reject the null hypothesis if an effect of our *expected size* is present.
+However, if the true effect is indeed smaller, power will be lower the study might not be sufficiently informative.
+A common, more conservative strategy for sample size justification is to perform power analysis for a smallest effect size of interest (SESOI). 
+An effect smaller than the SESOI would be considered too small to be interesting or practically meaningful, even if the effect is not actually zero.
+For strategies on the even more difficult task of specifying a plausible SESOI as well as a thorough discussion of various topics concerning power analysis, see @lakensImprovingYourStatistical2022.
+When domain knowledge or formal theories about the research topic of interest are too vague to specify a meaningful SESOI, it is still recommended to demonstrate power for different effect sizes in what is called *sensitivity power analysis*.
+By simulating power for different effect sizes (in addition to the different number of subjects and items), one can make sure that power would still be sufficient to detect smaller effect sizes than our expected effect, or at least get an impression how strongly power depends on the size of the true effect.
+In simple study designs, it is possible to perform sensitivity power analysis based on a single standardized effect size (e.g. analyse power in a two-sample t-test for a standardized mean difference varying between 0.1 and 0.8).
+However, for our case study that investigates combined hypotheses in a GLMM modeling framework, the effect size is implicitly represented by the complex distribution of probabilities within and between experimental conditions.
+In this setting, sensitivity power analysis would require to manually specify additional sets of plausible parameter values that reflect scenarios with smaller or larger differences between groups with respect to our specific research question.
+Power could then be simulated for several of these scenarios (across different number of subjects and items as considered earlier). 
+
 # Conclusion
 
 Bespoke power simulations play a critical role in human-AI interaction research, allowing researchers to tailor power estimation to the unique aspects of their experiments. The skills required to perform these simulations should be taught to Human-AI interaction researchers, fostering a deeper understanding of statistical power and enhancing research design. It is essential to bridge the gap between perceived and actual effort associated with power simulations and recognize their value as research contributions. By integrating bespoke power simulations with open science and preregistration practices, researchers can improve the robustness and transparency of their findings, advancing the field.
