@@ -480,10 +480,11 @@ dat %>%
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
 ```
 
-In the next plot, we have set the subject standard deviation to almost zero ($\sigma_S = 0.01$.
-This gives us a better way to see the variability between items.
+As an example, this presentation reveals a number of implicit assumptions about the comparison between experts and non-experts.
 
-```{r, echo=FALSE}
+We could also have a closer look at variability between items, by setting the subject standard deviation to almost zero ($\sigma_S = 0.01$, see Figure X in Appedix X).
+
+```{r, include=FALSE}
 dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0s = 0.01)
 dat %>% 
   mutate(condition = fct_cross(
