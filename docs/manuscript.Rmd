@@ -43,7 +43,7 @@ abstract: |
   
 keywords          : "generalized linear mixed model, data simulation, sample size, power analysis, human-AI interaction"
 
-wordcount         : "5339"
+wordcount         : "6417"
 
 bibliography      : "r-references.bib"
 
@@ -480,9 +480,12 @@ dat %>%
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
 ```
 
-As an example, this presentation reveals a number of implicit assumptions about the comparison between experts and non-experts.
+As an example, this presentation reveals a number of implicit assumptions about the comparison between experts and non-experts:
+With wrong advice, virtually all experts have a higher probability to make a correct diagnosis compared to non-experts when considering only items with average difficulty.
+In contrast, there is considerable overlap in probability between experts and non-experts with no advice and even higher overlap with correct advice.
+Patterns like these should be considered carefully, discussed with the domain experts and parameter values ($\beta$ parameters, and $\sigma_S$) should be adjusted if the implications do not seem reasonable.
 
-We could also have a closer look at variability between items, by setting the subject standard deviation to almost zero ($\sigma_S = 0.01$, see Figure X in Appedix X).
+We could also have a closer look at variability between items, by setting the subject standard deviation to almost zero ($\sigma_S = 0.01$, see Figure X in Appendix X).
 
 ```{r, include=FALSE}
 dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0s = 0.01)
@@ -571,7 +574,7 @@ sim_design <- crossing(
 The result of the computation is a data.frame that contains the p-values of all tested hypotheses for each simulated dataset. 
 
 For our exemplary combined hypothesis, power is defined as the (long-run) percentage of simulations, in which all four p-values of our component hypotheses are significant at the $\alpha = 0.05$ level.
-Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% confidence intervals) and visualize the results with the following code (heavily inspired by the "Mixed Design Simulation" vignette of the faux package at <https://debruine.github.io/faux/articles/sim_mixed.html>).
+Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% confidence intervals) and visualize the results with the following code (which is heavily inspired by the "Mixed Design Simulation" vignette of the faux package at <https://debruine.github.io/faux/articles/sim_mixed.html>).
 
 ```{r, eval=FALSE}
 library(binom)
@@ -597,6 +600,23 @@ power %>%
 ```
 
 <!-- How many participants / stimuli are needed for concrete example -->
+As should be the case, power estimates increase with both the number ob subjects and the number of items.
+The confidence intervals indicate how precisely power was estimated by our simulation.
+Higher precision (which would be reflected in narrower confidence intervals) could be obtained by increasing the number of repetitions (`rep`) in the simulation.
+In practice, power simulations are often run multiple times with adjusted combinations of sample sizes.
+When run for the first time, it might be revealed that power is way too low (or too high) for some combinations of `n_subjects` and `n_items`.
+When narrowing down the best combination that achieves sufficient power, while at the same time strikes a good balance of how many subjects and items are practically feasible, later rounds of power simulations will typically include a smaller grid of sample sizes combined with a higher number of repetitions.
+This will assure high precision for the final power estimates which are then used for sample size justification of the future study.
+
+Much has been written on the optimal amount of power to target in empirical research.
+The most prominent heuristic is to target a power of 0.8 (when combined with a type I error rate of $\alpha = 0.05$), but depending on the research goals of the study, there are often good reasons to move away from this standard.
+When target power has been specified, the number of subjects and the number of items in our study design can be traded against each other, based on practical considerations.
+For the sake of the example, let the targeted power be indeed about 0.8 to detect an effect of the expected size.
+This could be achieved by collecting data of 200 subjects (about 25% of which will be experts) each completing the same 50 items (with advice present in about 67% of cases which is correct in about 80% of cases with present advice).
+If collecting 200 subjects is not practically feasible, it would also be possible to recruit 150 subjects but increase the length of the experiment to over 70 items.
+However, 70 items might take to long to complete (especially for the expert radiologists who might have a busy schedule).
+The simulation suggests that it might also be possible to plan an even shorter experiment with only 30 items, if it is feasible to recruit an even higher number of subjects (> 250, to be determined by additional rounds of power analysis).
+Design parameters which also affect power and which could be investigated in the simulation to find a more optimal trade-off are the ratio of experts, the frequency of whether advice is presented and whether it is correct.
 
 <!-- Results of power sensitivity analyses -->
 
