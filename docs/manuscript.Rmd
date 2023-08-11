@@ -1,22 +1,30 @@
 ---
-title             : "Tutorial for Customized Power Simulations and Data Analyses for Human-AI Interaction Experiments using Generalized Linear Mixed Models"
+title             : "A Tutorial for Customized Power Simulations and Data Analyses for Human-AI Interaction Experiments using Generalized Linear Mixed Models"
 shorttitle        : "GLMM Power Simulation Tutorial"
 
 author: 
   - name          : "Timo K. Koch"
     affiliation   : "1, 2, 3"
     corresponding : yes    # Define only one corresponding author
-    address       : "Postal address"
+    #address       : "Postal address"
     email         : "timo.koch@psy.lmu.de"
     role:         # Contributorship roles (e.g., CRediT, https://casrai.org/credit/)
       - "Conceptualization"
+      - "Formal Analysis"
       - "Writing - Original Draft Preparation"
       - "Writing - Review & Editing"
   - name          : "Florian Pargent"
     affiliation   : "2"
     role:
+      - "Formal Analysis"
+      - "Methodology"
+      - "Visualization"
+      - "Writing - Original Draft Preparation"
       - "Writing - Review & Editing"
-      - "Supervision"
+  - name          : "Anne-Kathrin Kleine"
+    affiliation   : "1"
+    role:
+      - "Writing - Review & Editing"
   - name          : "Susanne Gaube"
     affiliation   : "1, 4"
     role:
@@ -33,19 +41,19 @@ affiliation:
   - id            : "4"
     institution   : "University College London"
 
-authornote: |
-  Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
-
-  Enter author note here.
+# authornote: |
+#   Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
+# 
+#   Enter author note here.
 
 abstract: |
-  Understanding how humans interact with articifical intelligence through experiments becomes increasingly relevant. However, human-AI interaction researchers lack the appropriate tools to conduct power and data analyses for the required complex study designs. In this work, we provide a tutorial on how to run customized power analyses using data simulation based on Generalized Linear Mixed Models (GLMMs). By providing code in a case study, we equip human-AI interaction researchers with the tools to simulate their own data and run analyses based on GLMMs. We discuss implications for human-AI interaction research and give an outlook.
+  Understanding how humans interact with articifical intelligence (AI) through experiments becomes increasingly relevant. However, human-AI interaction researchers lack the appropriate tools to conduct power and data analyses for the required complex study designs. In this work, we provide a tutorial on how to run customized power analyses using data simulation based on Generalized Linear Mixed Models (GLMMs). By providing code in a specific case study, we equip human-AI interaction researchers with the tools to simulate their own data and run analyses based on GLMMs. We discuss implications for human-AI interaction research and provide an outlook on the relevance of power simulations in the field.
   
 keywords          : "generalized linear mixed model, data simulation, sample size, power analysis, human-AI interaction"
 
-wordcount         : "6417"
+wordcount         : "6264"
 
-bibliography      : "r-references.bib"
+bibliography      : "Simulation Tutorial Paper.bib"
 
 floatsintext      : yes
 linenumbers       : yes
@@ -93,8 +101,8 @@ Thereby, power analysis offers a valuable solution by allowing researchers to es
 While user-friendly software is available for simple statistical models like t-tests, ANOVA, and linear regression, the increasing use of (generalized) linear mixed models (GLMMs; also called multilevel models) in human-AI interaction research introduces greater complexity to power analysis.
 For GLMMs, analytic options to derive sample sizes are not available for general research designs.
 An increasing number of tutorials describe how to perform power simulation for multilevel models.
-However, most tutorials discuss only linear mixed models (LMMs) and focus on the most common designs, limiting the guidance available for researchers facing more complex study designs [REF].
-Moreover, existing tutorials often rely on heuristics for specifying variance components (e.g. standard deviation of random intercepts) or assume that meta-analytic results or data from pilot studies is available to determine plausible values for all model parameters.
+However, most tutorials discuss only linear mixed models (LMMs) and focus on the most common designs, limiting the guidance available for researchers facing more complex study designs [@brownIntroductionLinearMixedEffects2021].
+Moreover, existing tutorials often rely on heuristics for specifying variance components (e.g., standard deviation of random intercepts) or assume that meta-analytic results or data from pilot studies is available to determine plausible values for all model parameters.
 In contrast, simulations are often required, necessitating assumptions for all parameters in the model.
 Therefore, running sample size estimations is crucial for designing experiments that can provide meaningful insights into human-AI interaction.
 Moreover, many journals and funding agencies now mandate the inclusion of power analysis as part of study protocols and grant proposals, recognizing their significance in ensuring robust and meaningful findings.
@@ -110,55 +118,40 @@ Through this case study, we aim to provide guidance and insights into the comple
 
 # Methods
 
-In this section, we describe the steps to conduct a data simulation and a power analysis for GLMMs. In doing so, we provide a concrete example in the form of a case study.
-
-We used `r cite_r("r-references.bib")` for all our analyses.
+<!-- overview of this section -->
+In this section, we describe the steps to conduct a data simulation and a power analysis for GLMMs with a specific experimental design in human-AI interaction research in mind in the form of a case study.
 
 ## The present case study
 
-<!-- The present example, describe the study idea and design  -->
-In the case study, we simulate the data for a human-AI Interaction experiment where a health care AI is to be evaluated. Participants view head CT cases and evaluate if a bleeding is present. Also, there can be AI advice that is either correct or incorrect. This medical diagnosis can be correct or incorrect.
+<!-- The present example, describe the study idea and design -->
+In the case study, we simulate the data for a human-AI Interaction experiment where the diagnostic performance of users of a health care AI is to be evaluated. The goal is to understanding how AI advice influences medical decision-making. Participants, radiologists (task experts) and emergency doctors (non task experts) view head CT (computertomography) scans and evaluate if an intracranial bleeding is present. To support their decision making, an AI provides a suggestion for a medical diagnosis. This AI advice can be either either correct or incorrect. 
+Participants' medical diagnosis (i.e., bleeding or no bleeding) can be correct or incorrect. 
+Also, we have a control group with no AI advice present. This introduces missings by design that has an effect on our data simulations. 
+Through this experiment, we want to determine if experts are better than non-experts in reading head CT scans. Further, we want to research if correct AI advice leads to better diagnostic accuracy than incorrect AI advice. 
+In the present example, it would be more challenging to recruit task expert (i.e., radiologists) as there is only a limited amount of such people. Non-experts would be easier to recruit. The goal of the power simulation is to determine how many task experts and non-experts to recruit to achieve sufficient statistical power in our experiment. 
 
-In this case, it would be more challenging to recruit task expert as there is only a limited amount of such people. Non-experts would be easier to recruit. The open question is how many task experts and non-experts to recruit to achieve sufficient power. 
-
-describe study design and sample size restrictions 
-- describe research question (i.e. the coefficients targeted by power simulation)
-
-<!-- basics of power simulation in GLMMs (with the concrete example in mind) -->
-
-Power simulations in GLMMs are essential for estimating the statistical power of complex psychological study designs. The model equation for a GLMM combines fixed effects, random effects, and an appropriate link function to model the relationship between predictors and the outcome variable. The necessary assumptions for power simulations in GLMMs include assumptions about the distributional form of the outcome variable, the random effects, and the error structure. The distributional assumption specifies the family of distributions for the outcome variable, such as Gaussian, Poisson, or binomial. Assumptions about the random effects include the assumption of normality and the covariance structure among the random effects. Additionally, assumptions about the error structure, such as independence or correlation, must be specified. Interpreting these assumptions entails understanding the underlying assumptions of the model and ensuring they align with the characteristics of the data being analyzed.
-
-## TODO
-
-points not discussed yet:
-
-- discuss the specific missing by design complexity
-- discuss different possible parametrizations of the fixed effects
-- find the appropriate lme4 formula (simple models first, more complex models later)
-- determine the correct labels for model coefficients in the lme4 output
-- excursus: estimate expected with of confidence intervals for different sample sizes and number of stimuli
-
-## LMMs, GLMMs and the lme4 package in R
-
-<!-- GLMMs are often used for such research -->
-LMMs and GLMMs are powerful statistical frameworks that handle complex data structures by incorporating both fixed and random effects. 
-
-LMMs are extensions of linear regression models that account for correlated data and hierarchical structures. They are used when the outcome variable is continuous and follow a normal distribution. LMMs allow for the modeling of fixed effects, which capture the relationships between predictors and the outcome, as well as random effects, which account for the correlation and variability within groups or subjects. Random effects are typically assumed to follow a normal distribution with a mean of zero and a variance that quantifies the heterogeneity across the groups or subjects.
-
-GLMMs extend the LMM framework to accommodate non-normal and categorical outcome variables. They are used when the outcome variable does not follow a normal distribution, but instead belongs to a different distribution family, such as binomial, Poisson, or gamma. GLMMs incorporate both fixed and random effects, similar to LMMs, but also involve a link function that connects the linear predictor to the expected value of the outcome variable. The link function allows for modeling the relationship between predictors and the outcome in a way that is appropriate for the specific distribution family of the response variable. 
-
-GLMMs are gaining increasing popularity in the field of Human-AI interaction research. As the complexity of studying human interactions with artificial intelligence systems grows, researchers require more sophisticated statistical models to capture the nuanced relationships and hierarchical structures within the data. GLMMs offer a flexible framework for analyzing data with non-normal and categorical outcomes, accounting for both fixed and random effects. This versatility makes GLMMs particularly suitable for investigating various aspects of Human-AI interaction, such as user preferences, trust, engagement, and performance. By incorporating GLMMs into their analyses, researchers in the field of Human-AI interaction can obtain more robust and comprehensive insights into the intricate dynamics between humans and AI systems, leading to a deeper understanding of the psychological and behavioral aspects involved.
+## The lme4 package in R
 
 <!-- describe the lme4 package and how it works-->
-The lme4 R package is a state-of-the-art tool for fitting frequentist GLMMs (for Bayesian GLMMs, the brms R package is currently the most prominent option).
+For our data simulation and data analysis, we use the lme4 R package [@batesFittingLinearMixedEffects2015]. The lme4 package is a state-of-the-art tool for fitting frequentist GLMMs (for Bayesian GLMMs, the brms R package is currently the most prominent option [@burknerBrmsPackageBayesian2017]).
 The lme4 package includes a useful function called "simulate" that allows researchers to simulate the dependent variable based on the same model formula used for model fitting, enabling power simulations and other related analyses.
 However, the model parameterization used by the lme4 package is quite technical, making it more difficult for applied researchers to determine whether their specified population model implies plausible associations in their simulated data.
-Therefore in this tutorial, we simulate data for GLMMs from first principles to assist applied researchers in better understanding all model assumptions, and then use lme4 to analyze the simulated datasets.
-
-
+Therefore in this tutorial, we simulate data for GLMMs from first principles to assist applied researchers in better understanding all model assumptions, and then use lme4 to analyze the simulated data sets.
 
 ## Generalized linear mixed models
 
+<!-- GLMM intro -->
+LMMs (Linear Mixed Models) and GLMMs (Generalized Linear Mixed Models) are powerful statistical frameworks that handle complex data structures by incorporating both fixed and random effects. 
+LMMs are extensions of linear regression models that account for correlated data and hierarchical structures. They are used when the outcome variable is continuous and follow a normal distribution. LMMs allow for the modeling of fixed effects, which capture the relationships between predictors and the outcome, as well as random effects, which account for the correlation and variability within groups or subjects. Random effects are typically assumed to follow a normal distribution with a mean of zero and a variance that quantifies the heterogeneity across the groups or subjects.
+GLMMs extend the LMM framework to accommodate non-normal and categorical outcome variables. They are used when the outcome variable does not follow a normal distribution, but instead belongs to a different distribution family, such as binomial, Poisson, or gamma. GLMMs incorporate both fixed and random effects, similar to LMMs, but also involve a link function that connects the linear predictor to the expected value of the outcome variable. The link function allows for modeling the relationship between predictors and the outcome in a way that is appropriate for the specific distribution family of the response variable. 
+
+<!-- Relevance of GLMMs -->
+GLMMs are gaining increasing popularity in the field of Human-AI interaction research. As the complexity of studying human interactions with artificial intelligence systems grows, researchers require more sophisticated statistical models to capture the nuanced relationships and hierarchical structures within the data. GLMMs offer a flexible framework for analyzing data with non-normal and categorical outcomes, accounting for both fixed and random effects. This versatility makes GLMMs particularly suitable for investigating various aspects of Human-AI interaction, such as user preferences, trust, engagement, and performance. By incorporating GLMMs into their analyses, researchers in the field of Human-AI interaction can obtain more robust and comprehensive insights into the intricate dynamics between humans and AI systems, leading to a deeper understanding of the psychological and behavioral aspects involved.
+
+<!-- basics of power simulation in GLMMs (with our specific example in mind) -->
+Power simulations in GLMMs are essential for estimating the statistical power of complex experimental study designs. The model equation for a GLMM combines fixed effects, random effects, and an appropriate link function to model the relationship between predictors and the outcome variable. The necessary assumptions for power simulations in GLMMs include assumptions about the distributional form of the outcome variable, the random effects, and the error structure. The distributional assumption specifies the family of distributions for the outcome variable, such as Gaussian, Poisson, or binomial. Assumptions about the random effects include the assumption of normality and the covariance structure among the random effects. Additionally, assumptions about the error structure, such as independence or correlation, must be specified. Interpreting these assumptions entails understanding the underlying assumptions of the model and ensuring they align with the characteristics of the data being analyzed.
+
+<!-- deep dive into our specific example -->
 In a GLMM, the expected value of the dependent variable Y conditioned on the vector of predictor variables $\mathbf{X}$ and random effects $\mathbf{U}$, transformed by a link function $g()$ is modeled as a linear combination $\eta$ of the predictor variables $\mathbf{X}$, the random effects $\mathbf{U}$ and the model parameters $\mathbf{\beta}$.
 $$
 g(E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = \eta
@@ -216,7 +209,7 @@ In the GLMM literature, this would be called a binomial GLMM with two random int
 
 To limit complexity, we do not consider random slopes, additional predictors or higher-level interactions here.
 
-## Data Simulation
+## Data simulation
 
 The following R function simulates a full dataset structured according to our case study.
 The faux package contains useful functions when simulating factorial designs including random effects.
@@ -621,25 +614,10 @@ However, 70 items might take to long to complete (especially for the expert radi
 The simulation suggests that it might also be possible to plan an even shorter experiment with only 30 items, if it is feasible to recruit an even higher number of subjects (> 250, to be determined by additional rounds of power analysis).
 Design parameters which also affect power and which could be investigated in the simulation to find a more optimal trade-off are the ratio of experts, the frequency of whether advice is presented and whether it is correct.
 
-<!-- Results of power sensitivity analyses -->
-
 # Discussion
 
-<!-- Summarize key findings-->
-
-Human-AI interaction research requires meticulous planning and consideration of statistical power to ensure reliable and meaningful results. While heuristics and helper programs can be useful for simple designs and models, they often fall short when more complex and customized simulations are required. In this paper, we discuss the necessity of bespoke power simulations in human-AI interaction research, their implications for research design, and the importance of teaching these skills to Human-AI interaction researchers. Furthermore, we highlight the discrepancy between the perceived effort involved in performing bespoke power simulations and the actual effort required. Finally, we emphasize the value of power simulations as research contributions and their alignment with open science and preregistration practices.
-
-1.  The Need for Power Simulations in Human-AI Interaction Research: Human-AI interaction research often involves intricate designs and complex models that cannot be adequately addressed by heuristics or simple helper programs. Bespoke power simulations offer a solution by providing Human-AI interaction researchers with a tailored approach to estimating statistical power. These simulations take into account the specific study design, account for the underlying assumptions, and offer more accurate power estimates.
-
-2.  Managing Simulations with Discrete Predictor Variables: Bespoke power simulations become more manageable when all predictor variables are discrete and fixed by the study design. This allows Human-AI interaction researchers to focus on simulating outcome variables while avoiding the need to simulate predictor values, which would introduce additional assumptions. By simplifying the simulation process, researchers can obtain reliable power estimates without compromising accuracy.
-
-3.  Teaching Power Simulation Skills to Human-AI Interaction Researchers: The ability to conduct bespoke power simulations is a valuable skill that should be taught to Human-AI interaction researchers. By incorporating this training into research methods courses and workshops, researchers can gain a deeper understanding of statistical power and improve the quality of their experimental designs. Equipping Human-AI interaction researchers with the knowledge and tools to perform bespoke power simulations empowers them to make informed decisions and enhance the rigor of their studies.
-
-4.  Addressing the Mismatch in Effort Perception: There is often a significant disconnect between the perceived effort required to perform bespoke power simulations and the actual effort estimated by researchers and collaborators in Human-AI interaction research. Many content researchers and collaborators request power simulations from statisticians or methodological experts without fully comprehending the complexity and time-consuming nature of these simulations. It is crucial to raise awareness about the effort involved in bespoke power simulations to ensure realistic expectations and effective collaboration between researchers and methodological experts.
-
-5.  Recognizing the Value of Power Simulations: Bespoke power simulations are not mere technicalities; they are valuable research contributions that deserve recognition in Human-AI interaction research. They offer insights into the reliability and sensitivity of experimental designs, helping researchers make informed decisions about sample sizes, effect sizes, and statistical power. The importance of bespoke power simulations can be reflected by allocating them a separate publication or incorporating them as a significant component of stage 1 preregistered reports.
-
-6.  Integration with Open Science and Preregistration Practices: Bespoke power simulations align well with the principles of open science and preregistration in Human-AI interaction research. When researchers have access to simulated data based on their prespecified model, analyzing the collected dataset becomes straightforward and unambiguous. By preregistering their power simulations, researchers enhance transparency and accountability in their experimental procedures, contributing to the credibility and reproducibility of Human-AI interaction research.
+<!-- short summary of key take aways from this tutorial -->
+Human-AI interaction research requires careful planning and consideration of statistical power to ensure reliable and meaningful results. While heuristics and helper programs can be useful for simple designs and models, they often fall short when more complex and customized simulations are required. The present tutorial presents a specific example on how to run power simulations for human-AI interaction experiments. 
 
 ## Expected effect size vs. smallest effect size of interest: sensitivity power analysis
 
@@ -652,14 +630,31 @@ An effect smaller than the SESOI would be considered too small to be interesting
 For strategies on the even more difficult task of specifying a plausible SESOI as well as a thorough discussion of various topics concerning power analysis, see [@lakensImprovingYourStatistical2022].
 When domain knowledge or formal theories about the research topic of interest are too vague to specify a meaningful SESOI, it is still recommended to demonstrate power for different effect sizes in what is called *sensitivity power analysis*.
 By simulating power for different effect sizes (in addition to the different number of subjects and items), one can make sure that power would still be sufficient to detect smaller effect sizes than our expected effect, or at least get an impression how strongly power depends on the size of the true effect.
-In simple study designs, it is possible to perform sensitivity power analysis based on a single standardized effect size (e.g. analyse power in a two-sample t-test for a standardized mean difference varying between 0.1 and 0.8).
+In simple study designs, it is possible to perform sensitivity power analysis based on a single standardized effect size (e.g., analyse power in a two-sample t-test for a standardized mean difference varying between 0.1 and 0.8).
 However, for our case study that investigates combined hypotheses in a GLMM modeling framework, the effect size is implicitly represented by the complex distribution of probabilities within and between experimental conditions.
 In this setting, sensitivity power analysis would require to manually specify additional sets of plausible parameter values that reflect scenarios with smaller or larger differences between groups with respect to our specific research question.
 Power could then be simulated for several of these scenarios (across different number of subjects and items as considered earlier). 
 
+## Outlook
+
+<!-- Outlook -->
+Beyond the specifics, we want to outline six avenues regarding the outlook on power simulations in human-AI interaction research:
+
+1.  The need for power simulations in human-AI interaction research: As this work has clearly pointed out, human-AI interaction research often involves intricate designs and complex models that cannot be adequately addressed by heuristics or simple helper programs. Power simulations offer a solution by providing Human-AI interaction researchers with a tailored approach to estimating statistical power. These simulations take into account the specific study design, account for the underlying assumptions, and offer more accurate power estimates.
+
+2.  Managing simulations with discrete predictor variables: Power simulations become more manageable when all predictor variables are discrete (like in the presented case study) and fixed by the study design. This allows Human-AI interaction researchers to focus on simulating outcome variables while avoiding the need to simulate predictor values, which would introduce additional assumptions. By simplifying the simulation process, researchers can obtain reliable power estimates without compromising accuracy.
+
+3.  Teaching power simulation skills to human-AI interaction researchers: The ability to conduct  power simulations is a valuable skill that should be taught to Human-AI interaction researchers. By incorporating this training into research methods courses and workshops, researchers can gain a deeper understanding of statistical power and improve the quality of their experimental designs. Equipping Human-AI interaction researchers with the knowledge and tools to perform power simulations empowers them to make informed decisions and enhance the rigor of their studies.
+
+4.  Addressing the mismatch in effort perception: There is often a significant disconnect between the perceived effort required to perform power simulations and the actual effort estimated by researchers and collaborators in Human-AI interaction research. Many researchers request power simulations from statisticians or methodological experts without fully comprehending the complexity and time-consuming nature of these simulations. It is crucial to raise awareness about the effort involved in  power simulations to ensure realistic expectations and effective collaboration between researchers and methodological experts.
+
+5.  Recognizing the value of power simulations: Power simulations are not mere technicalities; they are valuable research contributions that deserve recognition in Human-AI interaction research. They offer insights into the reliability and sensitivity of experimental designs, helping researchers make informed decisions about sample sizes, effect sizes, and statistical power. The importance of power simulations can be reflected by allocating them a separate publication or incorporating them as a significant component of stage 1 preregistered reports.
+
+6.  Integration with Open Science and preregistration practices: Power simulations align well with the principles of open science and preregistration in Human-AI interaction research. When researchers have access to simulated data based on their prespecified model, analyzing the collected dataset becomes straightforward and unambiguous. By preregistering their power simulations, researchers enhance transparency and accountability in their experimental procedures, contributing to the credibility and reproducibility of Human-AI interaction research.
+
 # Conclusion
 
-Power simulations play a critical role in human-AI interaction research, allowing researchers to tailor power estimation to the unique aspects of their experiments. The skills required to perform these simulations should be taught to Human-AI interaction researchers, fostering a deeper understanding of statistical power and enhancing research design. It is essential to bridge the gap between perceived and actual effort associated with power simulations and recognize their value as research contributions. By integrating bespoke power simulations with open science and preregistration practices, researchers can improve the robustness and transparency of their findings, advancing the field.
+Power simulations play a critical role in human-AI interaction research, allowing researchers to tailor power estimation to the unique aspects of their experiments. Through this tutorial, we aim to provide researchers with the necessary skills and tools to perform these simulations themselves. By integrating power simulations with open science and preregistration practices, researchers can improve the robustness and transparency of their findings, advancing the field.
 
 \newpage
 
