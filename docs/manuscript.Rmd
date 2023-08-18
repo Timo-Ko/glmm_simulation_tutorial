@@ -53,7 +53,7 @@ keywords          : "generalized linear mixed model, data simulation, sample siz
 
 wordcount         : "6264"
 
-bibliography      : "../Simulation Tutorial Paper.bib"
+bibliography      : ["../Simulation Tutorial Paper.bib", "r-references.bib"]
 
 floatsintext      : yes
 linenumbers       : yes
@@ -72,6 +72,14 @@ output:
 
 ```{r setup, include = FALSE}
 library("papaja")
+library("tidyverse")
+library("faux")
+library("lme4")
+library("multcomp")
+library("marginaleffects")
+library("future")
+library("furrr")
+library("binom")
 r_refs("r-references.bib")
 ```
 
@@ -87,7 +95,7 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed, echo = TRUE, eval = TRUE)
 As the integration of artificial intelligence (AI) into our daily lives continues to grow, it has become increasingly important to study how humans interact with these intelligent systems. 
 This is particularly important as AI becomes more sophisticated and is used in decision-making processes, for instance in medicine, that have significant impacts on individuals and society as a whole. 
 Therefore, thorough experiments are needed to study human-AI interaction to understand how people perceive and respond to these novel technologies. 
-When conducting experimental research in this emerging field, it is essential to determine an appropriate sample size to ensure that the results obtained are both statistically significant and reliable, and use appropriate statistical models to analyze the data.
+When conducting experimental research in this emerging field, it is essential to determine an appropriate sample size [@lakensSampleSizeJustification2022] to ensure that the results obtained are both robust and informative, and use appropriate statistical models to analyze the data.
 
 <!-- Some basics on statistical power, power analysis and why it is important -->
 In empirical research relying on hypothesis testing, the most common strategy to determine appropriate samples size is based on statistical power. 
@@ -100,13 +108,13 @@ By running the calculation for a range of sample sizes, the required sample size
 Power analysis offers a valuable solution by allowing researchers to estimate the appropriate sample sizes needed to achieve sufficient statistical power for results with high evidencial value.
 While user-friendly software is available for simple statistical models like t-tests, ANOVA, and linear regression, the increasing use of (generalized) linear mixed models (GLMMs; also called multilevel models) in human-AI interaction research introduces greater complexity to power analysis.
 For GLMMs, analytic options to derive sample sizes are not available for general research designs.
-An increasing number of tutorials describe how to perform power simulation for multilevel models.
+An increasing number of tutorials describe how to perform power simulation for multilevel models [@arendStatisticalPowerTwolevel2019; @murayamaSummarystatisticsbasedPowerAnalysis2022; @lafitSelectionNumberParticipants2021; @zimmerSampleSizePlanning2022; @brysbaertPowerAnalysisEffect2018; @kumleEstimatingPowerGeneralized2021; @debruineUnderstandingMixedEffectsModels2021].
 However, most tutorials discuss only linear mixed models (LMMs) and focus on the most common designs, limiting the guidance available for researchers facing more complex study designs [@brownIntroductionLinearMixedEffects2021].
 Moreover, existing tutorials often rely on heuristics for specifying variance components (e.g., the standard deviation of random intercepts) or assume that meta-analytic results or data from pilot studies are available to determine plausible values for all model parameters.
-In contrast, simulations are often required, necessitating assumptions for all parameters in the model.
+In contrast, simulations are often required, necessitating assumptions for all parameters in the model [@maxwellSampleSizePlanning2008].
 Therefore, running sample size calculations is crucial for designing experiments that can provide meaningful insights into human-AI interaction.
 Moreover, many journals and funding agencies now mandate the inclusion of power analysis as part of study protocols and grant proposals, recognizing their significance in ensuring robust and meaningful findings.
-By incorporating power analysis into research planning, researchers can enhance the replicability and credibility of their work, ultimately contributing to the advancement of science.
+By incorporating GLMMs and power analysis into research planning, researchers can enhance the replicability and credibility of their work, ultimately contributing to the advancement of science [@yarkoniGeneralizabilityCrisis2022].
 
 <!-- Research Gap & Summary -->
 When planning a human-AI interaction experiment with complexities such as the use of GLMMs, non-standard designs, and missing by design conditions, the process of power simulations becomes challenging.
@@ -139,7 +147,9 @@ The goal of the power simulation is to determine how many task experts and non-e
 In our case study, we use the lme4 R package [@batesFittingLinearMixedEffects2015]. The lme4 package is a state-of-the-art tool for fitting frequentist GLMMs (for Bayesian GLMMs, the brms R package is currently the most prominent option [@burknerBrmsPackageBayesian2017]).
 The lme4 package also includes a function called `simulate` that allows researchers to simulate the dependent variable based on the same model formula used for model fitting, enabling power simulations and other related analyses.
 However, the model parameterization used by the lme4 package is quite technical, making it more difficult for applied researchers to determine whether their specified population model implies plausible associations in their simulated data.
-Therefore in this tutorial, we simulate data for GLMMs from first principles to assist applied researchers in better understanding all model assumptions, and then use lme4 to analyze the simulated data sets.
+Therefore in this tutorial, we simulate data for GLMMs from first principles to assist applied researchers in better understanding all model assumptions, and then use lme4 to analyze the simulated data sets.[^simr]
+
+[^simr]: A less flexible alternative would be to use the simr package [@greenSIMRPackagePower2016] which can be used to both simulate data and perform power analysis for models supported by the lme4 package.
 
 ## Generalized linear mixed models
 
@@ -215,7 +225,7 @@ To limit complexity, we do not consider random slopes, additional predictors or 
 ## Data simulation
 
 The following R function simulates a full dataset structured according to the desgin of our case study.
-The faux package contains useful functions when simulating factorial designs including random effects.
+The faux package [@R-faux] contains useful functions when simulating factorial designs including random effects.
 
 ```{r}
 simulate <- function(n_subjects = 100, n_items = 50,
@@ -323,7 +333,7 @@ $$
 Due to this complicated relationship, we argue not to focus too much on interpreting single model parameters when working with GLMMs.
 Instead, it can be more intuitive to consider the model-implied distribution of the dependent variable for each experimental condition across all subjects and items.
 
-With the marginaleffects package, we can easily compute predictions for all observations in the dataset based on the fitted GLMM (including all fixed **and** random effects), and plot the average probability with confidence intervals for each experimental condition:
+With the marginaleffects package [@R-marginaleffects], we can easily compute predictions for all observations in the dataset based on the fitted GLMM (including all fixed **and** random effects), and plot the average probability with confidence intervals for each experimental condition:
 
 ```{r, message=FALSE}
 library(marginaleffects)
@@ -360,7 +370,7 @@ inverse\_logit[(\beta_0 + u_{0s} + u_{0i}) + \beta_e + \beta_{a} + \beta_{c} + \
 $$
 which simplifies to $\beta_{a} + \beta_{c} + \beta_{ea} + \beta_{ec} \leq 0$.
 
-We can specify and test hypotheses like these with the multcomp package as follows:
+We can specify and test hypotheses like these with the multcomp package [@R-multcomp] as follows:
 
 ```{r, message=FALSE}
 library(multcomp)
@@ -549,7 +559,7 @@ sim_and_analyse <- function(
 ```
 
 Power analysis can quickly become computationally intensive, when we repeatedly simulate data and fit models for different parameter combinations or sample sizes.
-Thus, we use the future and furr packages to perform computations in parallel.
+Thus, we use the future [@R-future] and furrr [@R-furrr] packages to perform computations in parallel.
 First, we enable parallelization and specify how many parallel cores of our computer to use (users can find out the maximum number of cores on their computer with the command `parallel::detectCores()`), and set a seed to make the simulation reproducible.
 
 ```{r, message=FALSE, eval=FALSE}
@@ -575,7 +585,9 @@ sim_design <- crossing(
 The result of the computation is a data.frame that contains the p-values of all tested hypotheses for each simulated dataset. 
 
 For our exemplary combined hypothesis, power is defined as the (long-run) percentage of simulations, in which all four p-values of our component hypotheses are significant at the $\alpha = 0.05$ level.
-Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% confidence intervals) and visualize the results with the following code (which is heavily inspired by the "Mixed Design Simulation" vignette of the faux package at <https://debruine.github.io/faux/articles/sim_mixed.html>).
+Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% confidence intervals) and visualize the results with the following code [^faux].
+
+[^faux]: This code is heavily inspired by the "Mixed Design Simulation" vignette of the faux package at <https://debruine.github.io/faux/articles/sim_mixed.html>.
 
 ```{r, eval=FALSE}
 library(binom)
@@ -650,7 +662,7 @@ Beyond the specifics of our concrete case study, we want to outline six avenues 
 
 2.  Managing simulations with discrete predictor variables: Power simulations become more manageable when all predictor variables are discrete (like in the presented case study) and fixed by the study design. This allows Human-AI interaction researchers to focus on simulating outcome variables while avoiding the need for complex simulations of predictor values, which would introduce additional assumptions. By simplifying the simulation process, researchers can obtain reliable power estimates without compromising accuracy.
 
-3.  Teaching power simulation skills to human-AI interaction researchers: The ability to conduct  power simulations is a valuable skill that should be taught to Human-AI interaction researchers. By incorporating this training into research methods courses and workshops, researchers can gain a deeper understanding of statistical power and improve the quality of their experimental designs. Equipping Human-AI interaction researchers with the knowledge and tools to perform power simulations empowers them to make informed decisions and enhance the rigor of their studies. The need to reason about how to simulate plausible data which is in line with the research hypothesis while not violating domain expertise on how plausible data should look like might also contribute to planning more insightful studies that can answer more precise research questions.
+3.  Teaching power simulation skills to human-AI interaction researchers: The ability to conduct  power simulations is a valuable skill that should be taught to Human-AI interaction researchers. By incorporating this training into research methods courses and workshops, researchers can gain a deeper understanding of statistical power and improve the quality of their experimental designs. Equipping Human-AI interaction researchers with the knowledge and tools to perform power simulations empowers them to make informed decisions and enhance the rigor of their studies. The need to reason about how to simulate plausible data which is in line with the research hypothesis while not violating domain expertise on how plausible data should look like might also contribute to planning more insightful studies that can answer more precise research questions [@yarkoniGeneralizabilityCrisis2022].
 
 4.  Addressing the mismatch in effort perception: There is often a significant disconnect between the amount of effort required to perform power analysis and  the perceived effort estimated by researchers and collaborators in Human-AI interaction research. Many researchers request power simulations from statisticians or methodological experts without fully comprehending the complexity and time-consuming nature of these tailored simulations. It is crucial to raise awareness about the effort involved in power simulations to ensure realistic expectations and effective collaboration between researchers and methodological experts.
 
