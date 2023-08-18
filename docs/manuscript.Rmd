@@ -53,7 +53,7 @@ keywords          : "generalized linear mixed model, data simulation, sample siz
 
 wordcount         : "6264"
 
-bibliography      : "Simulation Tutorial Paper.bib"
+bibliography      : "../Simulation Tutorial Paper.bib"
 
 floatsintext      : yes
 linenumbers       : yes
@@ -93,18 +93,18 @@ When conducting experimental research in this emerging field, it is essential to
 In empirical research relying on hypothesis testing, the most common strategy to determine appropriate samples size is based on statistical power. 
 Statistical power is defined as the probability that a hypothesis test of interest turns out significant, when analyzing repeated samples from a population with a true effect of some pre-specified size.
 Less formally, power is also described as the probability that a hypothesis test accepts the alternative hypothesis $H_1$ if $H_1$ is indeed true.
-In line with this, power analysis represents the act of calculating the statistical power for a given true effect and sample size. 
+Power analysis represents the act of calculating the statistical power for a given true effect and sample size. 
+By running the calculation for a range of sample sizes, the required sample size to find an assumed true effect with desired statistical power can be determined.
 
 <!-- Power simulations are hard! (especially for GLMMs) -->
-Hereby, for a desired statistical power and an assumed true effect, the required sample size to find such an effect can be calculated.
-Thereby, power analysis offers a valuable solution by allowing researchers to estimate the appropriate sample sizes needed to achieve sufficient statistical power for reliable results.
+Power analysis offers a valuable solution by allowing researchers to estimate the appropriate sample sizes needed to achieve sufficient statistical power for results with high evidencial value.
 While user-friendly software is available for simple statistical models like t-tests, ANOVA, and linear regression, the increasing use of (generalized) linear mixed models (GLMMs; also called multilevel models) in human-AI interaction research introduces greater complexity to power analysis.
 For GLMMs, analytic options to derive sample sizes are not available for general research designs.
 An increasing number of tutorials describe how to perform power simulation for multilevel models.
 However, most tutorials discuss only linear mixed models (LMMs) and focus on the most common designs, limiting the guidance available for researchers facing more complex study designs [@brownIntroductionLinearMixedEffects2021].
-Moreover, existing tutorials often rely on heuristics for specifying variance components (e.g., standard deviation of random intercepts) or assume that meta-analytic results or data from pilot studies is available to determine plausible values for all model parameters.
+Moreover, existing tutorials often rely on heuristics for specifying variance components (e.g., the standard deviation of random intercepts) or assume that meta-analytic results or data from pilot studies are available to determine plausible values for all model parameters.
 In contrast, simulations are often required, necessitating assumptions for all parameters in the model.
-Therefore, running sample size estimations is crucial for designing experiments that can provide meaningful insights into human-AI interaction.
+Therefore, running sample size calculations is crucial for designing experiments that can provide meaningful insights into human-AI interaction.
 Moreover, many journals and funding agencies now mandate the inclusion of power analysis as part of study protocols and grant proposals, recognizing their significance in ensuring robust and meaningful findings.
 By incorporating power analysis into research planning, researchers can enhance the replicability and credibility of their work, ultimately contributing to the advancement of science.
 
@@ -113,28 +113,31 @@ When planning a human-AI interaction experiment with complexities such as the us
 Currently available software packages for power simulations do not include common designs in human-AI interaction research, making it necessary to build data simulations tailored specifically to the study design.
 Unfortunately, there are no general recommendations that can be applied universally in such cases.
 Instead, researchers must acquire the necessary skills based on the specific application at hand.
-In this paper, we present a case study that serves as a practical demonstration of how to perform a data simulation for a concrete study for which no meta-analytic results or conclusive data from pilot studies is available.
+In this paper, we present a case study that serves as a practical demonstration of how to perform a data simulation for a concrete study for which no meta-analytic results or conclusive data from pilot studies are available.
 Through this case study, we aim to provide guidance and insights into the complexities involved in addressing complex design considerations and obtaining accurate power estimates.
 
 # Methods
 
 <!-- overview of this section -->
-In this section, we describe the steps to conduct a data simulation and a power analysis for GLMMs with a specific experimental design in human-AI interaction research in mind in the form of a case study.
+In this section, we describe the steps to conduct a data simulation and a power analysis for GLMMs, with a specific experimental design from human-AI interaction research, in the form of a case study.
 
 ## The present case study
 
 <!-- The present example, describe the study idea and design -->
-In the case study, we simulate the data for a human-AI Interaction experiment where the diagnostic performance of users of a health care AI is to be evaluated. The goal is to understanding how AI advice influences medical decision-making. Participants, radiologists (task experts) and emergency doctors (non task experts) view head CT (computertomography) scans and evaluate if an intracranial bleeding is present. To support their decision making, an AI provides a suggestion for a medical diagnosis. This AI advice can be either either correct or incorrect. 
-Participants' medical diagnosis (i.e., bleeding or no bleeding) can be correct or incorrect. 
-Also, we have a control group with no AI advice present. This introduces missings by design that has an effect on our data simulations. 
+In the case study, we simulate the data for a human-AI Interaction experiment where the diagnostic performance of users of a health care AI is to be evaluated. The goal is to understand how AI advice influences medical decision-making. Participants, radiologists (task experts) and emergency doctors (non task experts), view head CT (computertomography) scans and evaluate if an intracranial bleeding is present.
+To support their decision making, an AI provides a suggestion for a medical diagnosis. This AI advice can be either either correct or incorrect. 
+Participants then provide a final medical diagnosis (i.e., bleeding or no bleeding) that can be correct or incorrect. 
+Also, we have control trials, in which no AI advice is present. 
+This introduces some missing values by design (advice is neither correct nor incorrect, when no advice is present) which must be taken into account when simulating and analyzing the data. 
 Through this experiment, we want to determine if experts are better than non-experts in reading head CT scans. Further, we want to research if correct AI advice leads to better diagnostic accuracy than incorrect AI advice. 
-In the present example, it would be more challenging to recruit task expert (i.e., radiologists) as there is only a limited amount of such people. Non-experts would be easier to recruit. The goal of the power simulation is to determine how many task experts and non-experts to recruit to achieve sufficient statistical power in our experiment. 
+In the present example, it would be more challenging to recruit task expert (i.e., radiologists) as there is only a limited amount of such people. Non-experts would be easier to recruit.
+The goal of the power simulation is to determine how many task experts and non-experts to recruit to achieve sufficient statistical power in our experiment. 
 
 ## The lme4 package in R
 
 <!-- describe the lme4 package and how it works-->
-For our data simulation and data analysis, we use the lme4 R package [@batesFittingLinearMixedEffects2015]. The lme4 package is a state-of-the-art tool for fitting frequentist GLMMs (for Bayesian GLMMs, the brms R package is currently the most prominent option [@burknerBrmsPackageBayesian2017]).
-The lme4 package includes a useful function called "simulate" that allows researchers to simulate the dependent variable based on the same model formula used for model fitting, enabling power simulations and other related analyses.
+In our case study, we use the lme4 R package [@batesFittingLinearMixedEffects2015]. The lme4 package is a state-of-the-art tool for fitting frequentist GLMMs (for Bayesian GLMMs, the brms R package is currently the most prominent option [@burknerBrmsPackageBayesian2017]).
+The lme4 package also includes a function called `simulate` that allows researchers to simulate the dependent variable based on the same model formula used for model fitting, enabling power simulations and other related analyses.
 However, the model parameterization used by the lme4 package is quite technical, making it more difficult for applied researchers to determine whether their specified population model implies plausible associations in their simulated data.
 Therefore in this tutorial, we simulate data for GLMMs from first principles to assist applied researchers in better understanding all model assumptions, and then use lme4 to analyze the simulated data sets.
 
