@@ -145,11 +145,11 @@ Therefore in this tutorial, we simulate data for GLMMs from first principles to 
 
 <!-- GLMM intro -->
 LMMs (Linear Mixed Models) and GLMMs (Generalized Linear Mixed Models) are powerful statistical frameworks that handle complex data structures by incorporating both fixed and random effects. 
-LMMs are extensions of linear regression models that account for correlated data and hierarchical structures. They are used when the outcome variable is continuous and follow a normal distribution. LMMs allow for the modeling of fixed effects, which capture the relationships between predictors and the outcome, as well as random effects, which account for the correlation and variability within groups or subjects. Random effects are typically assumed to follow a normal distribution with a mean of zero and a variance that quantifies the heterogeneity across the groups or subjects.
-GLMMs extend the LMM framework to accommodate non-normal and categorical outcome variables. They are used when the outcome variable does not follow a normal distribution, but instead belongs to a different distribution family, such as binomial, Poisson, or gamma. GLMMs incorporate both fixed and random effects, similar to LMMs, but also involve a link function that connects the linear predictor to the expected value of the outcome variable. The link function allows for modeling the relationship between predictors and the outcome in a way that is appropriate for the specific distribution family of the response variable. 
+LMMs are extensions of linear regression models that account for correlated data and hierarchical structures. They are used when the outcome variable is continuous and follows a normal distribution (when conditioned on the predictor variables). LMMs allow for the modeling of fixed effects, which capture the relationships between predictors and the outcome, as well as random effects, which account for the correlation and variability within groups or subjects. Random effects are typically assumed to follow a normal distribution with a mean of zero and a variance that quantifies the heterogeneity across the groups or subjects.
+GLMMs extend the LMM framework to accommodate non-normal and categorical outcome variables. They are used when the outcome variable does not follow a normal distribution, but instead belongs to a different distribution family, such as binomial, Poisson, or gamma. GLMMs incorporate both fixed and random effects, similar to LMMs, but also involve a link function that connects the linear predictor to the expected value of the outcome variable. The link function allows for modeling the relationship between predictors and the outcome in a non-linear way that is appropriate for the specific distribution family of the response variable. 
 
 <!-- Relevance of GLMMs -->
-GLMMs are gaining increasing popularity in the field of Human-AI interaction research. As the complexity of studying human interactions with artificial intelligence systems grows, researchers require more sophisticated statistical models to capture the nuanced relationships and hierarchical structures within the data. GLMMs offer a flexible framework for analyzing data with non-normal and categorical outcomes, accounting for both fixed and random effects. This versatility makes GLMMs particularly suitable for investigating various aspects of Human-AI interaction, such as user preferences, trust, engagement, and performance. By incorporating GLMMs into their analyses, researchers in the field of Human-AI interaction can obtain more robust and comprehensive insights into the intricate dynamics between humans and AI systems, leading to a deeper understanding of the psychological and behavioral aspects involved.
+GLMMs are gaining increasing popularity in the field of Human-AI interaction research. As the complexity of studying human interactions with artificial intelligence systems grows, researchers require more sophisticated statistical models to capture the nuanced relationships and hierarchical structures introduced by their study designs. GLMMs offer a flexible framework for analyzing data with non-normal and categorical outcomes, accounting for both fixed and random effects. This versatility makes GLMMs particularly suitable for investigating various aspects of Human-AI interaction, such as user preferences, trust, engagement, and performance. By incorporating GLMMs into their analyses, researchers in the field of Human-AI interaction can obtain more robust and comprehensive insights into the intricate dynamics between humans and AI systems, leading to a deeper understanding of the psychological and behavioral aspects involved.
 
 <!-- basics of power simulation in GLMMs (with our specific example in mind) -->
 Power simulations in GLMMs are essential for estimating the statistical power of complex experimental study designs. The model equation for a GLMM combines fixed effects, random effects, and an appropriate link function to model the relationship between predictors and the outcome variable. The necessary assumptions for power simulations in GLMMs include assumptions about the distributional form of the outcome variable, the random effects, and the error structure. The distributional assumption specifies the family of distributions for the outcome variable, such as Gaussian, Poisson, or binomial. Assumptions about the random effects include the assumption of normality and the covariance structure among the random effects. Additionally, assumptions about the error structure, such as independence or correlation, must be specified. Interpreting these assumptions entails understanding the underlying assumptions of the model and ensuring they align with the characteristics of the data being analyzed.
@@ -183,7 +183,7 @@ In our case study, the probability to give a correct response is assumed to depe
 
 - $advice\_present_{si}$: whether subject $s$ was presented with algorithmic advice (1) or not (0) when asked to asses item $i$
 - $advice\_correct_{si}$: whether this advice was correct (1) or not (0)
-- $expert_s$: whether subject $s$ was a professional neurologist (1) or not (0)
+- $expert_s$: whether subject $s$ was a radiologist (1) or not (0)
 
 and the random effects:
 
@@ -214,7 +214,7 @@ To limit complexity, we do not consider random slopes, additional predictors or 
 
 ## Data simulation
 
-The following R function simulates a full dataset structured according to our case study.
+The following R function simulates a full dataset structured according to the desgin of our case study.
 The faux package contains useful functions when simulating factorial designs including random effects.
 
 ```{r}
@@ -245,9 +245,9 @@ simulate <- function(n_subjects = 100, n_items = 50,
 
 In our case study, each subject (`n_subjects` in total) is assumed to respond to each item (`n_items` in total).
 Thus the `add_random` command creates a fully-crossed `data.frame` with `n_subjects` $\times$ `n_items` rows.
-We add a between subject effect with the `add_between` command, simulating that about $25%$ of subjects are experts.
-The next two lines simulate that in about $\frac{2}{3}$ of trials, subjects will be presented with AI advice and if advice is presented, the advice will be correct in about $80%$ of cases (the variable `advice_correct` is always 0 when no advice is presented).
-Next we simulate one random effect each subject (`u0s`) and for each item (`u0i`).
+We add a between subject effect with the `add_between` command, simulating that about $25\%$ of subjects are experts.
+The next two lines simulate that in about $\frac{2}{3}$ of trials, subjects will be presented with AI advice and if advice is presented, the advice will be correct in about $80\%$ of cases (the variable `advice_correct` is always 0 when no advice is presented).
+Next we simulate one random effect for each subject (`u0s`) and for each item (`u0i`).
 As assumed by standard GLMMs, the `add_ranef` function draws the random effects from a normal distribution with mean 0 and a standard deviation specified by the user.
 With all design variables done, we are ready to simulate our model equation as outlined in equation X.
 The linear predictor variable `linpred` ($\eta$ in the GLMM model equations), combines the predictor variables, random effects and model parameters as assumed by our model.
@@ -279,10 +279,10 @@ f <- y_bin ~ 1 + expert + advice_present + advice_correct +
 
 The first two lines looks similar to any linear model in R (general intercept indicated by `1`; main effects indicated by variable names in the dataset; interactions indicated by `variable1:variable2`).
 The third line specifies a random intercept for each subject `(1|subject)` and for each item `(1|item)`.
-The complete set of rules for the syntax are outlined in (CITE LME4 PAPER) and in the documentation of the lme4 package.
+The complete set of rules for the syntax are outlined in @batesFittingLinearMixedEffects2015 and in the documentation of the lme4 package.
 
 In lme4, a GLMM is fitted with the `glmer` function.
-By setting `family =  "binomial"` we request a binomial GLMM, appropriate for our binary dependent variable `y_bin` (the binomial GLMM used the canonical logit link by default).
+By setting `family =  "binomial"` we request a binomial GLMM, appropriate for our binary dependent variable `y_bin` (the binomial GLMM uses the canonical logit link by default).
 
 ```{r}
 fit <- glmer(f, data = dat, family = "binomial")
@@ -300,7 +300,7 @@ The output shows the estimates for all model parameters:
 the `Estimate` column in the `Fixed effects` table contains the estimates for the $\beta$ parameters, while the `Std.Dev.` column in the `Random effects` table contains the estimates for $\sigma_S$ and $\sigma_I$.
 
 Unfortunately, the model parameters in a binomial GLMM are hard to interpret, because 1) the $\beta$ parameters are connected to the modeled probability via the non-linear inverse-logit link, and 2) we also have to consider the random effects.
-The most simple interpretation works by imagining a subject with average ability ($u0s = 0$) responding to an item with average difficulty ($u0i = 0$).
+The most simple interpretation works by imagining a subject with average ability ($u_{0s} = 0$) responding to an item with average difficulty ($u_{0i} = 0$).
 Then the model implied probability that such a person solves such an item is given by:
 $$
 \begin{aligned}
@@ -312,7 +312,7 @@ $$
 
 In fact, we would only need the full equation if the subject is an expert and correct advice is presented.
 In all other experimental conditions, some terms drop from the equation because they are multiplied by $0$.
-The other extreme case would be the probability that a non-expert with average ability solves and item with average difficulty when presented without any advice:
+The other extreme case would be the probability that a non-expert with average ability solves an item with average difficulty when no advice is presented:
 $$
 \begin{aligned}
 P(Y=1|expert = 0, advice\_present = 0, advice\_correct = 0, u_{0s} = 0, u_{0i} = 0) = \\
@@ -320,8 +320,8 @@ P(Y=1|expert = 0, advice\_present = 0, advice\_correct = 0, u_{0s} = 0, u_{0i} =
 \end{aligned}
 $$
 
-Due to this complicated relationship, many experts argue not to focus too much on interpreting single model parameters when working with GLMMs.
-Instead, it can be more intuitive to consider the implied predicted distribution of the dependent variable for each experimental conditions across all subjects and items.
+Due to this complicated relationship, we argue not to focus too much on interpreting single model parameters when working with GLMMs.
+Instead, it can be more intuitive to consider the model-implied distribution of the dependent variable for each experimental condition across all subjects and items.
 
 With the marginaleffects package, we can easily compute predictions for all observations in the dataset based on the fitted GLMM (including all fixed **and** random effects), and plot the average probability with confidence intervals for each experimental condition:
 
@@ -333,7 +333,7 @@ plot_predictions(fit, by = c("advice_present", "advice_correct", "expert"),
 
 ## Hypothesis testing
 
-However, we need to think about the model parameters again when wanting to test hypotheses which we have theoretically derived from some research question.
+However, we need to think about the model parameters again when we want to test hypotheses which we have theoretically derived from some research question.
 Because the inverse-logit link is still a continuously increasing function, positive parameter values always correspond to increases in probability and vice versa.
 
 The `Fixed effects` table in Figure X also includes p-values for hypothesis tests with null hypotheses of the style $H_0: \beta = 0$.
@@ -379,11 +379,12 @@ The multcomp package automatically adjusts p-values when multiple hypotheses are
 However, the combined null hypothesis in our exemplary research question should only be rejected if **all** individual null hypotheses are rejected.
 In such cases, the error probabilities do not accumulate and we would waste power when correcting for multiple testing.
 Thus, we request unadjusted p-values by setting `test = univariate()` in the `summary` command.
-With a standard significance level of $\alpha = 0.05$, we would reject all four null hypotheses and therefore also reject the combined null hypothesis for this simulated dataset.
+With a standard significance level of $\alpha = 0.05$, we would not reject all four null hypotheses (the p-value for hypothesis $H_{03}$ is not significant) and therefore also not reject the combined null hypothesis for this simulated dataset.
+Note that this decision would be wrong, because we have simulated the data such that the combined alternative hypothesis is actually true in the population.
 
 ## Specification of plausible parameter values
 
-When introducing our simulation function and simulating data for the above example, we have used theoretically plausible values as defaults for all model parameters ($\beta_0$, $\beta_e$, $\beta_a$, $\beta_c$, $\beta_{ea}$, $\beta_{ec}$, $\sigma_S$, and $\sigma_I$), but have not talked about where the numbers came from.
+When introducing our simulation function and simulating data for the above example, we have used theoretically plausible values as defaults for all model parameters ($\beta_0$, $\beta_e$, $\beta_a$, $\beta_c$, $\beta_{ea}$, $\beta_{ec}$, $\sigma_S$, and $\sigma_I$), but have not talked about where these numbers came from.
 All parameter values have been determined in repeated exchanges with our affiliated domain experts and we here outline a few strategies on how to determine plausible parameter values.
 
 We have already seen in our discussion of model interpretation, how we can derive the model implied probability for each experimental condition, that a subject with average ability solves an item with average difficulty.
@@ -426,12 +427,12 @@ plogis(b_0 + b_e + b_a + b_c + b_ea + b_ec)
 
 Although the derivations above are straightforward, it is important not to misinterpret their implications:
 In binomial GLMMs, the average probability to solve an item (averaged across persons of varying ability and items of varying difficulty) is **not** equal to the probability that a person with average ability solves an item with average difficulty.
-For example, we determined the $\beta$ parameters in a way that correspond to a desired probability, that an expert with average ability solves an item with average difficulty when presented with a correct advice.
-However even if the model were true, we would not observe this probability if we estimated the probability in a group of expert responding to items presented with correct advice from a big sample of subjects drawn from their natural distribution of ability and items drawn from their natural distribution of difficulty.
+For example, we determined the $\beta$ parameters in a way that correspond to a desired probability of $0.95$, that an expert with average ability solves an item with average difficulty when presented with a correct advice.
+However even if the model were true, we would not observe this probability if we estimated the probability in a group of experts responding to items presented with correct advice from a big sample of subjects drawn from their natural distribution of ability and items drawn from their natural distribution of difficulty.
 This implies that one must be careful when specifying parameter values based on previous studies or pilot data.
 
 The well known inequality of conditional and marginal effects in GLMMs makes their interpretation more difficult, however, this does not mean that we cannot use the marginal interpretation (average probability across persons and items) to inform plausible parameter values:
-When parameter values have selected, we can compute the implied marginal distributions and compare this information to our domain knowledge.
+When parameter values have been selected, we can compute the implied marginal distributions and compare this information to our domain knowledge.
 Then we can iteratively adjust the parameter values until we are satisfied with the implied distributions.
 
 Earlier, we have already encountered one way to visualize the implied marginal distributions:
@@ -456,7 +457,7 @@ dat %>%
 ```
 
 Figure X shows the model implied marginal distributions, including the mean, 66% and 95% intervals.
-We can see that indeed, the average probabilities (block dots) differ from the probabilities of average subjects and items considered in the previous section.
+We can see that indeed, the average probabilities (black dots) slightly differ from the probabilities of average subjects and items considered in the previous section.
 This difference increases with the variability of the random effects.
 
 In fact, up to this point we have not talked about plausible values for the standard deviations of the subject and item random intercepts ($\sigma_S$ and $\sigma_I$).
@@ -500,8 +501,9 @@ dat %>%
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
 ```
 
-The final plot demonstrates, that these plots are also useful to spot standard deviations specified to high.
-For example, if we set $\sigma_S = 3$ and $\sigma_I = 3$ this implies that in each experimental condition, the probabilities that a subject solves an item are always close to either 0 or 1, which is not a plausible assumption.
+The final plot demonstrates, that these plots are also useful to spot standard deviations that are specified too high.
+For this example, we have set $\sigma_S = 3$ and $\sigma_I = 3$.
+This implies that in each experimental condition, the probabilities that a subject solves an item are usually close to either 0 or 1, which is not a plausible assumption.
 
 ```{r, echo=FALSE}
 dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0s = 3, sd_u0i = 3)
@@ -521,7 +523,7 @@ dat %>%
 
 ## Power simulation
 
-With all these considerations out of the way, we are finally ready to perform a power simulation.
+With all these considerations out of the way, we are finally ready to perform a power analysis.
 Wrapping the `simulate` function already introduced earlier, the helper function `sim_and_analyse` performs all previous steps (simulate a dataset, fit a GLMM, compute p-values) in a single command.
 
 ```{r}
@@ -546,8 +548,8 @@ sim_and_analyse <- function(
 }
 ```
 
-Power analysis can quickly become computationally intensive, when we repeatedly simulate data and fit model for different parameter combinations or sample sizes.
-Here, we use the future and furr packages to perform computations in parallel.
+Power analysis can quickly become computationally intensive, when we repeatedly simulate data and fit models for different parameter combinations or sample sizes.
+Thus, we use the future and furr packages to perform computations in parallel.
 First, we enable parallelization and specify how many parallel cores of our computer to use (users can find out the maximum number of cores on their computer with the command `parallel::detectCores()`), and set a seed to make the simulation reproducible.
 
 ```{r, message=FALSE, eval=FALSE}
@@ -556,7 +558,7 @@ plan("multisession", workers = 6)
 set.seed(2)
 ```
 
-The next code chunk, specifies a simulation design with different settings for both the number of subjects (`n_subjects`) and the number of items (`n_items`), each combination being repeated `rep` times.
+The next code chunk specifies a simulation grid with different settings for both the number of subjects (`n_subjects`) and the number of items (`n_items`), each combination being repeated `rep` times.
 
 ```{r, message=FALSE, eval=FALSE}
 library(furrr)
@@ -603,18 +605,18 @@ As should be the case, power estimates increase with both the number ob subjects
 The confidence intervals indicate how precisely power was estimated by our simulation.
 Higher precision (which would be reflected in narrower confidence intervals) could be obtained by increasing the number of repetitions (`rep`) in the simulation.
 In practice, power simulations are often run multiple times with adjusted combinations of sample sizes.
-When run for the first time, it might be revealed that power is way too low (or too high) for some combinations of `n_subjects` and `n_items`.
+When run for the first time, it might be revealed that power is way too low (or higher than required) for some combinations of `n_subjects` and `n_items`.
 When narrowing down the best combination that achieves sufficient power, while at the same time strikes a good balance of how many subjects and items are practically feasible, later rounds of power simulations will typically include a smaller grid of sample sizes combined with a higher number of repetitions.
 This will assure high precision for the final power estimates which are then used for sample size justification of the future study.
 
 Much has been written on the optimal amount of power to target in empirical research.
 The most prominent heuristic is to target a power of 0.8 (when combined with a type I error rate of $\alpha = 0.05$), but depending on the research goals of the study, there are often good reasons to move away from this standard.
 When target power has been specified, the number of subjects and the number of items in our study design can be traded against each other, based on practical considerations.
-For the sake of the example, let the targeted power be indeed about 0.8 to detect an effect of the expected size.
+For the sake of the example, let the targeted power be indeed about 0.8 to detect an effect of the expected size implied by our data simulation.
 This could be achieved by collecting data of 200 subjects (about 25% of which will be experts) each completing the same 50 items (with advice present in about 67% of cases which is correct in about 80% of cases with present advice).
 If collecting 200 subjects is not practically feasible, it would also be possible to recruit 150 subjects but increase the length of the experiment to over 70 items.
-However, 70 items might take to long to complete (especially for the expert radiologists who might have a busy schedule).
-The simulation suggests that it might also be possible to plan an even shorter experiment with only 30 items, if it is feasible to recruit an even higher number of subjects (> 250, to be determined by additional rounds of power analysis).
+However, 70 items might take to long to complete for the doctors participating in the study, who probably all have a busy schedule.
+The simulation suggests that it might also be possible to plan a shorter experiment with only 30 items, if it is feasible to recruit an even higher number of subjects (> 250, to be determined by additional rounds of power analysis).
 Design parameters which also affect power and which could be investigated in the simulation to find a more optimal trade-off are the ratio of experts, the frequency of whether advice is presented and whether it is correct.
 
 # Discussion
