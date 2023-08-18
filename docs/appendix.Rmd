@@ -1,0 +1,109 @@
+
+## General principles in power analysis
+
+```{r, message=FALSE}
+library(tidyverse)
+set.seed(1)
+dat <- simulate(n_subjects = 100, n_items = 50)
+dat$expert <- factor(dat$expert)
+dat$advice_present <- factor(dat$advice_present)
+dat$advice_correct <- factor(dat$advice_correct)
+```
+
+```{r, message=FALSE}
+library(lme4)
+f <- y_bin ~ 1 + expert + advice_present + advice_correct + 
+  expert:advice_present + expert:advice_correct +
+  (1|subject) + (1|item)
+fit <- glmer(f, data = dat, family = "binomial")
+```
+
+
+```{r}
+library(marginaleffects)
+marginal_means(fit)
+avg_comparisons(fit, variables = list(expert = c(0, 1)))
+comparisons(fit,
+  newdata = datagrid(expert = c("0", "1"), advice_present = c("0", "1"), advice_correct = c("0", "1"))
+)
+```
+
+## Sample size justification based on precision: simulate expected confidence interval width
+
+```{r}
+simulate <- function(n_subjects = 100, n_items = 50,
+  b_0 = 0.847, b_e = 1.350, b_a = -1.253, b_c = 2.603,
+  b_ea = 0.790, b_ec = -1.393,
+  sd_u0s = 0.5, sd_u0i = 0.5, ...){
+  require(dplyr)
+  require(faux)
+  # simulate design
+  dat <- add_random(subject = n_subjects, item = n_items) %>%
+    add_between("subject", expert = c(1, 0), .prob = c(0.25, 0.75)) %>%
+    mutate(advice_present = rbinom(n(), 1, prob = 2/3)) %>%
+    mutate(advice_correct = if_else(advice_present == 1, 
+                                    rbinom(n(), 1, prob = 0.8), 0)) %>%
+    # add random effects
+    add_ranef("subject", u0s = sd_u0s) %>%
+    add_ranef("item", u0i = sd_u0i) %>%
+    # compute dependent variable
+    mutate(linpred = b_0 + u0i + u0s +
+        b_e * expert + b_a * advice_present + b_c * advice_correct +
+        b_ea * expert * advice_present + b_ec * expert * advice_correct) %>%
+    mutate(y_prob = plogis(linpred)) %>%
+    mutate(y_bin = rbinom(n = n(), size = 1, prob = y_prob))
+  dat
+}
+
+sim_and_analyse <- function(
+  formula_chr = "y_bin ~ 1 + expert + advice_present + advice_correct + 
+    expert:advice_present + expert:advice_correct + (1|subject) + (1|item)", 
+  null_hypotheses = c("expert:advice_correct = 0"), ...){
+  require(lme4)
+  require(multcomp)
+  # simulate data
+  dat <- simulate(...)
+  # fit model
+  model <- glmer(as.formula(formula_chr), data = dat, family = "binomial")
+  # compute p-values
+  glht <- glht(model, linfct = null_hypotheses)
+  confint(glht, level = 0.95, calpha = univariate_calpha())$confint
+}
+```
+
+```{r, message=FALSE, eval=TRUE}
+library(future)
+plan("multisession", workers = 6)
+set.seed(2)
+```
+
+```{r, message=FALSE, eval=TURE}
+library(tidyverse)
+library(furrr)
+sim_design <- crossing(
+  rep = 1:200,
+  n_subjects = c(150, 200),
+  n_items = c(30, 50)
+) %>%
+  mutate(ci = future_pmap(., sim_and_analyse, 
+    .options = furrr_options(seed = TRUE))) %>%
+  unnest_wider(ci)
+```
+
+```{r, eval=FALSE}
+precision <- sim_design %>%
+  group_by(n_subjects, n_items) %>% 
+  mutate(width = `expert:advice_correct`[,3] - `expert:advice_correct`[,2]) %>%
+  summarise(precision = mean(width),
+    ci.lwr = t.test(width)$conf.int[1],
+    ci.upr = t.test(width)$conf.int[2], 
+    .groups = "drop")
+precision %>%
+  mutate(across(c(n_subjects, n_items), factor)) %>%
+  ggplot(aes(n_subjects, n_items, fill = precision)) +
+  geom_tile() +
+  geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 
+                                precision, ci.lwr, ci.upr)), 
+    color = "white", size = 6) +
+  scale_fill_viridis_c(limits = c(0, 2))
+```
