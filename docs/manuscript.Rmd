@@ -559,7 +559,7 @@ sim_and_analyse <- function(
 ```
 
 Power analysis can quickly become computationally intensive, when we repeatedly simulate data and fit models for different parameter combinations or sample sizes.
-Thus, we use the future [@R-future] and furrr [@R-furrr] packages to perform computations in parallel.
+Thus, we use the future [@R-RJ-2021-048] and furrr [@R-furrr] packages to perform computations in parallel.
 First, we enable parallelization and specify how many parallel cores of our computer to use (users can find out the maximum number of cores on their computer with the command `parallel::detectCores()`), and set a seed to make the simulation reproducible.
 
 ```{r, message=FALSE, eval=FALSE}
@@ -585,7 +585,7 @@ sim_design <- crossing(
 The result of the computation is a data.frame that contains the p-values of all tested hypotheses for each simulated dataset. 
 
 For our exemplary combined hypothesis, power is defined as the (long-run) percentage of simulations, in which all four p-values of our component hypotheses are significant at the $\alpha = 0.05$ level.
-Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% confidence intervals) and visualize the results with the following code [^faux].
+Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% confidence intervals) and visualize the results with the following code.[^faux]
 
 [^faux]: This code is heavily inspired by the "Mixed Design Simulation" vignette of the faux package at <https://debruine.github.io/faux/articles/sim_mixed.html>.
 
