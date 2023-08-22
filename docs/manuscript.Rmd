@@ -39,7 +39,7 @@ affiliation:
   - id            : "3"
     institution   : "University of St. Gallen, Institute of Behavioral Science & Technology"
   - id            : "4"
-    institution   : "University College London"
+    institution   : "University College London, Global Business School for Health"
 
 # authornote: |
 #   Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
@@ -47,7 +47,7 @@ affiliation:
 #   Enter author note here.
 
 abstract: |
-  Understanding how humans interact with articifical intelligence (AI) through experiments becomes increasingly relevant. However, human-AI interaction researchers lack the appropriate tools to conduct power and data analyses for the required complex study designs. In this work, we provide a tutorial on how to run customized power analyses using data simulation based on Generalized Linear Mixed Models (GLMMs). By providing code in a specific case study, we equip human-AI interaction researchers with the tools to simulate their own data and run analyses based on GLMMs. We discuss implications for human-AI interaction research and provide an outlook on the relevance of power simulations in the field.
+  Understanding how humans interact with artificial intelligence (AI) through experiments becomes increasingly relevant. However, human-AI interaction researchers often lack the appropriate tools to conduct power and data analyses for the complex study designs required. In this work, we provide a comprehensive guide to performing customized power analyses using data simulation based on Generalized Linear Mixed Models (GLMMs). By providing code in a specific case study, we equip human-AI interaction researchers with the tools to simulate their own data and run analyses based on GLMMs. We discuss implications for human-AI interaction research and provide an outlook on the relevance of power simulations in the field.
   
 keywords          : "generalized linear mixed model, data simulation, sample size, power analysis, human-AI interaction"
 
@@ -92,9 +92,9 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed, echo = TRUE, eval = TRUE)
 # Introduction
 
 <!-- General intro, relevance of Human AI Interaction experiments, need for well-powered and analyzed experimental research in this field -->
-As the integration of artificial intelligence (AI) into our daily lives continues to grow, it has become increasingly important to study how humans interact with these intelligent systems. 
-This is particularly important as AI becomes more sophisticated and is used in decision-making processes, for instance in medicine, that have significant impacts on individuals and society as a whole. 
-Therefore, thorough experiments are needed to study human-AI interaction to understand how people perceive and respond to these novel technologies. 
+With the growing integration of artificial intelligence (AI) into our daily lives and routines, it has become increasingly important to study and understand how humans interact with these intelligent systems. 
+This is particularly relevant as AI becomes more sophisticated and is deployed to support decision-making processes in fields such as law and medicine that have a significant impact on individuals and society at large. 
+Therefore, thorough experimental research is needed to study human-AI interaction to understand how people perceive and respond to these novel technologies. 
 When conducting experimental research in this emerging field, it is essential to determine an appropriate sample size [@lakensSampleSizeJustification2022] to ensure that the results obtained are both robust and informative, and use appropriate statistical models to analyze the data.
 
 <!-- Some basics on statistical power, power analysis and why it is important -->
