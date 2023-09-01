@@ -148,7 +148,7 @@ In this section, we outline the steps for performing data simulation and power a
 In the case study, we simulate the data for an experiment where the diagnostic performance of users of an AI-enabled diagnostic decision support system is to be evaluated. 
 The goal is to understand how AI advice influences medical decision-making. 
 Participants, radiologists (task experts) and students/interns (non-task experts), review 50 head CT (computer tomography) scans to assess the presence of bleeding, more specifically, intracranial haemorrhage (ICH).
-To support their decision-making, in two experimental conditions, an AI model provides initial diagnostic advice, which can be used as guidance by the participants. This AI advice can be either either correct or incorrect. In the control condition, no AI advice is presented, meaning that the participants have to read the CT scan without any support. 
+To support their decision-making, in two experimental conditions, an AI model provides initial diagnostic advice, which can be used as guidance by the participants. This AI advice can be either either correct (80% of cases) or incorrect (20%). In the control condition, no AI advice is presented, meaning that the participants have to read the CT scan without any support. 
 After reviewing the CT scan, participants deliver a medical diagnosis (bleeding or no bleeding), which may be either accurate or inaccurate.
 Each participant undergoes all experimental conditions, separated by a two-week washout period to prevent scan recall.  
 
@@ -193,11 +193,11 @@ Equivalently, the conditional expected value is modelled as the linear combinati
 $$
 E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = g^{-1}(\eta)
 $$
-If the dependent variable $Y$ is a binary variable with values $0$ or $1$, the conditional expected value is equivalent to the probability:
+If the dependent variable (i.e., performance) $Y$ is a binary variable with values $0$ or $1$, the conditional expected value is equivalent to the probability:
 $$
 P_{si} = P(Y = 1|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})
 $$
-In our case study, $P_{si}$ is the conditional probability that subject $s$ gives the correct response to item $i$.
+In our case study, $P_{si}$ is the conditional probability that subject (i.e., participant) $s$ gives the correct response to item (i.e., CT scan) $i$.
 
 In such a setting, we model the probability as
 $$
@@ -209,16 +209,16 @@ logit(P_{si}) = \eta_{si}
 $$
 with the logit link $g(P_{si}) = logit(P_{si}) = ln (\frac{P_{si}}{1 - P_{si}})$.
 
-In our case study, the probability to give a correct response is assumed to depend on the predictors:
-
-- $advice\_present_{si}$: whether subject $s$ was presented with algorithmic advice (1) or not (0) when asked to asses item $i$
+In our case study, the probability of giving a correct response is assumed to depend on the predictors:
+<!-- SG: What happened to the different experimental conditions? AI advice had three levels: Advice with annotation, without annotation, and no advice-->
+- $advice\_present_{si}$: whether subject $s$ was presented with AI advice (1) or not (0) when asked to asses item $i$
 - $advice\_correct_{si}$: whether this advice was correct (1) or not (0)
-- $expert_s$: whether subject $s$ was a radiologist (1) or not (0)
+- $expert_s$: whether subject $s$ was a task expert (1) or not (0)
 
 and the random effects:
 
-- $u_{0s}$: the deviation of suject $s$ from the average ability to solve an item with average difficulty; assumed to be distributed as $u_{0s} \sim N(0, \sigma_S^2)$
-- $u_{0i}$: the deviation of item $i$ from the average difficulty to be solved by a person with average ability; assumed to be distributed as $u_{0i} \sim N(0, \sigma_I^2)$
+- $u_{0s}$: the deviation of subject $s$ from the average ability to solve an item (i.e., CT scan) with average difficulty; assumed to be distributed as $u_{0s} \sim N(0, \sigma_S^2)$
+- $u_{0i}$: the deviation of item (i.e., CT scan) $i$ from the average difficulty to be solved by a person with average ability; assumed to be distributed as $u_{0i} \sim N(0, \sigma_I^2)$
 
 In total, we assume the model
 $$
@@ -244,8 +244,8 @@ To limit complexity, we do not consider random slopes, additional predictors or 
 
 ## Data simulation
 
-The following R function simulates a full dataset structured according to the desgin of our case study.
-The faux package [@R-faux] contains useful functions when simulating factorial designs including random effects.
+The following R function simulates a full dataset structured according to the design of our case study.
+The faux package [@R-faux] contains useful functions when simulating factorial designs, including random effects.
 
 ```{r}
 simulate <- function(n_subjects = 100, n_items = 50,
@@ -272,17 +272,17 @@ simulate <- function(n_subjects = 100, n_items = 50,
   dat
 }
 ```
-
-In our case study, each subject (`n_subjects` in total) is assumed to respond to each item (`n_items` in total).
+<!-- SG: You basically start the explanation at line 257; I think it would be better to actually start at the beginning of the function line 251, otherwise, this might be very confusing to people. If you do not want to change the structure, then I would at least mention that you discuss the first section of the function below.-->
+In our case study, each subject (`n_subjects` in total) is assumed to respond to each item (i.e., CT scan) (`n_items` in total).
 Thus the `add_random` command creates a fully-crossed `data.frame` with `n_subjects` $\times$ `n_items` rows.
-We add a between subject effect with the `add_between` command, simulating that about $25\%$ of subjects are experts.
-The next two lines simulate that in about $\frac{2}{3}$ of trials, subjects will be presented with AI advice and if advice is presented, the advice will be correct in about $80\%$ of cases (the variable `advice_correct` is always 0 when no advice is presented).
-Next we simulate one random effect for each subject (`u0s`) and for each item (`u0i`).
-As assumed by standard GLMMs, the `add_ranef` function draws the random effects from a normal distribution with mean 0 and a standard deviation specified by the user.
+We add a between-subject effect with the `add_between` command, simulating that about $25\%$ of subjects are experts.
+The next two lines simulate that in about $\frac{2}{3}$ of trials, subjects will be presented with AI advice, and if advice is presented, the advice will be correct in about $80\%$ of cases (the variable `advice_correct` is always 0 when no advice is presented).
+Next, we simulate one random effect for each subject (`u0s`) and for each item (`u0i`).
+As assumed by standard GLMMs, the `add_ranef` function draws the random effects from a normal distribution with a mean 0 and a standard deviation specified by the user.
 With all design variables done, we are ready to simulate our model equation as outlined in equation X.
-The linear predictor variable `linpred` ($\eta$ in the GLMM model equations), combines the predictor variables, random effects and model parameters as assumed by our model.
-We then transform the linear predictor with the inverse-link function to compute `y_prob`, the probability that the subject correctly solved the item (in R the inverse-logit link is computed with `plogis` and the logit link with `qlogis`).
-In the final step, we simulate the binary dependent variable `y_bin` by -- for each trial -- drawing from a bernoulli distribution with success probability `y_prob`.
+The linear predictor variable `linpred` ($\eta$ in the GLMM model equations) combines the predictor variables, random effects and model parameters as assumed by our model.
+We then transform the linear predictor with the inverse-link function to compute `y_prob`, the probability that the subject correctly solved the item (in R, the inverse-logit link is computed with `plogis` and the logit link with `qlogis`).
+In the final step, we simulate the binary dependent variable `y_bin` by -- for each trial -- drawing from a Bernoulli distribution with success probability `y_prob`.
 
 ## Model fitting
 
@@ -307,12 +307,12 @@ f <- y_bin ~ 1 + expert + advice_present + advice_correct +
   (1|subject) + (1|item)
 ```
 
-The first two lines looks similar to any linear model in R (general intercept indicated by `1`; main effects indicated by variable names in the dataset; interactions indicated by `variable1:variable2`).
+The first two lines look similar to any linear model in R (general intercept indicated by `1`; main effects indicated by variable names in the dataset; interactions indicated by `variable1:variable2`).
 The third line specifies a random intercept for each subject `(1|subject)` and for each item `(1|item)`.
-The complete set of rules for the syntax are outlined in @batesFittingLinearMixedEffects2015 and in the documentation of the lme4 package.
+The complete set of rules for the syntax is outlined in @batesFittingLinearMixedEffects2015 and in the documentation of the lme4 package.
 
 In lme4, a GLMM is fitted with the `glmer` function.
-By setting `family =  "binomial"` we request a binomial GLMM, appropriate for our binary dependent variable `y_bin` (the binomial GLMM uses the canonical logit link by default).
+By setting `family =  "binomial"`, we request a binomial GLMM appropriate for our binary dependent variable `y_bin` (the binomial GLMM uses the canonical logit link by default), which is defined as an accurate vs. inaccurate diagnosis.
 
 ```{r}
 fit <- glmer(f, data = dat, family = "binomial")
@@ -329,9 +329,9 @@ summary(fit)
 The output shows the estimates for all model parameters:
 the `Estimate` column in the `Fixed effects` table contains the estimates for the $\beta$ parameters, while the `Std.Dev.` column in the `Random effects` table contains the estimates for $\sigma_S$ and $\sigma_I$.
 
-Unfortunately, the model parameters in a binomial GLMM are hard to interpret, because 1) the $\beta$ parameters are connected to the modeled probability via the non-linear inverse-logit link, and 2) we also have to consider the random effects.
-The most simple interpretation works by imagining a subject with average ability ($u_{0s} = 0$) responding to an item with average difficulty ($u_{0i} = 0$).
-Then the model implied probability that such a person solves such an item is given by:
+Unfortunately, the model parameters in a binomial GLMM are hard to interpret because 1) the $\beta$ parameters are connected to the modelled probability via the non-linear inverse-logit link, and 2) we also have to consider the random effects.
+The most simple interpretation works by imagining a subject with average ability ($u_{0s} = 0$) responding to an item (i.e., CT scan) with average difficulty ($u_{0i} = 0$).
+Then the model implied probability that such a person solves such an item accurately is given by:
 $$
 \begin{aligned}
 P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0}) = \\
@@ -363,14 +363,14 @@ plot_predictions(fit, by = c("advice_present", "advice_correct", "expert"),
 
 ## Hypothesis testing
 
-However, we need to think about the model parameters again when we want to test hypotheses which we have theoretically derived from some research question.
+However, we need to think about the model parameters again when we want to test hypotheses that we have theoretically derived from some research question.
 Because the inverse-logit link is still a continuously increasing function, positive parameter values always correspond to increases in probability and vice versa.
 
 The `Fixed effects` table in Figure X also includes p-values for hypothesis tests with null hypotheses of the style $H_0: \beta = 0$.
 However, for many research questions of interest, we are not interested in these two-sided tests referring to only one parameter.
 
 For our case study, imagine the following combined hypothesis:
-*We expect that for both experts and non-experts, correct advice leads to a higher probability to solve an item compared to no advice presented, AND, we expect that for both experts and non-experts, incorrect advice leads to a lower probability to solve an item compared to no advice presented.*
+*We expect that for both experts and non-experts, correct advice leads to a higher probability of accurately diagnosing a CT scan compared to no advice presented, AND, we expect that for both experts and non-experts, incorrect advice leads to a lower probability of accurately diagnosing a CT scan compared to no advice presented.*
 
 This combined hypothesis leads to the following four separate null hypotheses to be tested:
 $$
@@ -383,7 +383,7 @@ H_{04}:\ &\beta_{a} \geq 0
 $$
 
 We arrive at these inequalities based on the following logic, exemplified here only for $H_{01}$:
-The first null hypothesis states that *an expert responding to an item while presented with correct advice has lower or equal probability to solve the item compared to the same expert facing the same item without any advice.*
+The first null hypothesis states that *an expert responding to an item while presented with correct advice has a lower or equal probability of solving the item compared to the same expert facing the same item without any advice.*
 This implies the following inequality for each subject $s$ and item $i$
 $$
 inverse\_logit[(\beta_0 + u_{0s} + u_{0i}) + \beta_e + \beta_{a} + \beta_{c} + \beta_{ea} + \beta_{ec}] \leq inverse\_logit[(\beta_0 + u_{0s} + u_{0i}) + \beta_e]
@@ -407,17 +407,17 @@ summary(glht, test = univariate())$test$pvalues
 Because all hypotheses tested simultaneously with the `glht` function must have the same direction, we flip the sign of inequalities three and four by multiplying them with $-1$.
 The multcomp package automatically adjusts p-values when multiple hypotheses are tested simultaneously [@hothornSimultaneousInferenceGeneral2008].
 However, the combined null hypothesis in our exemplary research question should only be rejected if **all** individual null hypotheses are rejected [i.e. intersection-union setting\; @dmitrienkoTraditionalMultiplicityAdjustment2013].
-In such cases, the error probabilities do not accumulate and we would waste power when correcting for multiple testing.
+In such cases, the error probabilities do not accumulate, and we would waste power when correcting for multiple tests.
 Thus, we request unadjusted p-values by setting `test = univariate()` in the `summary` command.
 With a standard significance level of $\alpha = 0.05$, we would not reject all four null hypotheses (the p-value for hypothesis $H_{03}$ is not significant) and therefore also not reject the combined null hypothesis for this simulated dataset.
-Note that this decision would be wrong, because we have simulated the data such that the combined alternative hypothesis is actually true in the population.
+Note that this decision would be wrong because we have simulated the data such that the combined alternative hypothesis is actually true in the population.
 
 ## Specification of plausible parameter values
 
 When introducing our simulation function and simulating data for the above example, we have used theoretically plausible values as defaults for all model parameters ($\beta_0$, $\beta_e$, $\beta_a$, $\beta_c$, $\beta_{ea}$, $\beta_{ec}$, $\sigma_S$, and $\sigma_I$), but have not talked about where these numbers came from.
-All parameter values have been determined in repeated exchanges with our affiliated domain experts and we here outline a few strategies on how to determine plausible parameter values.
+All parameter values have been determined in repeated exchanges with our affiliated domain experts, and we now outline a few strategies on how to determine plausible parameter values.
 
-We have already seen in our discussion of model interpretation, how we can derive the model implied probability for each experimental condition, that a subject with average ability solves an item with average difficulty.
+We have already seen in our discussion of model interpretation how we can derive the model implied probability for each experimental condition, that a subject with average ability solves an item with average difficulty.
 We can revert this perspective by choosing plausible probability values and deriving the parameter values implied by these probabilities (for an average subject and an average item).
 
 Table X shows our set of assumptions concerning the probability that an average subject solves an average item for each experimental condition, as well as the corresponding equations implied by the model:
@@ -456,12 +456,12 @@ plogis(b_0 + b_e + b_a + b_c + b_ea + b_ec)
 ```
 
 Although the derivations above are straightforward, it is important not to misinterpret their implications:
-In binomial GLMMs, the average probability to solve an item (averaged across persons of varying ability and items of varying difficulty) is **not** equal to the probability that a person with average ability solves an item with average difficulty.
-For example, we determined the $\beta$ parameters in a way that correspond to a desired probability of $0.95$, that an expert with average ability solves an item with average difficulty when presented with a correct advice.
-However even if the model were true, we would not observe this probability if we estimated the probability in a group of experts responding to items presented with correct advice from a big sample of subjects drawn from their natural distribution of ability and items drawn from their natural distribution of difficulty.
-This implies that one must be careful when specifying parameter values based on previous studies or pilot data.
+In binomial GLMMs, the average probability to solve an item (averaged across persons of varying ability and items of varying difficulty) is **not** equal to the probability that a person with average ability solves an item with average difficulty. 
+For example, we determined the $\beta$ parameters in a way that corresponds to a desired probability of $0.95$, that an expert with average ability solves an item with average difficulty when presented with correct advice. c
+However, even if the model were true, we would not observe this probability if we estimated the probability in a group of experts responding to items presented with correct advice from a big sample of subjects drawn from their natural distribution of ability and items drawn from their natural distribution of difficulty.
+This implies that one must be careful when specifying parameter values based on previous studies or pilot data. <!-- SG: What does that mean for someone who wants to do this then?-->
 
-The well known inequality of conditional and marginal effects in GLMMs [@fahrmeirRegressionModelsMethods2021] makes their interpretation more difficult, however, this does not mean that we cannot use the marginal interpretation (average probability across persons and items) to inform plausible parameter values:
+The inequality <!-- SG: Can you explain what this means?--> of conditional and marginal effects in GLMMs [@fahrmeirRegressionModelsMethods2021] makes their interpretation more difficult. However, this does not mean that we cannot use the marginal interpretation (average probability across persons and items) to inform plausible parameter values:
 When parameter values have been selected, we can compute the implied marginal distributions and compare this information to our domain knowledge.
 Then we can iteratively adjust the parameter values until we are satisfied with the implied distributions.
 
@@ -487,11 +487,11 @@ dat %>%
 ```
 
 Figure X shows the model implied marginal distributions, including the mean, 66% and 95% intervals.
-We can see that indeed, the average probabilities (black dots) slightly differ from the probabilities of average subjects and items considered in the previous section.
+We can see that, indeed, the average probabilities (black dots) slightly differ from the probabilities of average subjects and items considered in the previous section.
 This difference increases with the variability of the random effects.
 
-In fact, up to this point we have not talked about plausible values for the standard deviations of the subject and item random intercepts ($\sigma_S$ and $\sigma_I$).
-Plots like the one above are a useful tool to decide whether the specified standard deviations are reasonable, by comparing the ranges and overlap between conditions to domain knowledge.
+Up to this point, we have not talked about plausible values for the standard deviations of the subject and item random intercepts ($\sigma_S$ and $\sigma_I$).
+Plots like the one above are a useful tool to decide whether the specified standard deviations are reasonable by comparing the ranges and overlap between conditions to domain knowledge.
 
 In the next plot, we have set the item standard deviation to almost zero ($\sigma_I = 0.01$).
 This gives us a better way to see the variability between persons.
@@ -511,11 +511,11 @@ dat %>%
 ```
 
 As an example, this presentation reveals a number of implicit assumptions about the comparison between experts and non-experts:
-With wrong advice, virtually all experts have a higher probability to make a correct diagnosis compared to non-experts when considering only items with average difficulty.
+With wrong advice, virtually all experts have a higher probability of making a correct diagnosis compared to non-experts when considering only items with average difficulty.
 In contrast, there is considerable overlap in probability between experts and non-experts with no advice and even higher overlap with correct advice.
-Patterns like these should be considered carefully, discussed with the domain experts and parameter values ($\beta$ parameters, and $\sigma_S$) should be adjusted if the implications do not seem reasonable.
+Patterns like these should be considered carefully and discussed with the domain experts. Parameter values ($\beta$ parameters, and $\sigma_S$) should be adjusted if the implications do not seem reasonable.
 
-We could also have a closer look at variability between items, by setting the subject standard deviation to almost zero ($\sigma_S = 0.01$, see Figure X in Appendix X).
+We could also have a closer look at variability between items by setting the subject standard deviation to almost zero ($\sigma_S = 0.01$, see Figure X in Appendix X).
 
 ```{r, include=FALSE}
 dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0s = 0.01)
@@ -531,9 +531,10 @@ dat %>%
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
 ```
 
-The final plot demonstrates, that these plots are also useful to spot standard deviations that are specified too high.
+The final plot demonstrates that these plots are also useful for spotting standard deviations that are specified too high.
 For this example, we have set $\sigma_S = 3$ and $\sigma_I = 3$.
 This implies that in each experimental condition, the probabilities that a subject solves an item are usually close to either 0 or 1, which is not a plausible assumption.
+<!-- SG: Maybe explain why this is not plausible.-->
 
 ```{r, echo=FALSE}
 dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0s = 3, sd_u0i = 3)
@@ -552,8 +553,7 @@ dat %>%
 # Results
 
 ## Power simulation
-
-With all these considerations out of the way, we are finally ready to perform a power analysis.
+With all these considerations addressed, we are finally ready to perform a power analysis. 
 Wrapping the `simulate` function already introduced earlier, the helper function `sim_and_analyse` performs all previous steps (simulate a dataset, fit a GLMM, compute p-values) in a single command.
 
 ```{r}
@@ -578,9 +578,9 @@ sim_and_analyse <- function(
 }
 ```
 
-Power analysis can quickly become computationally intensive, when we repeatedly simulate data and fit models for different parameter combinations or sample sizes.
+Power analysis can quickly become computationally intensive when we repeatedly simulate data and fit models for different parameter combinations or sample sizes.
 Thus, we use the future [@R-RJ-2021-048] and furrr [@R-furrr] packages to perform computations in parallel.
-First, we enable parallelization and specify how many parallel cores of our computer to use (users can find out the maximum number of cores on their computer with the command `parallel::detectCores()`), and set a seed to make the simulation reproducible.
+First, we enable parallelization and specify how many parallel cores of our computer to use (users can find out the maximum number of cores on their computer with the command `parallel::detectCores()`), and set a seed to make the simulation reproducible. <!-- SG: Are workers the cores you want to use?--> 
 
 ```{r, message=FALSE, eval=FALSE}
 library(future)
@@ -589,6 +589,7 @@ set.seed(2)
 ```
 
 The next code chunk specifies a simulation grid with different settings for both the number of subjects (`n_subjects`) and the number of items (`n_items`), each combination being repeated `rep` times.
+<!-- SG: Can you explain how you choose the repetitions?--> 
 
 ```{r, message=FALSE, eval=FALSE}
 library(furrr)
@@ -604,7 +605,7 @@ sim_design <- crossing(
 
 The result of the computation is a data.frame that contains the p-values of all tested hypotheses for each simulated dataset. 
 
-For our exemplary combined hypothesis, power is defined as the (long-run) percentage of simulations, in which all four p-values of our component hypotheses are significant at the $\alpha = 0.05$ level.
+For our exemplary combined hypothesis, power is defined as the (long-run) percentage of simulations in which all four p-values of our component hypotheses are significant at the $\alpha = 0.05$ level.
 Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% confidence intervals) and visualize the results with the following code.[^faux]
 
 [^faux]: This code is heavily inspired by the "Mixed Design Simulation" vignette of the faux package at <https://debruine.github.io/faux/articles/sim_mixed.html>.
@@ -632,67 +633,67 @@ power %>%
   scale_fill_viridis_c(limits = c(0, 1))
 ```
 
-<!-- How many participants / stimuli are needed for concrete example -->
-As should be the case, power estimates increase with both the number ob subjects and the number of items.
+<!-- How many participants/stimuli are needed for concrete example -->
+As should be the case, power estimates increase with both the number of subjects and the number of items.
 The confidence intervals indicate how precisely power was estimated by our simulation.
 Higher precision (which would be reflected in narrower confidence intervals) could be obtained by increasing the number of repetitions (`rep`) in the simulation.
 In practice, power simulations are often run multiple times with adjusted combinations of sample sizes.
-When run for the first time, it might be revealed that power is way too low (or higher than required) for some combinations of `n_subjects` and `n_items`.
-When narrowing down the best combination that achieves sufficient power, while at the same time strikes a good balance of how many subjects and items are practically feasible, later rounds of power simulations will typically include a smaller grid of sample sizes combined with a higher number of repetitions.
-This will assure high precision for the final power estimates which are then used for sample size justification of the future study.
+When running for the first time, it might be revealed that power is way too low (or higher than required) for some combinations of `n_subjects` and `n_items`.
+When narrowing down the best combination that achieves sufficient power while at the same time striking a good balance of how many subjects and items are practically feasible, later rounds of power simulations will typically include a smaller grid of sample sizes combined with a higher number of repetitions.
+This will assure high precision for the final power estimates, which are then used for sample size justification for the future study.
 
 Much has been written on the optimal amount of power to target in empirical research.
-The most prominent heuristic is to target a power of 0.8 (when combined with a type I error rate of $\alpha = 0.05$), but depending on the research goals of the study, there are often good reasons to move away from this standard [@lakensJustifyYourAlpha2018; @lakensSampleSizeJustification2022].
-When target power has been specified, the number of subjects and the number of items in our study design can be traded against each other, based on practical considerations.
+The most prominent heuristic is to target a power of 0.8 (when combined with a type I error rate of $\alpha = 0.05$), but depending on the research goals of the study, there are often good reasons to move away from this standard [@lakensJustifyYourAlpha2018; @lakensSampleSizeJustification2022]. <!-- Maybe give an example?-->
+When target power has been specified, the number of subjects and the number of items in our study design can be traded against each other based on practical considerations.
 For the sake of the example, let the targeted power be indeed about 0.8 to detect an effect of the expected size implied by our data simulation.
-This could be achieved by collecting data of 200 subjects (about 25% of which will be experts) each completing the same 50 items (with advice present in about 67% of cases which is correct in about 80% of cases with present advice).
-If collecting 200 subjects is not practically feasible, it would also be possible to recruit 150 subjects but increase the length of the experiment to over 70 items.
-However, 70 items might take to long to complete for the doctors participating in the study, who probably all have a busy schedule.
-The simulation suggests that it might also be possible to plan a shorter experiment with only 30 items, if it is feasible to recruit an even higher number of subjects (> 250, to be determined by additional rounds of power analysis).
-Design parameters which also affect power and which could be investigated in the simulation to find a more optimal trade-off are the ratio of experts, the frequency of whether advice is presented and whether it is correct.
+This could be achieved by collecting data from 200 subjects (about 25% of which will be experts), each completing the same 50 items (with advice present in about 67% of cases which is correct in about 80% of cases with present advice).
+If collecting data from 200 subjects is not feasible, an alternative would be to recruit 150 subjects but increase the length of the experiment to over 70 items.
+However, 70 items might take too long to complete for the radiologists participating in the study, who have a busy schedule.
+The simulation suggests that it might also be possible to plan a shorter experiment with only 30 items if it is feasible to recruit an even higher number of subjects (> 250, to be determined by additional rounds of power analysis).
+Design parameters that also affect power and which could be investigated in the simulation to find a more optimal trade-off are the ratio of experts, the frequency of whether advice is presented and whether it is correct.
 
 # Discussion
 
-<!-- short summary of key take aways from this tutorial -->
-Human-AI interaction research requires careful planning and consideration of statistical power to ensure reliable and meaningful results. While heuristics and user-friendly software can be useful for simple designs and models, they often fall short when more complex and customized simulations are required. The present tutorial presents a specific example on how to run power simulations for human-AI interaction experiments. 
+<!-- short summary of key takeaways from this tutorial -->
+Human-AI interaction research requires careful planning and consideration of statistical power to ensure reliable and meaningful results. While heuristics and user-friendly software can be useful for simple designs and models, they often fall short when more complex and customized simulations are required. The present tutorial presents a specific example of how to run power simulations for human-AI interaction experiments, which can also applied to other fields of research. 
 
 ## Expected effect size vs. smallest effect size of interest: sensitivity power analysis
 
 In our case study, we have performed power simulations based on a single set of parameter values that reflect our assumptions of an expected effect size.
-Instead of extracting this expected effect size from meta-analyses or pilot data which has been the main focus of previous tutorials, we have demonstrated some strategies to determine plausible parameter values in GLMMs based on domain knowledge.
+Instead of extracting this expected effect size from meta-analyses or pilot data, which has been the main focus of previous tutorials, we have demonstrated some strategies to determine plausible parameter values in GLMMs based on domain knowledge. <!-- I would try to highlight this more clearly in the methods part. -->
 Domain knowledge can be considered a vague theoretical model about the data-generating process that is less formal and can only be accessed by a back-and-forth exchange in which domain experts assess the plausibility of simulated data.
 When sample sizes are chosen based on the results of our power simulations, a future study will be informative to reject the null hypothesis if an effect of our *expected size* is present.
-However, if the true effect is indeed smaller, power will be lower and the study might not be sufficiently informative.
-A common, more conservative strategy for sample size justification is to perform power analysis for a smallest effect size of interest (SESOI). 
+However, if the true effect is indeed smaller, the power will be lower, and the study might not be sufficiently informative.
+A common, more conservative strategy for sample size justification is to perform power analysis for the smallest effect size of interest (SESOI). 
 An effect smaller than the SESOI would be considered too small to be interesting or practically meaningful, even if the effect is not actually zero [@kingPointMinimalImportant2011].
-For strategies on the even more difficult task of specifying a plausible SESOI as well as a thorough discussion of various topics concerning power analysis, see [@lakensImprovingYourStatistical2022].
+For strategies on the even more difficult task of specifying a plausible SESOI, as well as a thorough discussion of various topics concerning power analysis, see [@lakensImprovingYourStatistical2022].
 When domain knowledge or formal theories about the research topic of interest are too vague to specify a meaningful SESOI, it is still recommended to demonstrate power for different effect sizes in what is called *sensitivity power analysis*.
-By simulating power for different effect sizes (in addition to the different number of subjects and items), one can make sure that power would still be sufficient to detect smaller effect sizes than our expected effect, or at least get an impression on how strongly power depends on the size of the true effect.
+By simulating power for different effect sizes (in addition to the different number of subjects and items), one can make sure that power would still be sufficient to detect smaller effect sizes than our expected effect or at least get an impression of how strongly power depends on the size of the true effect.
 In simple study designs, it is possible to perform sensitivity power analysis based on a single standardized effect size (e.g., analyse power in a two-sample t-test for a standardized mean difference varying between 0.1 and 0.8).
-However, for our case study that investigates combined hypotheses in a GLMM modeling framework, the effect size is implicitly represented by the complex distribution of probabilities within and between experimental conditions.
-In this setting, sensitivity power analysis would require to manually specify additional sets of plausible parameter values that reflect scenarios with smaller or larger differences between groups with respect to our specific research question.
-Power could then be simulated for several of these scenarios (across different number of subjects and items as considered earlier). 
+However, for our case study that investigates combined hypotheses in a GLMM modelling framework, the effect size is implicitly represented by the complex distribution of probabilities within and between experimental conditions.
+In this setting, sensitivity power analysis would require manually specifying additional sets of plausible parameter values that reflect scenarios with smaller or larger differences between groups with respect to our specific research question.
+Power could then be simulated for several of these scenarios (across different numbers of subjects and items, as considered earlier). 
 
 ## Outlook
 
 <!-- Outlook -->
 Beyond the specifics of our concrete case study, we want to outline six avenues regarding the outlook on power simulations in human-AI interaction research:
 
-1.  The need for power simulations in human-AI interaction research: As our case study has clearly pointed out, human-AI interaction research often involves intricate designs and complex models that cannot be adequately addressed by heuristics or user-friendly software. Power simulations offer a solution by providing Human-AI interaction researchers with a tailored approach to estimating statistical power. These simulations take into account the specific study design, account for the underlying assumptions, and offer more accurate power estimates.
+1.  The need for power simulations in human-AI interaction research: Human-AI interaction research often involves intricate designs and complex models that cannot be adequately addressed by heuristics or user-friendly software. Power simulations offer a solution by providing human-AI interaction researchers with a tailored approach to estimating statistical power. These simulations take into account the specific study design, account for the underlying assumptions, and offer more accurate power estimates.
 
-2.  Managing simulations with discrete predictor variables: Power simulations become more manageable when all predictor variables are discrete (like in the presented case study) and fixed by the study design. This allows Human-AI interaction researchers to focus on simulating outcome variables while avoiding the need for complex simulations of predictor values, which would introduce additional assumptions. By simplifying the simulation process, researchers can obtain reliable power estimates without compromising accuracy.
+2.  Managing simulations with discrete predictor variables: Power simulations become more manageable when all predictor variables are discrete (like in the presented case study) and fixed by the study design. This allows researchers to focus on simulating outcome variables while avoiding the need for complex simulations of predictor values, which would introduce additional assumptions. By simplifying the simulation process, researchers can obtain reliable power estimates without compromising accuracy.
 
-3.  Teaching power simulation skills to human-AI interaction researchers: The ability to conduct  power simulations is a valuable skill that should be taught to Human-AI interaction researchers. By incorporating this training into research methods courses and workshops, researchers can gain a deeper understanding of statistical power and improve the quality of their experimental designs. Equipping Human-AI interaction researchers with the knowledge and tools to perform power simulations empowers them to make informed decisions and enhance the rigor of their studies. The need to reason about how to simulate plausible data which is in line with the research hypothesis while not violating domain expertise on how plausible data should look like might also contribute to planning more insightful studies that can answer more precise research questions [@yarkoniGeneralizabilityCrisis2022].
+3.  Teaching power simulation skills: The ability to conduct power simulations is a valuable skill that should be taught to human-AI interaction researchers. By incorporating this training into research methods courses and workshops, researchers can gain a deeper understanding of statistical power and improve the quality of their experimental designs. Equipping researchers with the knowledge and tools to perform power simulations enables them to make informed decisions and enhance the rigour of their studies. The need to reason about how to simulate plausible data that is in line with the research hypothesis while not violating domain expertise on how plausible data should look might also contribute to planning more insightful studies that can answer more precise research questions [@yarkoniGeneralizabilityCrisis2022].
 
-4.  Addressing the mismatch in effort perception: There is often a significant disconnect between the amount of effort required to perform power analysis and  the perceived effort estimated by researchers and collaborators in Human-AI interaction research. Many researchers request power simulations from statisticians or methodological experts without fully comprehending the complexity and time-consuming nature of these tailored simulations. It is crucial to raise awareness about the effort involved in power simulations to ensure realistic expectations and effective collaboration between researchers and methodological experts.
+4.  Addressing the mismatch in effort perception: There is often a significant disconnect between the amount of effort required to perform power analysis and  the perceived effort estimated by researchers and collaborators in human-AI interaction research. Many researchers request power simulations from statisticians or methodological experts without fully comprehending the complexity and time-consuming nature of these tailored simulations. <!-- SG: Hahah Timo, do you want to tell me something =) --> It is crucial to raise awareness about the effort involved in power simulations to ensure realistic expectations and effective collaboration between researchers and methodological experts.
 
-5.  Recognizing the value of power simulations: Power simulations are not mere technicalities; they are valuable research contributions that deserve recognition in Human-AI interaction research. They offer insights into the robustness and sensitivity of experimental designs, helping researchers make informed decisions about sample sizes, effect sizes, and statistical power. The importance of power simulations can be reflected by allocating them a separate publication or incorporating them as a significant component of stage 1 preregistered reports.
+5.  Recognizing the value of power simulations: Power simulations are not mere technicalities; they are valuable research contributions that deserve recognition in human-AI interaction research. They offer insights into the robustness and sensitivity of experimental designs, helping researchers make informed decisions about sample sizes, effect sizes, and statistical power. The importance of power simulations can be reflected by allocating them to a separate publication or incorporating them as a significant component of stage 1 preregistered reports.
 
-6.  Integration with Open Science and preregistration practices: Power simulations align well with the principles of open science and preregistration in Human-AI interaction research. When researchers have access to simulated data based on their prespecified model, analyzing the collected dataset becomes straightforward and unambiguous. By preregistering their power simulations, researchers enhance transparency and accountability in their experimental procedures, contributing to the credibility and reproducibility of Human-AI interaction research.
+6.  Integration with Open Science and preregistration practices: Power simulations align well with the principles of Open Science and preregistration in human-AI interaction research. When researchers have access to simulated data based on their prespecified model, analyzing the collected dataset becomes straightforward and unambiguous. By preregistering their power simulations, researchers enhance transparency and accountability in their experimental procedures, contributing to the credibility and reproducibility of research.
 
 # Conclusion
 
-Power simulations play a critical role in human-AI interaction research, allowing researchers to tailor power estimation to the unique aspects of their experiments. Through this tutorial, we aim to provide researchers with the necessary skills and tools to perform these simulations themselves. By integrating power simulations with open science and preregistration practices, researchers can improve the robustness and transparency of their findings, advancing the field.
+Power simulations play a critical role in human-AI interaction research, allowing investigators to tailor power estimation to the unique aspects of their experiments. Through this tutorial, we aim to provide researchers with the necessary skills and tools to perform these simulations themselves. By integrating power simulations with open science and preregistration practices, researchers can improve the robustness and transparency of their findings, advancing the field.
 
 \newpage
 
