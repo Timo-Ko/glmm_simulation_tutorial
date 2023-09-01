@@ -95,10 +95,10 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed, echo = TRUE, eval = TRUE)
 As artificial intelligence (AI) becomes more and more ubiquitous in our everyday lives and routines, it has become increasingly important to study and understand how humans interact with these intelligent systems. 
 This is particularly relevant as AI models are getting more sophisticated and are deployed to support decision-making processes in areas such as law and medicine that have significant implications for individuals and society at large. 
 Therefore, thorough research is needed to study the interaction between humans and AI technology to understand how people perceive, respond to and are influenced by these novel technologies. 
-<!-- SG: I think that defining a problem is missing here. It could be that most computer scientists developing the models are not well-trained in experimental design, which results in many papers on human-AI interaction being poorly designed and executed. This is problematic as it waists resources and might even be dangerous when readers rely on results from "bad" research. -->
+<!-- SG: Defining a problem is missing here. It could be that most computer scientists developing the models are not well-trained in experimental design, which results in many papers on human-AI interaction being poorly designed and executed. This is problematic as it waists resources and might even be dangerous when readers rely on results from "bad" research. -->
 When planning experimental research in this emerging field, it is essential to determine an adequate sample size [@lakensSampleSizeJustification2022] to ensure that the results obtained are both robust and informative. Moreover, conducting a careful a priori power analysis helps researchers decide which experimental design and statistical models are both feasible and appropriate for answering their research questions and analysing the data. 
 <!-- SG: I think the second point, "and use appropriate statistical models to analyze the data." needs further explanation. I tried to change it, but I am not sure if this is what you actually wanted to say-->
-<!-- SG: Overall, I am not entirely sure if the last two sentences are super well placed here since the benefits of performing a power analysis will be repeated below. Please ignore this comment, when you think otherise-->
+<!-- SG: Overall, I am not sure if the last two sentences are super well placed here since the benefits of performing a power analysis will be repeated below. Please ignore this comment when you think otherwise -->
 
 <!-- Some basics on statistical power, power analysis and why it is important -->
 In empirical research relying on hypothesis testing, the most common strategy for determining an adequate sample size is based on statistical power. 
@@ -114,69 +114,82 @@ However, researchers studying human-AI interaction are increasingly using (gener
 For GLMMs, analytic options to derive sample sizes are not available for general research designs [@westfallStatisticalPowerOptimal2014; @murayamaSummarystatisticsbasedPowerAnalysis2022]. <!-- SG: I think I do not fully understand this sentence; do you mean interface-based software, or are you trying to focuse more on the flexibility of the research design/model specification? -->
 A number of tutorials have been published describing how to perform power simulation for multilevel models [@arendStatisticalPowerTwolevel2019; @lafitSelectionNumberParticipants2021; @zimmerSampleSizePlanning2022; @brysbaertPowerAnalysisEffect2018; @kumleEstimatingPowerGeneralized2021; @debruineUnderstandingMixedEffectsModels2021].
 However, most of these tutorials only cover linear mixed models (LMMs) and focus on the most common designs. This narrow focus provides little guidance for researchers faced with more complex study designs, which are very common [@brownIntroductionLinearMixedEffects2021].
-Moreover, existing tutorials often rely on heuristics for specifying variance components (e.g., the standard deviation of random intercepts) or assume that results from meta-analyses or data from pilot studies are available to determine plausible values for all model parameters.
-In contrast, simulations are often required, necessitating assumptions for all parameters in the model [@maxwellSampleSizePlanning2008].
-Therefore, running sample size calculations is crucial for designing experiments that can provide meaningful insights into human-AI interaction.
+Moreover, existing tutorials often rely on heuristics for specifying variance components (e.g., the standard deviation of random intercepts) or assume that results from meta-analyses or data from pilot studies are available to determine plausible values for all model parameters. However, in the novel field of human-AI interaction, limited prior studies offer little guidance, rendering estimation a practical challenge.  <!-- SG: I guess the content of the sentence I added was implied, but I think it would be useful to add, to highlight the challenges. -->
+In contrast, simulations are often required, necessitating assumptions for all parameters in the model [@maxwellSampleSizePlanning2008]. <!-- SG: I don't totally get the "in contrast". Unfortunately, I don't know if I get the entire argument. Before, you said that other tutorials expect you to have a good assumption for all model parameters, and now you say, in contrast, simulations are needed that require assumptions for all model parameters.  What is the difference between the two statements, and why are they contrasting? -->
+Therefore, running sample size calculations is crucial for designing experiments that can provide meaningful insights into human-AI interaction. <!-- SG: Unfortunately, again, I do not follow the argument structure. How do we get from it being hard to estimate parameters to why we need sample size calculations for the experimental design? As far as I understand, we also needed parameter estimates to run this sample size calculation. Also, I don't think this sentence adds any benefit since it has already been said twice before. -->
 Moreover, many journals and funding agencies now mandate the inclusion of power analysis as part of study protocols and grant proposals, recognizing their significance in ensuring robust and meaningful findings.
-By incorporating GLMMs and power analysis into research planning, researchers can enhance the replicability and credibility of their work, ultimately contributing to the advancement of science [@yarkoniGeneralizabilityCrisis2022].
+By incorporating GLMMs and power analysis into research planning, researchers can enhance the replicability and credibility of their work, ultimately contributing to the advancement of science [@yarkoniGeneralizabilityCrisis2022]. <!-- SG: Unclear to the reader why incorporating GLMMS is enhancing replicability and credibility. Either you need a section above that describes the benefits of GLMMs, or it should be removed-->
+<!-- SG: What would really help the argument is that while conducting a proper power analysis, you have to consider every aspect of your experimental design. This really makes you think through everything carefully and might highlight statistical or design challenges before the start of an experiment. This gives the researcher a great opportunity to improve the design. Especially in fast-moving research fields, where speed is often regarded as more important than rigour, adding a proper sample size calculation into the process can act as a safeguard for ensuring high-quality research. A lot of this is implied, but it doesn't come through clearly.-->
 
 <!-- Research Gap & Summary -->
-When planning a human-AI interaction experiment with complexities such as the use of GLMMs, non-standard designs, and missing by design conditions, the process of power simulations becomes challenging.
-Currently available software packages for power simulations do not include common designs in human-AI interaction research, making it necessary to build data simulations tailored specifically to the study design.
+When planning a human-AI interaction experiment with complexities such as the use of GLMMs, non-standard designs, and "missing by design" conditions, the process of power simulations becomes challenging.
+Available software packages for power simulations do not include common designs in human-AI interaction research, making it necessary to build data simulations tailored specifically to the study design. <!-- SG: Hmm, both sentences above are basically a repetition from the previous sections with a bit more details. I wonder if we could restructure the introduction to avoid repetitions. My suggestion would be: 
+1. AI technology is becoming ubiquitous, and we need to understand how humans interact with it. 
+2. Lots of people conduct research in this field; however, since many are not properly trained in experimental design, there is a lot of low-quality research out there, which might pose a risk. 
+3. One of the problems is that a lot of these studies are underpowered with way too many conditions and way too few participants
+4. Background information on why a properly powered study is important, including definitions of statistical power 
+5. Introducing the concept of power analysis and sample size calculation as a solution for the issue of underpowered low-quality research and highlighting the additional benefits of doing a power analysis
+6. Describing the challenges of performing a power analysis for complex research designs 
+7. Offering this tutorial as a way to overcome the above-described challenges. 
+I think ´that strictly sticking to a storyline like this would help to avoid repetition.-->
 Unfortunately, there are no general recommendations that can be applied universally in such cases.
-Instead, researchers must acquire the necessary skills based on the specific application at hand.
-In this paper, we present a case study that serves as a practical demonstration of how to perform a data simulation for a concrete study for which no meta-analytic results or conclusive data from pilot studies are available.
-Through this case study, we aim to provide guidance and insights into the complexities involved in addressing complex design considerations and obtaining accurate power estimates.
+Instead, researchers must acquire the necessary skills based on the specific application at hand. 
+In this paper, we present a case study that serves as a practical demonstration of how to perform a data simulation for a concrete study for which no meta-analytic results or conclusive data from pilot studies are available. <!-- SG: I am curious about the latter considering that we took both of our prior studies apart to get parameter estimates. -->
+Through this case study, we aim to provide guidance and insights into the complexities involved in addressing sophisticated design considerations and obtaining accurate power estimates. <!-- SG: sample size estimates? This was the main goal, right? -->
 
 # Methods
 
 <!-- overview of this section -->
-In this section, we describe the steps to conduct a data simulation and a power analysis for GLMMs, with a specific experimental design from human-AI interaction research, in the form of a case study.
+In this section, we outline the steps for performing data simulation and power analysis for GLMMs, using a case study based on a specific experimental design from human-AI interaction research.
 
 ## The present case study
-
+<!-- SG: I am wondering if this is the perfect place for this section. By the end of the end of "basics of power simulation in GLMMs", readers have probably already forgotten the experimental design of the case study-->
 <!-- The present example, describe the study idea and design -->
-In the case study, we simulate the data for a human-AI Interaction experiment where the diagnostic performance of users of a health care AI is to be evaluated. The goal is to understand how AI advice influences medical decision-making. Participants, radiologists (task experts) and emergency doctors (non task experts), view head CT (computertomography) scans and evaluate if an intracranial bleeding is present.
-To support their decision making, an AI provides a suggestion for a medical diagnosis. This AI advice can be either either correct or incorrect. 
-Participants then provide a final medical diagnosis (i.e., bleeding or no bleeding) that can be correct or incorrect. 
-Also, we have control trials, in which no AI advice is present. 
-This introduces some missing values by design (advice is neither correct nor incorrect, when no advice is present) which must be taken into account when simulating and analyzing the data. 
-Through this experiment, we want to determine if experts are better than non-experts in reading head CT scans. Further, we want to research if correct AI advice leads to better diagnostic accuracy than incorrect AI advice. 
-In the present example, it would be more challenging to recruit task expert (i.e., radiologists) as there is only a limited amount of such people. Non-experts would be easier to recruit.
-The goal of the power simulation is to determine how many task experts and non-experts to recruit to achieve sufficient statistical power in our experiment. 
+In the case study, we simulate the data for an experiment where the diagnostic performance of users of an AI-enabled diagnostic decision support system is to be evaluated. 
+The goal is to understand how AI advice influences medical decision-making. 
+Participants, radiologists (task experts) and students/interns (non-task experts), review 50 head CT (computer tomography) scans to assess the presence of bleeding, more specifically, intracranial haemorrhage (ICH).
+To support their decision-making, in two experimental conditions, an AI model provides initial diagnostic advice, which can be used as guidance by the participants. This AI advice can be either either correct or incorrect. In the control condition, no AI advice is presented, meaning that the participants have to read the CT scan without any support. 
+After reviewing the CT scan, participants deliver a medical diagnosis (bleeding or no bleeding), which may be either accurate or inaccurate.
+Each participant undergoes all experimental conditions, separated by a two-week washout period to prevent scan recall.  
+
+This experimental design introduces some missing values by design since the advice is neither correct nor incorrect when no advice is present, which must be taken into account when simulating and analyzing the data. 
+With this experiment, we want to determine if (a) experts are better than non-experts in reading head CT scans, (b) correct AI advice leads to better diagnostic accuracy than incorrect AI advice, and (c) different presentations of AI advice influence performance.  
+In this example, recruiting task experts (i.e., radiologists) is more challenging due to their limited availability, while non-experts (i.e., students/interns) are more readily accessible.
+The aim of the power simulation is to ascertain the required number of task experts and non-experts for achieving adequate statistical power in our experiment.
 
 ## The lme4 package in R
+<!-- SG: I was wondering why you introduced the tool before the statistical model? -->
 
 <!-- describe the lme4 package and how it works-->
 In our case study, we use the lme4 R package [@batesFittingLinearMixedEffects2015]. The lme4 package is a state-of-the-art tool for fitting frequentist GLMMs.[^brms]
 
 [^brms]: For Bayesian GLMMs, the brms R package is currently the most prominent option [@burknerBrmsPackageBayesian2017].
 
-The lme4 package also includes a function called `simulate` that allows researchers to simulate the dependent variable based on the same model formula used for model fitting, enabling power simulations and other related analyses.
-However, the model parameterization used by the lme4 package is quite technical, making it more difficult for applied researchers to determine whether their specified population model implies plausible associations in their simulated data.
-Therefore in this tutorial, we simulate data for GLMMs from first principles to assist applied researchers in better understanding all model assumptions, and then use lme4 to analyze the simulated data sets.[^simr]
+The lme4 package includes a function called `simulate` that allows researchers to simulate the dependent variable based on the same model formula used for model fitting, enabling power simulations and other related analyses.
+However, the model parameterization used by the lme4 package is quite technical, making it difficult for applied researchers to determine whether their specified population model implies plausible associations in their simulated data. <!-- SG: Do you think it is clear to readers what a population model is? -->
+Therefore in this tutorial, we simulate data for GLMMs from first principles <!-- SG: I do not know what "first principles" means in this context. This might be true for some readers as well--> to assist applied researchers in better understanding all model assumptions and then use lme4 to analyze the simulated data sets.[^simr]
 
-[^simr]: A less flexible alternative would be to use the simr package [@greenSIMRPackagePower2016] which can be used to both simulate data and perform power analysis for models supported by the lme4 package.
+[^simr]: A less flexible alternative would be to use the simr package [@greenSIMRPackagePower2016], which can be used to both simulate data and perform power analysis for models supported by the lme4 package.
 
 ## Generalized linear mixed models
-
 <!-- GLMM intro -->
 LMMs (Linear Mixed Models) and GLMMs (Generalized Linear Mixed Models) are powerful statistical frameworks that handle complex data structures by incorporating both fixed and random effects [@fahrmeirRegressionModelsMethods2021]. 
-LMMs are extensions of linear regression models that account for correlated data and hierarchical structures. They are used when the outcome variable is continuous and follows a normal distribution (when conditioned on the predictor variables). LMMs allow for the modeling of fixed effects, which capture the relationships between predictors and the outcome, as well as random effects, which account for the correlation and variability within groups or subjects. Random effects are typically assumed to follow a normal distribution with a mean of zero and a variance that quantifies the heterogeneity across the groups or subjects.
-GLMMs extend the LMM framework to accommodate non-normal and categorical outcome variables. They are used when the outcome variable does not follow a normal distribution, but instead belongs to a different distribution family, such as binomial, Poisson, or gamma. GLMMs incorporate both fixed and random effects, similar to LMMs, but also involve a link function that connects the linear predictor to the expected value of the outcome variable. The link function allows for modeling the relationship between predictors and the outcome in a non-linear way that is appropriate for the specific distribution family of the response variable. 
+LMMs are extensions of linear regression models that account for correlated data and hierarchical structures. They are used when the outcome variable is continuous and follows a normal distribution (when conditioned on the predictor variables). LMMs allow for the modelling of fixed effects, which capture the relationships between predictors and the outcome, as well as random effects, which account for the correlation and variability within groups or subjects. Random effects are typically assumed to follow a normal distribution with a mean of zero and a variance that quantifies the heterogeneity across the groups or subjects.
+GLMMs extend the LMM framework to accommodate non-normal and categorical outcome variables. They are used when the outcome variable does not follow a normal distribution but instead belongs to a different distribution family, such as binomial, Poisson, or gamma. GLMMs incorporate both fixed and random effects, similar to LMMs, but also involve a link function that connects the linear predictor to the expected value of the outcome variable. The link function allows for modelling the relationship between predictors and the outcome in a non-linear way that is appropriate for the specific distribution family of the response variable. 
 
 <!-- Relevance of GLMMs -->
-GLMMs are gaining increasing popularity in the field of Human-AI interaction research. As the complexity of studying human interactions with artificial intelligence systems grows, researchers require more sophisticated statistical models to capture the nuanced relationships and hierarchical structures introduced by their study designs [@yarkoniGeneralizabilityCrisis2022]. GLMMs offer a flexible framework for analyzing data with non-normal and categorical outcomes, accounting for both fixed and random effects. This versatility makes GLMMs particularly suitable for investigating various aspects of Human-AI interaction, such as user preferences, trust, engagement, and performance. By incorporating GLMMs into their analyses, researchers in the field of Human-AI interaction can obtain more robust and comprehensive insights into the intricate dynamics between humans and AI systems, leading to a deeper understanding of the psychological and behavioral aspects involved.
+<!-- SG: Auch hier hat sich wieder viel wiederholt. Ich habe mal versucht zu kürzen -->
+As the complexity of studying human interactions with AI systems grows, researchers require advanced statistical models to effectively capture the nuanced relationships and hierarchical structures introduced by their study designs [@yarkoniGeneralizabilityCrisis2022]. The above-described flexibility of GLMMs is particularly suitable for investigating various aspects of human-AI interaction, such as user preferences, trust, engagement, and performance. By incorporating GLMMs into their analyses, researchers can obtain more robust and comprehensive insights into the intricate dynamics between humans and AI systems, leading to a deeper understanding of the psychological and behavioural aspects involved.
 
 <!-- basics of power simulation in GLMMs (with our specific example in mind) -->
 Power simulations in GLMMs are essential for estimating the statistical power of complex experimental study designs. The model equation for a GLMM combines fixed effects, random effects, and an appropriate link function to model the relationship between predictors and the outcome variable. The necessary assumptions for power simulations in GLMMs include assumptions about the distributional form of the outcome variable, the random effects, and the error structure. The distributional assumption specifies the family of distributions for the outcome variable, such as Gaussian, Poisson, or binomial. Assumptions about the random effects include the assumption of normality and the covariance structure among the random effects. Additionally, assumptions about the error structure, such as independence or correlation, must be specified. Interpreting these assumptions entails understanding the underlying assumptions of the model and ensuring they align with the characteristics of the data being analyzed.
 
 <!-- deep dive into our specific example -->
-In a GLMM, the expected value of the dependent variable Y conditioned on the vector of predictor variables $\mathbf{X}$ and random effects $\mathbf{U}$, transformed by a link function $g()$ is modeled as a linear combination $\eta$ of the predictor variables $\mathbf{X}$, the random effects $\mathbf{U}$ and the model parameters $\mathbf{\beta}$ [@fahrmeirRegressionModelsMethods2021].
+In a GLMM, the expected value of the dependent variable Y conditioned on the vector of predictor variables $\mathbf{X}$ and random effects $\mathbf{U}$, transformed by a link function $g()$ is modelled as a linear combination $\eta$ of the predictor variables $\mathbf{X}$, the random effects $\mathbf{U}$ and the model parameters $\mathbf{\beta}$ [@fahrmeirRegressionModelsMethods2021].
 $$
 g(E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = \eta
 $$
-Equivalently, the conditional expected value is modeled as the linear combination $\eta$, transformed by the inverse link function $g^{-1}()$.
+Equivalently, the conditional expected value is modelled as the linear combination $\eta$, transformed by the inverse link function $g^{-1}()$.
 $$
 E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = g^{-1}(\eta)
 $$
