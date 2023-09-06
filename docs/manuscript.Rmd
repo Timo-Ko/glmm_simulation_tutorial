@@ -52,7 +52,7 @@ abstract: |
   
 keywords          : "power analysis, data simulation, sample size, generalized linear mixed model"
 
-wordcount         : "6551"
+wordcount         : "7059"
 
 bibliography      : ["../Simulation Tutorial Paper.bib", "r-references.bib"]
 
