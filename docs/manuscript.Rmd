@@ -3,18 +3,20 @@ title             : "A Tutorial on Tailored Power Simulations for Experimental S
 shorttitle        : "GLMM Power Simulation Tutorial"
 
 author: 
-  - name          : "Timo K. Koch*"
+  - name          : "Timo K. Koch"
     affiliation   : "1, 2"
     corresponding : yes    # Define only one corresponding author
     #address       : "Postal address"
     email         : "timo.koch@unisg.ch"
+    equal_contrib: yes
     role:         # Contributorship roles (e.g., CRediT, https://casrai.org/credit/)
       - "Conceptualization"
       - "Formal Analysis"
       - "Writing - Original Draft Preparation"
       - "Writing - Review & Editing"
-  - name          : "Florian Pargent*"
+  - name          : "Florian Pargent"
     affiliation   : "1"
+    equal_contrib: yes
     role:
       - "Formal Analysis"
       - "Methodology"
@@ -45,8 +47,8 @@ affiliation:
   - id            : "4"
     institution   : "University College London, Global Business School for Health"
 
-authornote: |
-  \* The authors have contributed equally and share first authorship of this work.
+#authornote: |
+  # author note here
 
 abstract: |
 
