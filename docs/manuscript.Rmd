@@ -3,7 +3,7 @@ title             : "A Tutorial on Tailored Power Simulations for Experimental S
 shorttitle        : "GLMM Power Simulation Tutorial"
 
 author: 
-  - name          : "Timo K. Koch"
+  - name          : "Timo K. Koch*"
     affiliation   : "1, 2"
     corresponding : yes    # Define only one corresponding author
     #address       : "Postal address"
@@ -13,7 +13,7 @@ author:
       - "Formal Analysis"
       - "Writing - Original Draft Preparation"
       - "Writing - Review & Editing"
-  - name          : "Florian Pargent"
+  - name          : "Florian Pargent*"
     affiliation   : "1"
     role:
       - "Formal Analysis"
@@ -24,7 +24,6 @@ author:
   - name          : "Anne-Kathrin Kleine"
     affiliation   : "1"
     role:
-      - "Validation"
       - "Writing - Review & Editing"
   - name          : "Eva Lermer"
     affiliation   : "1,3"
@@ -46,14 +45,12 @@ affiliation:
   - id            : "4"
     institution   : "University College London, Global Business School for Health"
 
-# authornote: |
-#   Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
-# 
-#   Enter author note here.
+authornote: |
+  \* The authors have contributed equally and share first authorship of this work.
 
 abstract: |
 
-  [THIS WILL BE UPDATED BASED ON GOOGLE DOC] Understanding how humans interact with artificial intelligence (AI) through experiments becomes increasingly relevant. However, experimental interaction researchers often lack the appropriate tools to conduct power and data analyses for the complex study designs required. In this work, we provide a comprehensive guide to performing customized power analyses using data simulation based on Generalized Linear Mixed Models (GLMMs). By providing code in a specific case study, we equip experimental interaction researchers with the tools to simulate their own data and run analyses based on GLMMs. We discuss implications for experimental interaction research and provide an outlook on the relevance of power simulations in the field.
+  [THIS WILL BE UPDATED BASED ON GOOGLE DOC] Researchers often lack the tools to conduct a priori power analysis for complex experimental designs deployed in human-computer interaction (HCI) studies. Generalized Linear Mixed Models (GLMMs) are well-suited to analyze experiments in which subjects respond to a set of stimuli. However, existing software packages can only be used to simulate power for simple designs, which are often not useful for more sophisticated investigations. This tutorial addresses this gap by providing a comprehensive tutorial to perform tailored power analyses using data simulation. Our tutorial provides code for an HCI case study, empowering researchers to simulate their own data and ascertain appropriate sample sizes for GLMMs. This resource should help to enhance the precision of study designs and to mitigate the risk of underpowered studies. Moreover, we discuss further implications for experimental research and provide an outlook on the increasing relevance of power simulations in the field.
   
 keywords          : "power analysis, data simulation, sample size, generalized linear mixed model"
 
@@ -98,15 +95,15 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed, echo = TRUE, eval = FALSE)
 # Introduction
 
 <!-- General short intro paragraph, need for well-powered and analyzed experimental research -->
-When planning experimental research it is essential to determine an appropriate sample size [@lakensSampleSizeJustification2022] to ensure that the results obtained are both robust and informative, and to use appropriate statistical models to analyze the data. However, the recent replication crisis in experimental research, such as in Human-Computer Interaction (HCI), has illustrated many challenges surrounding the reproducibility and reliability of findings. <!-- FP: do we need a reference here? --> As a results, there is a growing need for rigorous statistical methodology and the adoption of well-powered experimental designs. While accessible software solutions exists for simple statistical models and experimental designs, many experimental researchers lack the skills and tools to conduct power analyses for more complex research designs using powerful <!-- FP: that can be confused with statistical power. Alternative: ... using the flexible GLMM framework --> generalized linear mixed models (GLMM). In the present case study, we provide a tutorial comprised of a concrete example for custom a priori power analyses using data simulations based on GLMMs.
+When planning experimental research it is essential to determine an appropriate sample size [@lakensSampleSizeJustification2022] to ensure that the results obtained are both robust and informative, and to use appropriate statistical models to analyze the data. However, the recent replication crisis in experimental research, such as in Human-Computer Interaction (HCI), has illustrated many challenges surrounding the reproducibility and reliability of findings [@robertsonImprovingStatisticalPractice2016]. As a results, there is a growing need for rigorous statistical methodology and the adoption of well-powered experimental designs. While accessible software solutions exists for simple statistical models and experimental designs, many experimental researchers lack the skills and tools to conduct power analyses for more complex research designs using the flexible generalized linear mixed models (GLMM) framework. In the present case study, we provide a tutorial comprised of a concrete example for custom a priori power analyses using data simulations based on GLMMs.
 
 ## Statistical power
 
 <!-- Some basics on statistical power -->
-In empirical research relying on hypothesis testing, the most common strategy for determining an adequate sample size is based on statistical power <!-- FP:  cite lakens again here? -->. Statistical power is defined as the probability that a hypothesis test turns out significant <!-- FP: ... probability that a hypothesis test has a significant p-value? to make sure that we mean the statistical/technical meaning of significant  --> when analyzing repeated samples from a population with a true effect of some pre-specified size. Less formally, power is also described as the probability that a hypothesis test accepts the alternative hypothesis $H_1$ if $H_1$ is indeed true. If the sample size (i.e., the number of participants and/or stimuli) used for data collection is insufficient to reliably detect <!-- FP: alternative to reliably detect: detect the effects with high probability --> the effects or relationships being investigated, this particular study would be considered "under-powered".
+In empirical research relying on hypothesis testing, the most common strategy for determining an adequate sample size is based on statistical power [@lakensSampleSizeJustification2022]. Statistical power is defined as the probability that a hypothesis test has a significant p-value when analyzing repeated samples from a population with a true effect of some pre-specified size. Less formally, power is also described as the probability that a hypothesis test accepts the alternative hypothesis $H_1$ if $H_1$ is indeed true. If the sample size (i.e., the number of participants and/or stimuli) used for data collection is insufficient to detect the effects with high probability the effects or relationships being investigated, this particular study would be considered "under-powered".
 
 <!-- what are the resulting issues with under-powered studies? -->
-Conducting under-powered research has many negative consequences. First, relying on under-powered experiments may yield inconclusive (if low power is taken into account) or misleading (if low power is ignored) results, hindering the accumulation of knowledge. Second, under-powered studies waste resources by consuming time, effort, and funding without delivering meaningful results, thereby missing valuable discoveries and opportunities for scientific advancement <!-- FP: I would cut everything after funding  -->.
+Conducting under-powered research has many negative consequences. First, relying on under-powered experiments may yield inconclusive (if low power is taken into account) or misleading (if low power is ignored) results, hindering the accumulation of knowledge. Second, under-powered studies waste resources by consuming time, effort, and funding without delivering meaningful results.
 
 ## A priori power analysis
 
@@ -121,10 +118,10 @@ Also, while conducting a proper power analysis, one has to consider every aspect
 This gives researchers a great opportunity to improve the design. Especially in fast-moving research fields, adding a solid sample size calculation to the process can act as a safeguard for ensuring high-quality research.
 
 <!-- external incentives to do a power analysis -->
-Moreover, many journals and funding agencies now require that a power analysis is included in study protocols and grant proposals, recognizing its significance in ensuring robust and meaningful findings. By incorporating power analysis into research planning, researchers can enhance the replicability and credibility of their work, contributing to the advancement of the respective research field through more robust insights. <!-- FP: this last sentence seems like a repetition. wouldn't some sentence better fit here stating that proficiency with power analysis improves your career chances in academia by increasing the probability to get papers published and grants funded (which is a new argument we haven't already made elsewhere)  -->
+Moreover, many journals and funding agencies now require that a power analysis is included in study protocols and grant proposals, recognizing its significance in ensuring robust and meaningful findings. By incorporating power analysis into research planning, researchers can enhance the replicability and credibility of their work, contributing to the advancement of the respective research field through more robust insights. <!-- FP: this last sentence seems like a repetition. wouldn't some sentence better fit here stating that proficiency with power analysis improves your career chances in academia by increasing the probability to get papers published and grants funded (which is a new argument we haven't already made elsewhere); TK: I like this argument. Might be a little idealistic though since bc flashy results get you ahead mostly :D   -->
 
 <!-- standard software is available for "simple" models and study designs -->
-For simple statistical models, like t-tests, ANOVA, and linear regression, with common study designs (e.g., mean comparison between two groups) user-friendly software for power analysis is readily available [@faulStatisticalPowerAnalyses2009]. <!-- FP: we could reintroduce the old section her on: with more complex models and designs, power analysis is more complicated because no analytic solution is possible, power has to be estimated by simulation, and there is no user-friendly software that includes all relevant designs.  -->
+For simple statistical models, like t-tests, ANOVA, and linear regression, with common study designs (e.g., mean comparison between two groups) user-friendly software for power analysis is readily available [@faulStatisticalPowerAnalyses2009]. <!-- FP: we could reintroduce the old section her on: with more complex models and designs, power analysis is more complicated because no analytic solution is possible, power has to be estimated by simulation, and there is no user-friendly software that includes all relevant designs.; TK: yes let's do this. I am not entirely sure what you mean with "analytic" solution, i think we should define this.  -->
 
 ## Generalized linear mixed models (GLMM)
 
@@ -139,11 +136,12 @@ As mentioned, GLMMs extend the LMM framework to accommodate non-normal and categ
 ## Power simulations for GLMMs
 
 <!-- what are the existing option for a priori power analysis for GLMMs / where are existing tutorials limited -->
-Currently available software packages for power simulations <!-- FP: because you removed the sentence on the difference between analytic and simulation based power analysis, it is now not clear why from now on we always talk about power simulation  --> do not include GLMMs, making it necessary to build data simulations tailored specifically to the study design [@westfallStatisticalPowerOptimal2014; @murayamaSummarystatisticsbasedPowerAnalysis2022]. 
+Currently available software packages for power simulations <!-- FP: because you removed the sentence on the difference between analytic and simulation based power analysis, it is now not clear why from now on we always talk about power simulation; TK: sorry if I have accidentally cut this distinction when merging versions, i think it is super important to have the definition between the two here.  --> do not include GLMMs, making it necessary to build data simulations tailored specifically to the study design [@westfallStatisticalPowerOptimal2014; @murayamaSummarystatisticsbasedPowerAnalysis2022]. 
 A number of tutorials have been published describing how to perform such power simulation for multilevel models [@arendStatisticalPowerTwolevel2019; @lafitSelectionNumberParticipants2021; @zimmerSampleSizePlanning2022; @brysbaertPowerAnalysisEffect2018; @kumleEstimatingPowerGeneralized2021; @debruineUnderstandingMixedEffectsModels2021]. 
 However, most of these tutorials only cover linear mixed models (LMMs) and focus on the most common designs (e.g., INSERT EXAMPLE). This narrow focus provides little guidance for researchers faced with more complex study designs (e.g., INSERT EXAMPLE), which are very common [@brownIntroductionLinearMixedEffects2021]. 
 The necessary assumptions for power simulations in GLMMs include assumptions about the distributional form of the outcome variable, the random effects, and the error structure. The distributional assumption specifies the family of distributions for the outcome variable, such as Gaussian, Poisson, or binomial. Assumptions about the random effects include the assumption of normality and the covariance structure among the random effects. Additionally, assumptions about the error structure, such as independence or correlation, must be specified. Interpreting these assumptions entails understanding the underlying assumptions of the model and ensuring they align with the characteristics of the data being analyzed.
-Here, existing tutorials often rely on heuristics for specifying variance components (e.g., the standard deviation of random intercepts) or assume that results from meta-analyses or data from pilot studies are available to determine plausible values for all model parameters. However, in practice, knowledge about those parameters from prior studies is often limited, rendering estimation <!-- FP: why estimation? more like specifying assumptions? --> a practical challenge [@maxwellSampleSizePlanning2008].
+Here, existing tutorials often rely on heuristics for specifying variance components (e.g., the standard deviation of random intercepts) or assume that results from meta-analyses or data from pilot studies are available to determine plausible values for all model parameters. However, in practice, knowledge about those parameters from prior studies is often limited, specifying assumptions a practical challenge [@maxwellSampleSizePlanning2008].
+
 <!-- Summary / Wrap-Up, pick up main arguments and what the paper provides, keep this short! -->
 Based on need for well-powered experimental research using GLMMs and the lack of tools to conduct corresponding power analyses, in this tutorial paper, we present a case study that serves as a practical demonstration of how to perform a data simulation and an a priori power simulation for a more complex study design. Thereby, we aim to equip researchers with the tools needed to simulate their own data and determine appropriate sample sizes for their own research.
 
@@ -151,15 +149,14 @@ Based on need for well-powered experimental research using GLMMs and the lack of
 
 <!-- overview of this section -->
 
-In this section, we outline the steps for performing data simulation and a priori power analysis for GLMMs, using a case study based on a specific experimental study design from the area of human-AI <!-- FP: this is the first time AI appears; probably have to define the AI abbreviation --> interaction research.
+In this section, we outline the steps for performing data simulation and a priori power analysis for GLMMs, using a case study based on a specific experimental study design from the area of human-AI (artificial intelligence) interaction research.
 
 ## Experimental study design
 
 <!-- describe the study idea and design -->
 In the present case study, we simulate the data for an experiment where the diagnostic performance of users of an AI-enabled diagnostic decision support system is to be evaluated. 
-The goal is to understand how AI advice influences medical decision-making. Participants, radiologists (task experts) and students/interns (non-task experts) <!-- FP: during our work on the paper, I have heard two different stories of who the non experts are; either students/interns or full doctors that where not radiologists. Although this is only a data simulation example, it is nonetheless important here because the assumed effect sizes will probably differ! So who did you imagine when choosing the effect sizes?  -->, review head computer tomography (CT) scans to assess the presence of bleeding, more specifically, intracranial haemorrhage (ICH). 
-To support their decision-making, in two experimental conditions, an AI model provides initial diagnostic advice, which can be used as guidance by the participants. This AI advice can be either correct (80% of cases) or incorrect (20%). In the control condition, no AI advice is presented, meaning that the participants have to read the CT scan without any support. After reviewing the CT scan, participants deliver a medical diagnosis (bleeding or no bleeding), which may be either accurate or inaccurate. Each participant undergoes all experimental conditions.
-<!-- FP: I would remove the phrase experimental condition from this section. I think this was newly introduced here and does not match well with the experiment and the model as described later  -->
+The goal is to understand how AI advice influences medical decision-making. Participants, radiologists (task experts) and students/interns (non-task experts) <!-- FP: during our work on the paper, I have heard two different stories of who the non experts are; either students/interns or full doctors that where not radiologists. Although this is only a data simulation example, it is nonetheless important here because the assumed effect sizes will probably differ! So who did you imagine when choosing the effect sizes?; SG can you clarify here please?  -->, review head computer tomography (CT) scans to assess the presence of bleeding, more specifically, intracranial haemorrhage (ICH). 
+To support their decision-making, in two experimental conditions, an AI model provides initial diagnostic advice, which can be used as guidance by the participants. This AI advice can be either correct (80% of cases) or incorrect (20%). In the control condition, no AI advice is presented, meaning that the participants have to read the CT scan without any support. After reviewing the CT scan, participants deliver a medical diagnosis (bleeding or no bleeding), which may be either accurate or inaccurate.
 This experimental design introduces some missing values by design since the advice is neither correct nor incorrect when no advice is present, which must be taken into account when simulating and analyzing the data. With this experiment, we want to determine if (a) experts are better than non-experts in reading head CT scans, (b) correct AI advice leads to better diagnostic accuracy than incorrect AI advice, and (c) different presentations of AI advice influence performance.
 In this example, recruiting task experts (i.e., radiologists) is more challenging due to their limited availability, while non-experts (i.e., students/interns) are more readily accessible. 
 The goal of the power simulation is to determine how many task experts and non-experts must be recruited to achieve sufficient statistical power in the planned experiment. 
@@ -173,7 +170,7 @@ In our case study, we use the lme4 R package [@batesFittingLinearMixedEffects201
 
 The lme4 package includes a function called `simulate` that allows researchers to simulate the dependent variable based on the same model formula used for model fitting, enabling power simulations and other related analyses. 
 
-However, the model parameterization used by the lme4 package is quite technical, making it difficult for applied researchers to determine whether their specified population model (i.e., the theoretical model that describes the underlying data generation process for a specific population of interest) implies plausible associations in their simulated data. Therefore in this tutorial, we simulate data for GLMMs from first principles (i.e., starting from the most basic and fundamental concepts and building up from there to create synthetic data <!-- FP: ALTERNATIVE: creating synthetic data step by step instead of using black box functions -->) to assist applied researchers in better understanding all model assumptions and then use lme4 to analyze the simulated data sets.[^2]
+However, the model parameterization used by the lme4 package is quite technical, making it difficult for applied researchers to determine whether their specified population model (i.e., the theoretical model that describes the underlying data generation process for a specific population of interest) implies plausible associations in their simulated data. Therefore in this tutorial, we simulate data for GLMMs from first principles (i.e., creating synthetic data step by step instead of using black box functions) to assist applied researchers in better understanding all model assumptions and then use lme4 to analyze the simulated data sets.[^2]
 
 [^2]: A less flexible alternative would be to use the simr package [@greenSIMRPackagePower2016], which can be used to both simulate data and perform power analysis for models supported by the lme4 package.
 
@@ -184,9 +181,9 @@ In a GLMM, the expected value of the dependent variable Y conditioned on the vec
 g(E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = \eta
 $$ Equivalently, the conditional expected value is modeled as the linear combination $\eta$, transformed by the inverse link function $g^{-1}()$. $$
 E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = g^{-1}(\eta)
-$$ If the dependent variable (i.e., performance <!-- FP: is performance really the best option to describe our DV?  -->) $Y$ is a binary variable with values $0$ or $1$, the conditional expected value is equivalent to the probability: $$
+$$ If the dependent variable (i.e., diagnostic accuracy) $Y$ is a binary variable with values $0$ or $1$, the conditional expected value is equivalent to the probability: $$
 P_{si} := P(Y = 1|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})
-$$ In our case study, $P_{si}$ is the conditional probability that subject (i.e., participant <!-- FP: can't we just use subject instead of participant everywhere in the manuscript, i.e. also in the intro and when describing the experiment? I thought we had already agreed on this when deciding on how to write the equations and I do not want to change all the s subscripts now  -->) $s$ gives the correct response to item (i.e., CT scan) $i$.
+$$ In our case study, $P_{si}$ is the conditional probability that a subject $s$ gives the correct response to item (i.e., CT scan) $i$.
 
 In such a setting, we model this probability as $$
 P_{si} = inverse\_logit(\eta_{si})
@@ -402,7 +399,7 @@ plogis(b_0 + b_e + b_a + b_c + b_ea + b_ec)
 
 Although the derivations above are straightforward, it is important not to misinterpret their implications: In binomial GLMMs, the average probability to solve an item (averaged across persons of varying ability and items of varying difficulty) is **not** equal to the probability that a person with average ability solves an item with average difficulty. The first perspective implies a so-called marginal interpretation while the second one implies a conditional interpretation. For example, we determined the $\beta$ parameters in a way that corresponds to a desired conditional probability of $0.95$, that an expert with average ability solves an item with average difficulty when presented with correct advice. However, even if the model were true, we would not observe this probability value if we estimated the marginal probability in a group of experts responding to items presented with correct advice from a big sample of subjects drawn from their natural distribution of ability and items drawn from their natural distribution of difficulty.
 
-The inequality of conditional and marginal effects in GLMMs (i.e., how predictor variables affect the response within groups versus their overall impact across all groups, which can differ due to random effects) <!-- FP: I have tried to introduce conditional and marginal in the above section, so I would suggest to remove the bracket here --> [@fahrmeirRegressionModelsMethods2021] makes their interpretation more difficult. One must be careful when specifying parameter values based on previous studies or pilot data that use the marginal interpretation (e.g., a pilot study providing an estimate of how often neurologists make an accurate diagnosis based on brain scans). <!-- SG: What does that mean for someone who wants to do this then? FP: is it more clear now? --> However, this does not mean that we cannot use the marginal interpretation (average probability across persons and items) to inform plausible parameter values: When parameter values have been selected, we can compute the implied marginal distributions and compare this information to our domain knowledge. Then we can iteratively adjust the parameter values until we are satisfied with the implied distributions.
+The inequality of conditional and marginal effects in GLMMs [@fahrmeirRegressionModelsMethods2021] makes their interpretation more difficult. One must be careful when specifying parameter values based on previous studies or pilot data that use the marginal interpretation (e.g., a pilot study providing an estimate of how often neurologists make an accurate diagnosis based on brain scans). <!-- SG: What does that mean for someone who wants to do this then? FP: is it more clear now? --> However, this does not mean that we cannot use the marginal interpretation (average probability across persons and items) to inform plausible parameter values: When parameter values have been selected, we can compute the implied marginal distributions and compare this information to our domain knowledge. Then we can iteratively adjust the parameter values until we are satisfied with the implied distributions.
 
 Earlier, we have already encountered one way to visualize the implied marginal distributions: We can fit our model to a simulated dataset and use the convenience functions from the marginaleffects package to compute averaged predictions that correspond to our quantities of interest. However, the model predictions will only be close to the true distribution if the simulated dataset is very large, but then the model fitting consumes a lot of time and memory. A more sophisticated strategy is to simulate a large dataset and directly compute the averages, contrasts and distributions we are interested in.
 
@@ -576,7 +573,7 @@ In our case study, we have performed power simulations based on a single set of 
 
 <!-- Outlook -->
 
-Beyond the specifics of our concrete case study, we want to outline six avenues regarding the outlook on power simulations <!-- FP: ALTERNATIVE: regarding the future of power simulations --> in experimental research:
+Beyond the specifics of our concrete case study, we want to outline six avenues regarding the future of power simulations in experimental research:
 
 1.  The need for power simulations in experimental research: Experimental research often involves intricate designs and complex models that cannot be adequately addressed by heuristics or user-friendly software. Power simulations offer a solution by providing experimental researchers with a tailored approach to estimating statistical power. These simulations take into account the specific study design, account for the underlying assumptions, and offer more accurate power estimates.
 
