@@ -487,7 +487,7 @@ dat %>%
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
 ```
 
-The final plot demonstrates <!-- SG: no figures in the pdf --> that these plots are also useful for spotting standard deviations that are specified too high. For Figure \@ref(fig:margdist3), we have set $\sigma_S = 3$ and $\sigma_I = 3$. This implies that in each experimental condition, the probabilities that a subject solves an item are usually close to either 0 or 1, which is not a plausible assumption. However, these high standard deviations do not account for the inherent variability and complexity of human performance. For example, we would expect that a participant with low ability compared to other task-experts to solve a difficult item with a probability substantially larger than zero even when presented with wrong advice. 
+The final plot demonstrates that these plots are also useful for spotting standard deviations that are specified too high. For Figure \@ref(fig:margdist3), we have set $\sigma_S = 3$ and $\sigma_I = 3$. This implies that in each experimental condition, the probabilities that a subject solves an item are usually close to either 0 or 1, which is not a plausible assumption. However, these high standard deviations do not account for the inherent variability and complexity of human performance. For example, we would expect that a participant with low ability compared to other task-experts to solve a difficult item with a probability substantially larger than zero even when presented with wrong advice. 
 <!-- SG: Maybe explain why this is not plausible. FP: like this? SG: Better, but maybe still include a reason for this (years of training to do exactly this). Do you think it should be mentioned that already when just guessing, their probability would be .5
 TK: I have adjusted/ extended on this. how do you like it FP? -->
 
@@ -544,6 +544,22 @@ set.seed(2)
 The next code chunk specifies a simulation grid with different settings for both the number of subjects (`n_subjects`) and the number of items (`n_items`), each combination being repeated `rep` times. We chose 300 repetitions for the data simulation at hand as it strikes a balance between achieving a robust statistical estimate and remaining computationally feasible.
 With the current settings, this simulation takes about one hour on a MacBook Pro from 2020 with M1 chip and 16 GB working memory. If you want to quickly experiment with the code yourself, a setting with `workers = 4` and `rep = 5` should finish in less than 5 minutes, even on smaller machines. 
 
+```{r, message=FALSE, echo=FALSE, eval=FALSE}
+library(future)
+library(furrr)
+plan("multisession", workers = 6)
+set.seed(2)
+sim_design <- crossing(
+  rep = 1:300,
+  n_subjects = c(100, 150, 200, 250),
+  n_items = c(10, 30, 50, 70)
+) %>%
+  mutate(pvalues = future_pmap(., sim_and_analyse, 
+    .options = furrr_options(seed = TRUE))) %>%
+  unnest_wider(pvalues)
+saveRDS(sim_design, file = "results.rds")
+```
+
 ```{r, message=FALSE, eval=FALSE}
 library(furrr)
 sim_design <- crossing(
@@ -565,7 +581,11 @@ For our exemplary combined hypothesis, power is defined as the (long-run) percen
 
 (ref:finalpwr-caption) Simulation-based power estimates including 95% confidence interval of the case study for different numbers of subjects and items, based on a significance level of 0.05. 
 
-```{r finalpwr, eval=FALSE}
+```{r, echo=FALSE}
+sim_design <- readRDS(file = "results.rds")
+```
+
+```{r finalpwr, fig.cap="(ref:finalpwr-caption)"}
 library(binom)
 alpha <- 0.05
 power <- sim_design %>%
