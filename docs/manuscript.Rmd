@@ -188,7 +188,7 @@ However, the model parameterization used by the lme4 package is quite technical,
 ## Our specific GLMM
 <!-- deep dive into our specific example -->
 In a GLMM, the expected value of the dependent variable Y conditioned on the vector of predictor variables $\mathbf{X}$ and random effects $\mathbf{U}$, transformed by a link function $g()$ is modeled as a linear combination $\eta$ of the predictor variables $\mathbf{X}$, the random effects $\mathbf{U}$ and the model parameters $\mathbf{\beta}$ [@fahrmeirRegressionModelsMethods2021]. $$
-g(E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = \eta <!-- SG: Sorry for maybe a stupid question, but what does E stand for? and why are model parameters beta mentioned but not in the equation?-->
+g(E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = \eta
 $$ Equivalently, the conditional expected value is modelled as the linear combination $\eta$, transformed by the inverse link function $g^{-1}()$. $$
 E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = g^{-1}(\eta)
 $$ If the dependent variable (i.e., diagnostic decision) $Y$ is a binary variable with values $0$ (i.e. inaccurate), or $1$ (i.e., accurate), the conditional expected value is equivalent to the probability: $$
