@@ -56,7 +56,7 @@ abstract: |
   
 keywords          : "power analysis, data simulation, sample size, generalized linear mixed model"
 
-wordcount         : "7461"
+wordcount         : "7892"
 
 bibliography      : ["../Simulation Tutorial Paper.bib", "r-references.bib"]
 
@@ -108,7 +108,7 @@ When planning experimental research, it is essential to determine an appropriate
 In empirical research relying on hypothesis testing, the most common strategy for determining an adequate sample size is based on statistical power [@lakensSampleSizeJustification2022]. Statistical power is defined as the probability that a hypothesis test has a significant p-value when analyzing repeated samples from a population with a true effect of some pre-specified size. Less formally, power is described as the probability that a hypothesis test correctly rejects the null hypothesis when the alternative hypothesis is true. If the sample size (i.e., the number of participants and/or stimuli) used for data collection is insufficient to detect the effects or relationships being investigated with high probability, the study would be considered "underpowered".
 
 <!-- what are the resulting issues with underpowered studies? -->
-Conducting underpowered research has many negative consequences. First, relying on underpowered experiments may yield inconclusive (if researchers acknowledge the small evidential value of an underpowered study in the limitations section) <!--AK: Unclear what this means in this context-  how is it "taken into account"?, TK: FP can you clarify what is meant here? FP: better? --> or misleading (if low power is ignored by the researchers) results, hindering the accumulation of knowledge. Second, underpowered studies waste resources by consuming time, effort, and funding without delivering meaningful results.
+Conducting underpowered research has many negative consequences. First, relying on underpowered experiments may yield inconclusive (if researchers acknowledge the small evidential value of an underpowered study in the limitations section) or misleading (if low power is ignored by the researchers) results, hindering the accumulation of knowledge. Second, underpowered studies waste resources by consuming time, effort, and funding without delivering meaningful results.
 
 ## A priori power analysis
 
@@ -139,7 +139,7 @@ In this context, correlated data means that the value in the outcome variable fo
 Thus, modeling such correlations is especially important whenever the data has a clear structure, while the grouping variables can be hierarchically organized (e.g., students nested in schools, schools nested in districts) or not (e.g., students solve math exercises, but neither student sees all exercises).
 LMMs are used when the outcome variable is continuous and follows a normal distribution (when conditioned on all fixed and random effects).
 They allow for the modeling of fixed effects, which capture the relationships between our usual predictors and the outcome, as well as random effects, which account for the different types of correlation structure and grouping effects exemplified above.
-Random effects are typically assumed to follow a normal distribution with a mean of zero and a variance that quantifies the heterogeneity across groups. 
+Random effects are typically assumed to follow a normal distribution with a mean of zero and a variance that quantifies the heterogeneity across groups.
 
 As mentioned, GLMMs extend the LMM framework to accommodate non-normally distributed continuous and categorical outcome variables.
 GLMMs incorporate both fixed and random effects, similar to LMMs, but also involve a link function that connects the linear combination of predictor variables to the expected value of the outcome variable. The link function allows for modeling the relationship between predictors and the outcome in a non-linear way that is appropriate for the specific distribution family of the outcome variable.
@@ -149,7 +149,7 @@ As an example, think of an experiment with different design factors (e.g., pictu
 
 <!-- what are the existing options for a priori power analysis for GLMMs / where are existing tutorials limited -->
 Power analysis methods for multilevel models can be categorized into formula-based methods and simulation-based methods [@murayamaSummarystatisticsbasedPowerAnalysis2022].
-Formula-based methods rely on often complicated formulas that can be used to directly calculate power while simulation-based methods rely on repeatedly simulating data with a known true effect size and estimating power empirically (i.e. how often the hypothesis test is significant for the simulated data).
+Formula-based methods rely on often complicated formulas that can be used to directly calculate power while simulation-based methods rely on repeatedly simulating data with a known true effect size and estimating power empirically (i.e., how often the hypothesis test is significant for the simulated data).
 Currently available formula-based software packages for power analysis often do not include GLMMs or are limited to very simple designs [@westfallStatisticalPowerOptimal2014; @murayamaSummarystatisticsbasedPowerAnalysis2022], making it necessary to build data simulations tailored specifically to the study design. 
 A number of tutorials have been published describing how to perform such simulation-based power analysis for multilevel models [@arendStatisticalPowerTwolevel2019; @lafitSelectionNumberParticipants2021; @zimmerSampleSizePlanning2022; @brysbaertPowerAnalysisEffect2018; @kumleEstimatingPowerGeneralized2021; @debruineUnderstandingMixedEffectsModels2021]. 
 However, most of these tutorials focus on linear mixed models (LMMs) and the most common designs [but see @kumleEstimatingPowerGeneralized2021 for a tutorial that also covers more advanced settings]. This narrow focus provides limited guidance for researchers faced with more complex study designs, especially when little prior knowledge about plausible effect sizes is available [see the discussion in @kumleEstimatingPowerGeneralized2021]. 
@@ -180,10 +180,11 @@ The goal of the present simulation-based power analysis is to determine how many
 
 <!-- describe the lme4 package and how it works-->
 In our case study, we use the lme4 R package [@batesFittingLinearMixedEffects2015], which is a state-of-the-art tool for fitting frequentist GLMMs.[^1]
-[^1]: For Bayesian GLMMs, the brms R package is currently the most prominent option [@burknerBrmsPackageBayesian2017].
 The lme4 package includes a function called `simulate` that allows researchers to simulate the dependent variable based on the same model formula used for model fitting, enabling simulation-based power analyses and other related analyses. 
 
-However, the model parameterization used by the lme4 package is quite technical, making it difficult for applied researchers to determine whether their specified population model (i.e., the theoretical model that describes the underlying data generation process for a specific population of interest) implies plausible associations in their simulated data. Therefore in this tutorial, we simulate data for GLMMs from first principles (i.e., creating synthetic data step by step instead of using black box functions) to assist applied researchers in better understanding all model assumptions and then use lme4 to analyze the simulated data sets.[^2]
+[^1]: For Bayesian GLMMs, the brms R package is currently the most prominent option [@burknerBrmsPackageBayesian2017].
+
+However, the model parameterization used by the lme4 package is quite technical, making it difficult for applied researchers to determine whether their specified population model (i.e., the theoretical model that describes the underlying data generation process for a specific population of interest) implies plausible associations in their simulated data. Therefore in this tutorial, we simulate data for GLMMs from first principles (i.e., creating synthetic data step by step instead of using black box functions) to assist applied researchers in better understanding all model assumptions and then use lme4 to analyze the simulated datasets.[^2]
 
 [^2]: A less flexible alternative would be to use the simr package [@greenSIMRPackagePower2016], which can be used to both simulate data and perform power analysis for models supported by the lme4 package.
 
@@ -193,7 +194,7 @@ In a GLMM, the expected value of the dependent variable Y conditioned on the vec
 g(E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = \eta
 $$ Equivalently, the conditional expected value is modeled as the linear combination $\eta$, transformed by the inverse link function $g^{-1}()$. $$
 E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = g^{-1}(\eta)
-$$ If the dependent variable (i.e., diagnostic decision) $Y$ is a binary variable with values $0$ (i.e. inaccurate), or $1$ (i.e., accurate), the conditional expected value is equivalent to the probability: $$
+$$ If the dependent variable (i.e., diagnostic decision) $Y$ is a binary variable with values $0$ (i.e., inaccurate), or $1$ (i.e., accurate), the conditional expected value is equivalent to the probability: $$
 P_{si} := P(Y = 1|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})
 $$ In our case study, $P_{si}$ is the conditional probability that a subject $s$ gives the correct response to item (i.e., CT scan) $i$.
 
@@ -205,7 +206,7 @@ $$ with the logit link $g(P_{si}) = logit(P_{si}) = ln (\frac{P_{si}}{1 - P_{si}
 
 In our case study, the probability of making an accurate diagnostic decision is assumed to depend on the predictors: 
 
-- $advice\_present_{si}$: whether subject $s$ was presented with AI advice (1) or not (0) when asked to asses item $i$ 
+- $advice\_present_{si}$: whether subject $s$ was presented with AI advice (1) or not (0) when asked to assess item $i$ 
 - $advice\_correct_{si}$: whether this advice was correct (1) or not (0) 
 - $expert_s$: whether subject $s$ was a task expert (1) or not (0)
 
@@ -366,7 +367,7 @@ glht <- glht(fit, linfct = null_hypotheses)
 summary(glht, test = univariate())$test$pvalues
 ```
 
-Because all hypotheses tested simultaneously with the `glht` function must have the same direction, we flip the sign of inequalities three and four by multiplying them with $-1$. The multcomp package automatically adjusts p-values when multiple hypotheses are tested simultaneously [@hothornSimultaneousInferenceGeneral2008]. However, the combined null hypothesis in our exemplary research question should only be rejected if **all** individual null hypotheses are rejected [i.e. intersection-union setting; @dmitrienkoTraditionalMultiplicityAdjustment2013]. In such cases, the error probabilities do not accumulate, and we would waste power when correcting for multiple tests. Thus, we request unadjusted p-values by setting `test = univariate()` in the `summary` command. With a standard significance level of $\alpha = 0.05$, we would not reject all four null hypotheses (the p-value for hypothesis $H_{03}$ is not significant) and therefore also not reject the combined null hypothesis for this simulated dataset. Note that this decision would be wrong because we have simulated the data such that the combined alternative hypothesis is actually true in the population.
+Because all hypotheses tested simultaneously with the `glht` function must have the same direction, we flip the sign of inequalities three and four by multiplying them with $-1$. The multcomp package automatically adjusts p-values when multiple hypotheses are tested simultaneously [@hothornSimultaneousInferenceGeneral2008]. However, the combined null hypothesis in our exemplary research question should only be rejected if **all** individual null hypotheses are rejected [i.e., intersection-union setting; @dmitrienkoTraditionalMultiplicityAdjustment2013]. In such cases, the error probabilities do not accumulate, and we would waste power when correcting for multiple tests. Thus, we request unadjusted p-values by setting `test = univariate()` in the `summary` command. With a standard significance level of $\alpha = 0.05$, we would not reject all four null hypotheses (the p-value for hypothesis $H_{03}$ is not significant) and therefore also not reject the combined null hypothesis for this simulated dataset. Note that this decision would be wrong because we have simulated the data such that the combined alternative hypothesis is actually true in the population.
 
 ## Specification of plausible parameter values
 
@@ -582,13 +583,13 @@ For our exemplary combined hypothesis, power is defined as the (long-run) percen
 
 [^3]: This code was inspired by the "Mixed Design Simulation" vignette of the faux package at <https://debruine.github.io/faux/articles/sim_mixed.html>.
 
-(ref:finalpwr-caption) Simulation-based power estimates including 95% confidence interval of the case study for different numbers of subjects and items, based on a significance level of 0.05. 
-
 ```{r, echo=FALSE}
 sim_design <- readRDS(file = "results.rds")
 ```
 
-```{r finalpwr, fig.cap="(ref:finalpwr-caption)"}
+<!-- (ref:finalpwr-caption) Simulation-based power estimates including 95% confidence interval of the case study for different numbers of subjects and items, based on a significance level of 0.05. TK: Caption did not work, included it manually for quick fix -->
+
+```{r finalpwr, fig.cap="Simulation-based power estimates including 95% confidence interval of the case study for different numbers of subjects and items, based on a significance level of 0.05"}
 library(binom)
 alpha <- 0.05
 power <- sim_design %>%
