@@ -69,6 +69,8 @@ figurelist        : no
 tablelist         : no
 footnotelist      : no
 
+csl               : "acm-sigchi-proceedings.csl" #added this for chi submission
+
 classoption       : "man"
 output: 
   papaja::apa6_docx:
@@ -91,7 +93,7 @@ r_refs("r-references.bib")
 ```{r analysis-preferences}
 # Seed for random number generation
 set.seed(42)
-knitr::opts_chunk$set(cache.extra = knitr::rand_seed, echo = TRUE, eval = TRUE)
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed, echo = TRUE, eval = TRUE, fig.keep = "high", dev = "jpeg")
 ```
 
 # Introduction
@@ -164,7 +166,7 @@ Based on the need for well-powered experimental research using GLMMs and the lac
 
 <!-- overview of this section -->
 
-In this section, we outline the steps for performing data simulation and a priori power analysis for GLMMs using a case study based on a specific experimental study design from the area of human-AI (artificial intelligence) interaction research.
+In this section, we outline the steps for performing data simulation and a priori power analysis for GLMMs using a case study based on a specific experimental study design from the area of human-AI (artificial intelligence) interaction research. The corresponding code in this manuscript will be made available in a public repository upon publication.
 
 ## Experimental study design
 
@@ -184,15 +186,15 @@ The lme4 package includes a function called `simulate` that allows researchers t
 
 [^1]: For Bayesian GLMMs, the brms R package is currently the most prominent option [@burknerBrmsPackageBayesian2017].
 
-However, the model parameterization used by the lme4 package is quite technical, making it difficult for applied researchers to determine whether their specified population model (i.e., the theoretical model that describes the underlying data generation process for a specific population of interest) implies plausible associations in their simulated data. Therefore in this tutorial, we simulate data for GLMMs from first principles (i.e., creating synthetic data step by step instead of using black box functions) to assist applied researchers in better understanding all model assumptions and then use lme4 to analyze the simulated datasets.[^2]
+However, the model parameterization used by the lme4 package is quite technical, making it difficult for applied researchers to determine whether their specified population model (i.e., the theoretical model that describes the underlying data generation process for a specific population of interest) implies plausible associations in their simulated data. Therefore, in this tutorial, we simulate data for GLMMs from first principles (i.e., creating synthetic data step by step instead of using black box functions) to assist applied researchers in better understanding all model assumptions and then use lme4 to analyze the simulated datasets.[^2]
 
 [^2]: A less flexible alternative would be to use the simr package [@greenSIMRPackagePower2016], which can be used to both simulate data and perform power analysis for models supported by the lme4 package.
 
 ## Our specific GLMM
 <!-- deep dive into our specific example -->
-In a GLMM, the expected value of the dependent variable Y conditioned on the vector of predictor variables $\mathbf{X}$ and random effects $\mathbf{U}$, transformed by a link function $g()$ is modeled as a linear combination $\eta$ of the predictor variables $\mathbf{X}$, the random effects $\mathbf{U}$ and the model parameters $\mathbf{\beta}$ [@fahrmeirRegressionModelsMethods2021]. $$
+In a GLMM, the expected value of the dependent variable Y conditioned on the vector of predictor variables $\mathbf{X}$ and random effects $\mathbf{U}$, transformed by a link function $g()$ is modeled as a linear combination $\eta$ of the predictor variables $\mathbf{X}$, the random effects $\mathbf{U}$ and the model parameters $\mathbf{\beta}$ [@fahrmeirRegressionModelsMethods2021]: $$
 g(E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = \eta
-$$ Equivalently, the conditional expected value is modeled as the linear combination $\eta$, transformed by the inverse link function $g^{-1}()$. $$
+$$ Equivalently, the conditional expected value is modeled as the linear combination $\eta$, transformed by the inverse link function $g^{-1}()$: $$
 E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = g^{-1}(\eta)
 $$ If the dependent variable (i.e., diagnostic decision) $Y$ is a binary variable with values $0$ (i.e., inaccurate), or $1$ (i.e., accurate), the conditional expected value is equivalent to the probability: $$
 P_{si} := P(Y = 1|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})
@@ -230,7 +232,6 @@ P_{si} = inverse\_logit[&(\beta_0 + u_{0s} + u_{0i}) + \\
 $$ with model parameters $\beta_0$, $\beta_e$, $\beta_a$, $\beta_c$, $\beta_{ea}$, $\beta_{ec}$, $\sigma_S$, and $\sigma_I$.
 
 In the GLMM literature, this would be called a binomial GLMM with two random intercepts (for subjects and items), two level-1 predictors ($advice\_present$, $advice\_correct$), one level-2 predictor ($expert$) and two cross-level interactions ($expert \cdot advice\_present$, $expert \cdot advice\_correct$).
-
 To limit complexity, we do not consider random slopes, additional predictors or higher-level interactions.
 
 ## Data simulation
@@ -269,7 +270,6 @@ In our case study, each subject (`n_subjects` in total) is assumed to respond to
 ## Model fitting
 
 In this section, we show how to fit a GLMM with lme4, interpret the model, and test hypotheses derived from a research question.
-
 We simulate data according to our model, in which 100 subjects respond to 50 items (we use `set.seed` to make the simulation reproducible). However, for the sake of the exercise, we can imagine that this would be real data resulting from our future experiment and think about how we would analyze this data.
 
 ```{r, message=FALSE}
@@ -353,7 +353,7 @@ We arrive at these inequalities based on the following logic, exemplified here o
 inverse\_logit[(\beta_0 + u_{0s} + u_{0i}) + \beta_e + \beta_{a} + \beta_{c} + \beta_{ea} + \beta_{ec}] \leq inverse\_logit[(\beta_0 + u_{0s} + u_{0i}) + \beta_e]
 $$ which simplifies to $\beta_{a} + \beta_{c} + \beta_{ea} + \beta_{ec} \leq 0$.
 
-We can specify and test hypotheses like these with the multcomp package [@R-multcomp] as follows:
+We can specify and test hypotheses like these with the multcomp package [@hothornSimultaneousInferenceGeneral2008] as follows:
 
 ```{r, message=FALSE}
 library(multcomp)
@@ -589,7 +589,7 @@ sim_design <- readRDS(file = "results.rds")
 
 <!-- (ref:finalpwr-caption) Simulation-based power estimates including 95% confidence interval of the case study for different numbers of subjects and items, based on a significance level of 0.05. TK: Caption did not work, included it manually for quick fix -->
 
-```{r finalpwr, fig.cap="Simulation-based power estimates including 95% confidence interval of the case study for different numbers of subjects and items, based on a significance level of 0.05"}
+```{r finalpwr, fig.cap="Simulation-based power estimates including 95% confidence interval of the case study for different numbers of subjects and items, based on a significance level of 0.05."}
 library(binom)
 alpha <- 0.05
 power <- sim_design %>%
@@ -608,7 +608,7 @@ power %>%
   geom_tile() +
   geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 
                                 power, ci.lwr, ci.upr)), 
-    color = "white", size = 4.5) +
+    color = "white", size = 4) +
   scale_fill_viridis_c(limits = c(0, 1)) +
   xlab("number of subjects") + ylab("number of items")
 ```
