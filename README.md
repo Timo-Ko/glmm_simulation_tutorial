@@ -1,4 +1,5 @@
-# glmm_simulation_tutorial
-This is the repository for the tutorial paper on using GLMMs to analyze Human-AI interaction experiments
+This repository contains all materials (reproducible manuscript, simulation results) for the paper titled:
 
-The shared (working) Google doc can be found here: https://docs.google.com/document/d/1Ud0NdWX2BX7e3AqYdea87Pmd2pZwhpIJuSVYJTD-43E/edit
+**A Tutorial on Tailored Simulation-Based Power Analysis for Experimental Designs with Generalized Linear Mixed Models**
+
+

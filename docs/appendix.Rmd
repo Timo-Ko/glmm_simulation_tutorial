@@ -1,4 +1,14 @@
 
+# Appendix:
+
+**Note**: At the moment, this file contains only a few fragments of code but is not mentioned in the manuscript. Some of these pieces might be used in a later stage of the probject (e.g. after the first round of peer review). 
+
+## A different model equation with random slopes
+
+$$
+logit(P_{si}) = (\beta_0 + u_{0p} + u_{0i})  + \beta_e \cdot expert_p + \beta_a \cdot advice\_present_{si} + (\beta_c + u_{1p}) \cdot advice\_correct_{si} + \beta_{ea} \cdot expert_{p} \cdot advice\_present_{si} 
+$$
+
 ## General principles in power analysis
 
 ```{r, message=FALSE}
@@ -17,7 +27,6 @@ f <- y_bin ~ 1 + expert + advice_present + advice_correct +
   (1|subject) + (1|item)
 fit <- glmer(f, data = dat, family = "binomial")
 ```
-
 
 ```{r}
 library(marginaleffects)
