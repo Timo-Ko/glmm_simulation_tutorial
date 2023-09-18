@@ -47,8 +47,10 @@ affiliation:
   - id            : "4"
     institution   : "University College London, Global Business School for Health"
 
+note: "\\clearpage" #added this to move entire author note to second page
 authornote: |
   This research was funded by a grant from the Volkswagen Foundation (Grant No. 98525).
+  All R code in this manuscript is available in the project's repository on the Open Science Framework (OSF): https://osf.io/dhwf4/
 
 abstract: |
 
@@ -56,7 +58,7 @@ abstract: |
   
 keywords          : "power analysis, data simulation, sample size, generalized linear mixed model"
 
-wordcount         : "7892"
+wordcount         : "7598"
 
 bibliography      : ["../Simulation Tutorial Paper.bib", "r-references.bib"]
 
@@ -69,12 +71,11 @@ figurelist        : no
 tablelist         : no
 footnotelist      : no
 
-csl               : "acm-sigchi-proceedings.csl" #added this for chi submission
+#csl               : "acm-sigchi-proceedings.csl" #added this for chi submission, not needed for preprint
 
 classoption       : "man"
 output: 
-  papaja::apa6_docx:
-    keep_tex: TRUE
+  papaja::apa6_pdf:
 ---
 
 ```{r setup, include = FALSE}
@@ -97,9 +98,6 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed, echo = TRUE, eval = TRUE, 
 ```
 
 # Introduction
-
-<!-- SG: In the intro power analysis, a priori power analysis and sample size calculation is now used interchangeably, should we use one term consistently?-->
-<!-- TK: I have repharsed this - should be clearer now -->
 
 <!-- General short intro paragraph, need for well-powered and analyzed experimental research -->
 When planning experimental research, it is essential to determine an appropriate sample size to ensure that the results obtained are both robust and informative, and to use appropriate statistical models to analyze the data [@lakensSampleSizeJustification2022]. However, the recent replication crisis in Human-Computer Interaction (HCI) and several other disciplines grounded on empirical research has illustrated many challenges surrounding the reproducibility and reliability of findings [@cockburnThreatsReplicationCrisis2020; @robertsonImprovingStatisticalPractice2016; @yarkoniGeneralizabilityCrisis2022]. As a result, there is a growing need for more rigorous statistical methodology and the adoption of well-powered experimental designs. While software solutions exist for simple statistical models and experimental designs, many researchers lack the skills and tools to conduct "a priori" (i.e., before data collection) power analyses for more complex research designs using the flexible generalized linear mixed models (GLMM) framework in order to determine the required sample size in their experiments. In the present work, we provide a tutorial consisting of a concrete example for tailored a priori power analyses using data simulations based on GLMMs.
@@ -128,12 +126,11 @@ Finally, many journals and funding agencies now require that a power analysis is
 <!-- standard software is available for "simple" models and study designs -->
 For simple statistical models, like t-tests, ANOVA, and linear regression, with common study designs (e.g., mean comparison between two groups), user-friendly software for a priori power analysis is readily available [@faulStatisticalPowerAnalyses2009; @champelyPackagePwr2018]. 
 However, these software packages are often not flexible enough to perform power analysis for complex designs.
-<!-- TK: FP do you like the previous section how it is now? Please adjust, if required? FP: I made some changes -->
 
 ## Generalized linear mixed models (GLMMs)
 
 <!-- Advantages of GLMMs over "simpler" models -->
-As study designs become more complex<!--AK: I am not even sure whether this is true. Do study designs become more complex or do we become more aware of the pitfalls of underpowered studies? I would say it's the latter. -->, researchers require more sophisticated statistical models to capture the nuanced relationships and grouping structures introduced by their study designs [@yarkoniGeneralizabilityCrisis2022]. GLMMs (also called multilevel models) are gaining increasing popularity in analyzing data in HCI and other empirical disciplines because they offer a flexible framework for handling data with outcome variables that are not normally distributed (e.g., categorical outcomes) while accounting for both fixed and random effects [@kapteinUsingGeneralizedLinear2016; @fahrmeirRegressionModelsMethods2021]. 
+As study designs become more complex, researchers require more sophisticated statistical models to capture the nuanced relationships and grouping structures introduced by their study designs [@yarkoniGeneralizabilityCrisis2022]. GLMMs (also called multilevel models) are gaining increasing popularity in analyzing data in HCI and other empirical disciplines because they offer a flexible framework for handling data with outcome variables that are not normally distributed (e.g., categorical outcomes) while accounting for both fixed and random effects [@kapteinUsingGeneralizedLinear2016; @fahrmeirRegressionModelsMethods2021]. 
 
 <!-- intro into GLMMs -->
 GLMMs are an extension of LMMs (Linear Mixed Models), which are, in turn, extensions of linear regression models that account for correlated data including hierarchical structures  [@fahrmeirRegressionModelsMethods2021]. 
@@ -155,7 +152,6 @@ Formula-based methods rely on often complicated formulas that can be used to dir
 Currently available formula-based software packages for power analysis often do not include GLMMs or are limited to very simple designs [@westfallStatisticalPowerOptimal2014; @murayamaSummarystatisticsbasedPowerAnalysis2022], making it necessary to build data simulations tailored specifically to the study design. 
 A number of tutorials have been published describing how to perform such simulation-based power analysis for multilevel models [@arendStatisticalPowerTwolevel2019; @lafitSelectionNumberParticipants2021; @zimmerSampleSizePlanning2022; @brysbaertPowerAnalysisEffect2018; @kumleEstimatingPowerGeneralized2021; @debruineUnderstandingMixedEffectsModels2021]. 
 However, most of these tutorials focus on linear mixed models (LMMs) and the most common designs [but see @kumleEstimatingPowerGeneralized2021 for a tutorial that also covers more advanced settings]. This narrow focus provides limited guidance for researchers faced with more complex study designs, especially when little prior knowledge about plausible effect sizes is available [see the discussion in @kumleEstimatingPowerGeneralized2021]. 
-<!-- FP: es war nicht leicht das hier zu lösen: ich möchte ungern debruineUnderstandingMixedEffectsModels2021 als negativ beispiel hier nennen, das hat zwar nur lmms im hauptteil aber glmms im appendix und ist einfach ein super paper. außerdem hatte ich beim nochmal lesen den eindruck, dass wir kumleEstimatingPowerGeneralized2021 in unserem ganzen paper nicht genug credit geben. daher hab ich es jetzt so umgestellt dass wir nicht die negativbeispiele sondern das positivbeispiel aufzählen. TK: stimme dir voll und ganz zu! -->
 The necessary presumptions for simulation-based power analysis with GLMMs include assumptions about the distributional form of the outcome variable, the random effects, and the correlation structure. The distributional assumption specifies the distributional family for the outcome variable (when conditioned on all fixed and random effects). Assumptions about the random effects include the assumption of normality (i.e., that the random effects follow a normal distribution) and the covariance structure among the random effects (i.e.,  if and how they are correlated). Interpreting these presumptions entails understanding the underlying presumptions of the model and ensuring they align with the characteristics of the data being analyzed.
 Existing tutorials often rely on heuristics for specifying variance components (e.g., the standard deviation of random intercepts) or assume that results from meta-analyses or data from pilot studies are available to determine plausible values for all model parameters. However, in practice, knowledge about those parameters from prior studies is often limited, which makes specifying assumptions a practical challenge [see the discussion in @maxwellSampleSizePlanning2008 and @kumleEstimatingPowerGeneralized2021].
 
@@ -166,7 +162,7 @@ Based on the need for well-powered experimental research using GLMMs and the lac
 
 <!-- overview of this section -->
 
-In this section, we outline the steps for performing data simulation and a priori power analysis for GLMMs using a case study based on a specific experimental study design from the area of human-AI (artificial intelligence) interaction research. The corresponding code in this manuscript will be made available in a public repository upon publication.
+In this section, we outline the steps for performing data simulation and a priori power analysis for GLMMs using a case study based on a specific experimental study design from the area of human-AI (artificial intelligence) interaction research. The corresponding code in this manuscript is available in the project's repository on the Open Science Framework (https://osf.io/dhwf4/).
 
 ## Experimental study design
 
@@ -191,6 +187,7 @@ However, the model parameterization used by the lme4 package is quite technical,
 [^2]: A less flexible alternative would be to use the simr package [@greenSIMRPackagePower2016], which can be used to both simulate data and perform power analysis for models supported by the lme4 package.
 
 ## Our specific GLMM
+
 <!-- deep dive into our specific example -->
 In a GLMM, the expected value of the dependent variable Y conditioned on the vector of predictor variables $\mathbf{X}$ and random effects $\mathbf{U}$, transformed by a link function $g()$ is modeled as a linear combination $\eta$ of the predictor variables $\mathbf{X}$, the random effects $\mathbf{U}$ and the model parameters $\mathbf{\beta}$ [@fahrmeirRegressionModelsMethods2021]: $$
 g(E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = \eta
@@ -429,7 +426,7 @@ plogis(b_0 + b_e + b_a + b_c + b_ea + b_ec)
 
 Although the derivations above are straightforward, it is important not to misinterpret their implications: In binomial GLMMs, the average probability to solve an item (averaged across persons of varying ability and items of varying difficulty) is **not** equal to the probability that a person with average ability solves an item with average difficulty. The first perspective implies a so-called marginal interpretation, while the second one implies a conditional interpretation. For example, we determined the $\beta$ parameters in a way that corresponds to a desired conditional probability of $0.95$, that an expert with average ability solves an item with average difficulty when presented with correct advice. However, even if the model were true, we would not observe this probability value if we estimated the marginal probability in a group of experts responding to items presented with correct advice from a big sample of subjects drawn from their natural distribution of ability and items drawn from their natural distribution of difficulty.
 
-The inequality of conditional and marginal effects in GLMMs [@fahrmeirRegressionModelsMethods2021] makes their interpretation more difficult. One must be careful when specifying parameter values based on previous studies or pilot data that use the marginal interpretation (e.g., a pilot study providing an estimate of how often neurologists make an accurate diagnosis based on brain scans). <!-- SG: What does that mean for someone who wants to do this then? FP: is it more clear now? SG: Definitely better; the question might still be what your solution to this issue is. --> However, this does not mean that we cannot use the marginal interpretation (average probability across persons and items) to inform plausible parameter values: When parameter values have been selected, we can compute the implied marginal distributions and compare this information to our domain knowledge. Then, we can iteratively adjust the parameter values until we are satisfied with the implied distributions.
+The inequality of conditional and marginal effects in GLMMs [@fahrmeirRegressionModelsMethods2021] makes their interpretation more difficult. One must be careful when specifying parameter values based on previous studies or pilot data that use the marginal interpretation (e.g., a pilot study providing an estimate of how often neurologists make an accurate diagnosis based on brain scans). However, this does not mean that we cannot use the marginal interpretation (average probability across persons and items) to inform plausible parameter values: When parameter values have been selected, we can compute the implied marginal distributions and compare this information to our domain knowledge. Then, we can iteratively adjust the parameter values until we are satisfied with the implied distributions.
 
 Earlier, we have already encountered one way to visualize the implied marginal distributions: We can fit our model to a simulated dataset and use the convenience functions from the marginaleffects package to compute averaged predictions that correspond to our quantities of interest. However, the model predictions will only be close to the true distribution if the simulated dataset is very large, but then the model fitting consumes a lot of time and memory. A more sophisticated strategy is to simulate a large dataset and directly compute the averages, contrasts and distributions we are interested in.
 
@@ -492,8 +489,6 @@ dat %>%
 ```
 
 The final plot demonstrates that these plots are also useful for spotting standard deviations that are specified too high. For Figure \@ref(fig:margdist3), we have set $\sigma_S = 3$ and $\sigma_I = 3$. This implies that in each experimental condition, the probabilities that a subject solves an item are usually close to either 0 or 1, which is not a plausible assumption. However, these high standard deviations do not account for the inherent variability and complexity of human performance. For example, we would expect that a participant with low ability compared to other task experts to solve a difficult item with a probability substantially larger than zero even when presented with wrong advice. 
-<!-- SG: Maybe explain why this is not plausible. FP: like this? SG: Better, but maybe still include a reason for this (years of training to do exactly this). Do you think it should be mentioned that already when just guessing, their probability would be .5
-TK: I have adjusted/ extended on this. how do you like it FP? -->
 
 (ref:margdist3-caption) Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions while setting the standard deviation of subject and item random intercepts to 3.
 
@@ -587,8 +582,6 @@ For our exemplary combined hypothesis, power is defined as the (long-run) percen
 sim_design <- readRDS(file = "results.rds")
 ```
 
-<!-- (ref:finalpwr-caption) Simulation-based power estimates including 95% confidence interval of the case study for different numbers of subjects and items, based on a significance level of 0.05. TK: Caption did not work, included it manually for quick fix -->
-
 ```{r finalpwr, fig.cap="Simulation-based power estimates including 95% confidence interval of the case study for different numbers of subjects and items, based on a significance level of 0.05."}
 library(binom)
 alpha <- 0.05
@@ -626,7 +619,7 @@ Experimental research requires careful planning and consideration of statistical
 
 ## Expected effect size vs. smallest effect size of interest: sensitivity power analysis
 
-In our case study, we have performed simulation-based power analysis from a single set of parameter values that reflect our assumptions of an expected effect size. Instead of extracting this expected effect size from meta-analyses or pilot data, which has been the main focus of previous tutorials, we have demonstrated some strategies to determine plausible parameter values in GLMMs based on domain knowledge. <!-- I would try to highlight this more clearly in the methods part. TK: is it clear enough now? --> Domain knowledge can be considered a vague theoretical model about the data-generating process that is less formal and can only be accessed by a back-and-forth exchange in which domain experts assess the plausibility of simulated data. When sample sizes are chosen based on the results of our simulation-based power analysis, a future study will be informative to reject the null hypothesis if an effect of our *expected size* is present. However, if the true effect is indeed smaller, the power will be lower, and the study might not be sufficiently informative. A common, more conservative strategy for sample size justification is to perform power analysis for the smallest effect size of interest (SESOI). An effect smaller than the SESOI would be considered too small to be interesting or practically meaningful, even if the effect is not actually zero [@kingPointMinimalImportant2011]. For strategies on the even more difficult task of specifying a plausible SESOI, as well as a thorough discussion of various topics concerning power analysis, see [@lakensImprovingYourStatistical2022]. When domain knowledge or formal theories about the research topic of interest are too vague to specify a meaningful SESOI, it is still recommended to demonstrate power for different effect sizes in what is called *sensitivity power analysis*. By simulating power for different effect sizes (in addition to the different number of subjects and items), one can make sure that power would still be sufficient to detect smaller effect sizes than our expected effect or at least get an impression of how strongly power depends on the size of the true effect. In simple study designs, it is possible to perform sensitivity power analysis based on a single standardized effect size (e.g., analyze power in a two-sample t-test for a standardized mean difference varying between 0.1 and 0.8). However, for our case study that investigates combined hypotheses in a GLMM modeling framework, the effect size is implicitly represented by the complex distribution of probabilities within and between experimental conditions. In this setting, sensitivity power analysis would require manually specifying additional sets of plausible parameter values that reflect scenarios with smaller or larger differences between groups with respect to our specific research question. Power could then be simulated for several of these scenarios (across different numbers of subjects and items, as considered earlier).
+In our case study, we have performed simulation-based power analysis from a single set of parameter values that reflect our assumptions of an expected effect size. Instead of extracting this expected effect size from meta-analyses or pilot data, which has been the main focus of previous tutorials, we have demonstrated some strategies to determine plausible parameter values in GLMMs based on domain knowledge. Domain knowledge can be considered a vague theoretical model about the data-generating process that is less formal and can only be accessed by a back-and-forth exchange in which domain experts assess the plausibility of simulated data. When sample sizes are chosen based on the results of our simulation-based power analysis, a future study will be informative to reject the null hypothesis if an effect of our *expected size* is present. However, if the true effect is indeed smaller, the power will be lower, and the study might not be sufficiently informative. A common, more conservative strategy for sample size justification is to perform power analysis for the smallest effect size of interest (SESOI). An effect smaller than the SESOI would be considered too small to be interesting or practically meaningful, even if the effect is not actually zero [@kingPointMinimalImportant2011]. For strategies on the even more difficult task of specifying a plausible SESOI, as well as a thorough discussion of various topics concerning power analysis, see [@lakensImprovingYourStatistical2022]. When domain knowledge or formal theories about the research topic of interest are too vague to specify a meaningful SESOI, it is still recommended to demonstrate power for different effect sizes in what is called *sensitivity power analysis*. By simulating power for different effect sizes (in addition to the different number of subjects and items), one can make sure that power would still be sufficient to detect smaller effect sizes than our expected effect or at least get an impression of how strongly power depends on the size of the true effect. In simple study designs, it is possible to perform sensitivity power analysis based on a single standardized effect size (e.g., analyze power in a two-sample t-test for a standardized mean difference varying between 0.1 and 0.8). However, for our case study that investigates combined hypotheses in a GLMM modeling framework, the effect size is implicitly represented by the complex distribution of probabilities within and between experimental conditions. In this setting, sensitivity power analysis would require manually specifying additional sets of plausible parameter values that reflect scenarios with smaller or larger differences between groups with respect to our specific research question. Power could then be simulated for several of these scenarios (across different numbers of subjects and items, as considered earlier).
 
 ## Outlook
 
