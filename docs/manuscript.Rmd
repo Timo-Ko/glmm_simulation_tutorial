@@ -50,7 +50,7 @@ affiliation:
 note: "\\clearpage" #added this to move entire author note to second page
 authornote: |
   This research was funded by a grant from the Volkswagen Foundation (Grant No. 98525).
-  All R code in this manuscript and simulation results are available in the project's repository on the Open Science Framework (OSF): https://osf.io/dhwf4/
+  All materials (reproducible manuscript incl. R code, simulation results) are available in the project's repository on the Open Science Framework (OSF): https://osf.io/dhwf4/
 
 abstract: |
 
@@ -58,7 +58,7 @@ abstract: |
   
 keywords          : "power analysis, data simulation, sample size, generalized linear mixed model"
 
-wordcount         : "7598"
+wordcount         : "7600"
 
 bibliography      : ["../Simulation Tutorial Paper.bib", "r-references.bib"]
 
