@@ -63,7 +63,7 @@ wordcount         : "7600"
 bibliography      : ["../Simulation Tutorial Paper.bib", "r-references.bib"]
 
 floatsintext      : yes
-linenumbers       : yes
+linenumbers       : no
 draft             : no
 mask              : no
 
