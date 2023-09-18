@@ -50,7 +50,7 @@ affiliation:
 note: "\\clearpage" #added this to move entire author note to second page
 authornote: |
   This research was funded by a grant from the Volkswagen Foundation (Grant No. 98525).
-  All R code in this manuscript is available in the project's repository on the Open Science Framework (OSF): https://osf.io/dhwf4/
+  All R code in this manuscript and simulation results are available in the project's repository on the Open Science Framework (OSF): https://osf.io/dhwf4/
 
 abstract: |
 
@@ -162,7 +162,7 @@ Based on the need for well-powered experimental research using GLMMs and the lac
 
 <!-- overview of this section -->
 
-In this section, we outline the steps for performing data simulation and a priori power analysis for GLMMs using a case study based on a specific experimental study design from the area of human-AI (artificial intelligence) interaction research. The corresponding code in this manuscript is available in the project's repository on the Open Science Framework (https://osf.io/dhwf4/).
+In this section, we outline the steps for performing data simulation and a priori power analysis for GLMMs using a case study based on a specific experimental study design from the area of human-AI (artificial intelligence) interaction research. All code in this manuscript and simulation results are available in the project's repository on the Open Science Framework (https://osf.io/dhwf4/).
 
 ## Experimental study design
 
