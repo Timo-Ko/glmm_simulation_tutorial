@@ -26,14 +26,16 @@ author:
   - name          : "Anne-Kathrin Kleine"
     affiliation   : "1"
     role:
+      - "Formal Analysis"      
       - "Writing - Review & Editing"
   - name          : "Eva Lermer"
     affiliation   : "1,3"
     role:
-      - "Resources"
+      - "Resources" # this is not sufficient as co-authors for AMPPS...
   - name          : "Susanne Gaube"
     affiliation   : "1,4"
     role:
+      - "Conceptualization"
       - "Writing - Review & Editing"
       - "Supervision"
       
