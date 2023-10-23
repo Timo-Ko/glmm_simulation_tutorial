@@ -31,13 +31,15 @@ author:
   - name          : "Eva Lermer"
     affiliation   : "1,3"
     role:
-      - "Resources" # this is not sufficient as co-authors for AMPPS...
+      - "Conceptualization"
+      - "Resources"
+      - "Writing - Review & Editing"
   - name          : "Susanne Gaube"
     affiliation   : "1,4"
     role:
       - "Conceptualization"
-      - "Writing - Review & Editing"
       - "Supervision"
+      - "Writing - Review & Editing"
       
 affiliation:
   - id            : "1"
@@ -56,11 +58,11 @@ authornote: |
 
 abstract: |
 
-  When planning experimental research, determining an appropriate sample size and using suitable statistical models are crucial for robust and informative results. However, the recent replication crisis underlines the need for more rigorous statistical methodology and well-powered designs. Generalized linear mixed models (GLMMs) offer a flexible statistical framework to analyze experimental data with complex (e.g., dependent and hierarchical) data structures. Yet, analytic methods and software cannot be applied to conduct a priori power analyses for GLMMs, necessitating data simulation approaches. Based on a practical case study, the current tutorial equips researchers with a step-by-step guide and corresponding code for conducting tailored a priori power analyses to determine appropriate sample sizes with GLMMs. Finally, we give an outlook on the increasing importance of simulation-based power analysis in experimental research.
+  When planning experimental research, determining an appropriate sample size and using suitable statistical models are crucial for robust and informative results. However, the recent replication crisis underlines the need for more rigorous statistical methodology and well-powered designs. Generalized linear mixed models (GLMMs) offer a flexible statistical framework to analyze experimental data with complex (e.g., dependent and hierarchical) data structures. Yet, available methods and software for a priori power analyses for GLMMs are often limited to specific designs, while data simulation approaches offer more flexibility. Based on a practical case study, the current tutorial equips researchers with a step-by-step guide and corresponding code for conducting tailored a priori power analyses to determine appropriate sample sizes with GLMMs. Finally, we give an outlook on the increasing importance of simulation-based power analysis in experimental research.
   
 keywords          : "power analysis, data simulation, sample size, generalized linear mixed model"
 
-wordcount         : "7600"
+wordcount         : "7504"
 
 bibliography      : ["../Simulation Tutorial Paper.bib", "r-references.bib"]
 
@@ -72,8 +74,6 @@ mask              : no
 figurelist        : no
 tablelist         : no
 footnotelist      : no
-
-#csl               : "acm-sigchi-proceedings.csl" #added this for chi submission, not needed for preprint
 
 classoption       : "man"
 output: 
@@ -617,6 +617,26 @@ Much has been written on the optimal amount of power to target in empirical rese
 ## Expected effect size vs. smallest effect size of interest: sensitivity power analysis
 
 In our case study, we have performed simulation-based power analysis from a single set of parameter values that reflect our assumptions of an expected effect size. Instead of extracting this expected effect size from meta-analyses or pilot data, which has been the main focus of previous tutorials, we have demonstrated some strategies to determine plausible parameter values in GLMMs based on domain knowledge. Domain knowledge can be considered a vague theoretical model about the data-generating process that is less formal and can only be accessed by a back-and-forth exchange in which domain experts assess the plausibility of simulated data. When sample sizes are chosen based on the results of our simulation-based power analysis, a future study will be informative to reject the null hypothesis if an effect of our *expected size* is present. However, if the true effect is indeed smaller, the power will be lower, and the study might not be sufficiently informative. A common, more conservative strategy for sample size justification is to perform power analysis for the smallest effect size of interest (SESOI). An effect smaller than the SESOI would be considered too small to be interesting or practically meaningful, even if the effect is not actually zero [@kingPointMinimalImportant2011]. For strategies on the even more difficult task of specifying a plausible SESOI, as well as a thorough discussion of various topics concerning power analysis, see [@lakensImprovingYourStatistical2022]. When domain knowledge or formal theories about the research topic of interest are too vague to specify a meaningful SESOI, it is still recommended to demonstrate power for different effect sizes in what is called *sensitivity power analysis*. By simulating power for different effect sizes (in addition to the different number of subjects and items), one can make sure that power would still be sufficient to detect smaller effect sizes than our expected effect or at least get an impression of how strongly power depends on the size of the true effect. In simple study designs, it is possible to perform sensitivity power analysis based on a single standardized effect size (e.g., analyze power in a two-sample t-test for a standardized mean difference varying between 0.1 and 0.8). However, for our case study that investigates combined hypotheses in a GLMM modeling framework, the effect size is implicitly represented by the complex distribution of probabilities within and between experimental conditions. In this setting, sensitivity power analysis would require manually specifying additional sets of plausible parameter values that reflect scenarios with smaller or larger differences between groups with respect to our specific research question. Power could then be simulated for several of these scenarios (across different numbers of subjects and items, as considered earlier).
+
+## Outlook
+
+<!-- Outlook -->
+Beyond the specifics of our concrete case study, we want to outline six developments regarding the future role of simulation-based power analysis in experimental research:
+
+1.  The growing need for simulation-based power analyses in experimental research: In order to conduct well-powered research using varying complex experimental designs with GLMMs formula-based heuristics and user-friendly software tools for a priori power analysis are often not suitable. Therefore, simulation-based power analysis is becoming increasingly needed since it provides experimental researchers with a tailored approach to estimating required sample sizes before data collection. 
+
+2.  Managing data simulations more easily with discrete predictor variables: Simulation-based power analysis becomes more manageable when all predictor variables are discrete (like in the presented case study) and fixed by the study design. 
+This allows researchers to focus on simulating outcome variables while avoiding the need for complex simulations of predictor values, which would introduce additional assumptions. By simplifying the simulation process, researchers can obtain reliable power estimates without compromising realistic assumptions about the data-generating process implied by the study design. 
+
+3.  Teaching data simulation skills: The ability to conduct simulation-based power analysis is a valuable skill that should be taught to experimental researchers. By incorporating such training into research methods courses and workshops, researchers can gain a deeper understanding of statistical power and improve the quality of their experimental designs. 
+Equipping researchers with the knowledge and tools to perform simulation-based power analyses enables them to make informed decisions and enhance the rigor of their studies. 
+The need to reason about how to simulate plausible data that is in line with the research hypothesis, while not violating domain expertise on how plausible data should look, might also contribute to planning more insightful studies that can answer more precise research questions [@yarkoniGeneralizabilityCrisis2022].
+
+4.  Addressing the mismatch in effort perception: There is often a significant disconnect between the amount of effort required to perform simulation-based a priori power analysis and the perceived effort estimated by researchers and collaborators in experimental research. Many researchers request simulation-based power analyses from statisticians or methodological experts without fully comprehending the complexity and time-consuming nature of these tailored simulations. It is crucial to raise awareness about the effort involved to ensure realistic expectations and effective collaboration between researchers and methodological experts.
+
+5.  Recognizing the value of simulation-based power analysis: Simulation-based power analyses are not mere technicalities; they are valuable research contributions that deserve recognition in experimental research. They offer insights into the robustness and sensitivity of experimental designs, helping researchers make informed decisions about sample sizes, effect sizes, and statistical power. Their importance can be reflected by allocating them a separate publication or incorporating them as a significant component of stage 1 preregistered reports [@chambersPresentFutureRegistered2022].
+
+6.  Integration with Open Science and preregistration practices: Simulation-based powers analysis aligns well with the principles of Open Science and preregistration in experimental research. When researchers have access to simulated data based on their pre-specified model, analyzing the collected dataset becomes straightforward and unambiguous. By preregistering their simulation-based power analysis, researchers enhance the transparency and accountability of their experimental procedures, contributing to the credibility and reproducibility of research.
 
 # Conclusion
 
