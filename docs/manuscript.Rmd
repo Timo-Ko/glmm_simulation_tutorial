@@ -105,12 +105,12 @@ Although we give some short introduction to clarify our terminology, to profit t
 Readers should understand basic statistical concepts like hypothesis tests and their statistical power but also confidence intervals and their precision.
 Some background knowledge in empirical estimands, statistical estimates, and causal inference is very useful but not absolutely necessary.
 
-In addition, readers should have basic programming skills in R on how to simulate data and repeat these simulations in parallel to speed up computation.
-While there are a myriad options for data simulation in R beyond the basic functionality in the base and stats packages, in our tutorial we use functions from the tidyverse and the faux package.
+In addition, readers should have basic programming skills in R on how to simulate data and how to repeat these simulations in parallel to speed up computation.
+While there are a myriad of options for data simulation in R beyond the basic functionality in the base and stats packages, in our tutorial we use functions from the tidyverse and the faux package.
 
 Finally, readers should be familiar with regression modeling in general and GLMMs in particular.
 In our tutorial, we simulate data by manually specifying the model equation of a GLMM that represents our assumed data generating process.
-While it is not necessary to understand the technical details of how GLMMs are estimated, it is crucial to understand the structure of a basic GLMM (e.g., logistic regression with random intercepts).
+While it is not necessary to understand the technical details of how GLMMs are estimated, it is crucial to understand the structure of a basic GLMM (e.g., logistic regression with random intercepts) and how the model assumes that the values in the dependent variable are determined by the predictor variables and the random effects.
 
 
 Literature:
@@ -162,8 +162,14 @@ Real studies are often more complex than the simplified designs assumed by many 
 #### Missing data
 
 Missing data is a frequent issue in applied data analysis.
-
-- Missing data processes; data missing by design; dropout
+There can be various reasons for why data is missing.
+For example data can be missing completely at random.
+Alternatively, subjects might drop out or produce missing data as a result of some covariate also measured in the dataset.
+A a different note, many experimental designs contain some conditions in which some values of the predictor variables are missing by design.
+Missing by design conditions can make data analysis more complicated because predictors have to be coded in highly specific ways that prevent the estimated GLMM to become unidentified.
+Whether missing data has an effect on the result of design analysis depends on the characteristics of the missing data process.
+However, except for very simple scenarios, deciding whether missing data can be safely ignored in the design analysis is often difficult to decide on a theoretical basis.
+A better strategy is to explicitly include the (assumed) process of missing data into the data simulation process.
 
 #### Data generating processes beyond standard GLMMs
 
@@ -199,25 +205,62 @@ In contrast, our case study will demonstrate how we can test directed combined h
 
 ### Planning for precision
 
-- Planning for expected width of confidence intervals
-    - The most interesting contrasts are usually on the scale of the outcome instead of the scale of the coefficients
+As discussed earlier, the two major frameworks for sample size planning are planning for power and planning for precision.
+Although planning for precision has been increasingly discussed as a more suitable strategy for exploratory research, all available software packages for sample size planning with GLMMs are based on power analysis.
+
+As we will show in our case study, tailored simulation based design analysis can also be based on planning for precision.
+The only change in procedure is that instead of computing hypothesis tests for each simulated dataset and estimating statistical power across repetitions, confidence intervals are computed for each simulated dataset and the expected width is estimated across repetitions. 
+
+As long as one were interested only in confidence intervals of single model parameters, it might be possible to adapt existing software packages to plan for precision.
+However, we demonstrate in our case study that in realistic research projects with GLMMs, the contrasts of interests and their respective confidence intervals are usually situated on the scale of the (expected) outcomea in contrast to the scale of the model parameters.
+Computing these contrasts and estimating the expected width of these confidence intervals usually requires tailored data analysis that is not possible with the existing software packages for sample size planning.
     
 ### No prior studies or pilot data
 
-- No prior studies or pilot data available
-    - Detailed data simulation is necessary to identify plausible scenarios for effects sizes
+All frameworks for sample size planning require the user to make assumptions about the expected effect size.
+Assuming the true effect is of this size (or greater), one can compute the (minimum) power of a hypothesis test or the (maximum) expected width of a confidence interval.
+Existing software packages for sample size planning for GLMMs usually require to provide the assumed effect in the unit of some standardized measure of effect size.
+When the researcher has access to similar studies or pilot data, providing such standardized effect sizes is feasible.
+However, this requirement can be an almost impossible challenge when no prior studies of pilot data are available.
+This problem is further exacerbated by the fact that GLMMs are so flexible, that general heuristics of what should be considered a small effect do not exist or are difficult to defend.
+In our experience, using domain knowledge to construct a tailored data simulation is the only solution to determine plausible effect sizes in the absence of prior evidence.
+It would be possible to use these tailored simulations to extract plausible values for standardized effect sizes that could then be inserted in existing software packages for sample size planning.
+However, we would argue that when tailored data simulations are necessary anyways, performing the whole desing analysis in a customized way is preferred over using the existing software packages.
 
-## General steps in simulation-based sample size planning
+## General steps in tailored simulation-based sample size planning
 
-Each tailored simulation based design analysis requires a series of steps and decisions.
+Although the details differ depending on the specific study characteristics, each tailored simulation based design analysis requires a series of steps and decisions that we will outline in this section.
 
 ### Simulate the data generating process
 
+The first step is to write code that simulates the (assumed) data generating process of the planned study.
+This requires specifying a generative process for all predictor variables used in the final data analysis.
+While such assumptions can be quite challenging for observational studies and/or continuous predictor variables, this is less of a problem for experimental studies with categorical predictor variables.
+When all predictor variables have been simulated, one can use the structure of a suitable GLMM to simulate the dependent variable.
+To simulate the GLMM, one requires plausible values for all model parameters.
+We will discuss strategies for how these values can be obtained later.
+Because one has full control over the data generating process in a tailored simulation, it is simple to also model highly specific aspects of the planned study, like data missing by design or assuming that subjects dropout (i.e. deleting their data from the simulated dataset) based on other variables in the simulated dataset.
+The quality of the results of the design analysis crucially depends on the plausibility of the simulated data generating process.
+For this reasons, deciding on a specific set of assumptions can easily feel overwelming.
+However, we would argue that even a strongly simplified data generating process (e.g. including only a small number of interaction effect; including only random intercepts but no random slopes; making rather implausible assumptions for missing data) can yield informative result and should be strongly preferred to the current state of psychological research where most studies do not justify their sample size or use highly questionable heuristics that are independent of their specific research question.
+
 ### Estimate the statistical model
+
+At this point, the researcher is capable of producing a simulated dataset similar to the actual dataset that will later be collected in the planned study.
+The next step is to specify how the statistical model shall be estimated in the actual study collected later.
+This usually includes the selection of 1) a statistical framework (e.g., frequentist statistics), 2) a software package that is capable of estimating the model class of interest (e.g., the lme4 R package), 3) an estimation algorithm (e.g., the default optimizer "bobyqa"), and 4) the specific model structure including all fixed effects, random effects, and the model family of the dependent variable.   
+Note that this does not always mean that one will specify the same GLMM that was used when specifying the data generating process.
+On the one hand, using a simpler model for data simulation than for model estimation can be a useful strategy in scenarios where making plausible assumptions for complicated random effect structures and interactions is not feasible.
+On the other hand, using a more complex model (that perhaps even goes beyond a standard GLMM) for data simulation than for model estimation can be a useful strategy in scenarios where one has specific domain knowledge about aspects of the data generating process that are still difficult to estimate with the current state-of-the-art in multilevel modeling.
+In such more complicated scenarios, the final model specification might also depend on the next decision on specifying the theoretical estimand.
 
 ### Specify the estimand
 
-- Specify estimand (conditional vs. marginal perspective)
+This step requires a clear definition of which theoretical quantity is necessary to answer the specific research question of the study under planning.
+In an ideal world, this should be the first step in every research process.
+However in our experience, many psychological researchers are still not well trained in this task.
+We think that simulating data from a generic GLMM that is suited to describe (at least a rough approximation of) the assumed data generating process, can help to better reason about what information is actually needed to answer the specific research question, and how this information is actually represented in the context of the statistical model representing the data generating process of the planned study.
+
 
 ### Compute the estimate
 
