@@ -1,8 +1,8 @@
 ---
-title             : "A Tutorial on Tailored Simulation-Based Power Analysis for Experimental Designs with Generalized Linear Mixed Models"
-shorttitle        : "Simulation-Based Power Analysis for GLMMs"
-
+title             : "A Tutorial on Tailored Simulation-Based Sample Size Planning for Experimental Designs with Generalized Linear Mixed Models"
+shorttitle        : "Simulation-Based Sample Size Planning for GLMMs"
 author: 
+      
   - name          : "Timo K. Koch"
     affiliation   : "1, 2"
     corresponding : yes    # Define only one corresponding author
@@ -40,7 +40,6 @@ author:
       - "Conceptualization"
       - "Supervision"
       - "Writing - Review & Editing"
-      
 affiliation:
   - id            : "1"
     institution   : "LMU Munich, Department of Psychology"
@@ -50,31 +49,23 @@ affiliation:
     institution   : "Technical University of Applied Sciences Augsburg, Department of Business Psychology"
   - id            : "4"
     institution   : "University College London, Global Business School for Health"
-
 note: "\\clearpage" #added this to move entire author note to second page
 authornote: |
   This research was funded by a grant from the Volkswagen Foundation (Grant No. 98525).
   All materials (reproducible manuscript incl. R code, simulation results) are available in the project's repository on the Open Science Framework (OSF): https://osf.io/dhwf4/
-
 abstract: |
-
   When planning experimental research, determining an appropriate sample size and using suitable statistical models are crucial for robust and informative results. However, the recent replication crisis underlines the need for more rigorous statistical methodology and well-powered designs. Generalized linear mixed models (GLMMs) offer a flexible statistical framework to analyze experimental data with complex (e.g., dependent and hierarchical) data structures. Yet, available methods and software for a priori power analyses for GLMMs are often limited to specific designs, while data simulation approaches offer more flexibility. Based on a practical case study, the current tutorial equips researchers with a step-by-step guide and corresponding code for conducting tailored a priori power analyses to determine appropriate sample sizes with GLMMs. Finally, we give an outlook on the increasing importance of simulation-based power analysis in experimental research.
   
 keywords          : "power analysis, data simulation, sample size, generalized linear mixed model"
-
 wordcount         : "7504"
-
 bibliography      : ["../Simulation Tutorial Paper.bib", "r-references.bib"]
-
 floatsintext      : yes
 linenumbers       : no
 draft             : no
 mask              : no
-
 figurelist        : no
 tablelist         : no
 footnotelist      : no
-
 classoption       : "man"
 output: 
   papaja::apa6_pdf:
@@ -96,8 +87,198 @@ r_refs("r-references.bib")
 ```{r analysis-preferences}
 # Seed for random number generation
 set.seed(42)
-knitr::opts_chunk$set(cache.extra = knitr::rand_seed, echo = TRUE, eval = TRUE, fig.keep = "high", dev = "jpeg")
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed, echo = TRUE, eval = FALSE, fig.keep = "high", dev = "jpeg")
 ```
+
+# New Intro Structure
+
+# Introduction
+
+<!-- General short intro paragraph, need for well-powered and analyzed experimental research -->
+When planning experimental research, it is essential to determine an appropriate sample size to ensure that the results obtained are both robust and informative, and to use appropriate statistical models to analyze the data [@lakensSampleSizeJustification2022]. However, the recent replication crisis has illustrated many challenges surrounding the reproducibility and reliability of findings [@yarkoniGeneralizabilityCrisis2022]. As a result, there is a growing need for more rigorous statistical methodology and the adoption of well-powered experimental designs. While easy-to-use software solutions exist for simple statistical models and experimental designs, many researchers lack the skills and tools to conduct "a priori" (i.e., before data collection) design analysis for more complex research designs using the flexible generalized linear mixed models (GLMM) framework in order to determine the required sample size in their experiments. In the present work, we provide a tutorial on performing tailored simulation based sample size planning for GLMMs. After introducing general concepts, we review existing software solutions in R and discuss under which circumstances tailored data simulations are necessary. Then we describe general steps and decisions that are necessary whenever performing tailored data simulation. Because the details of these steps vary considerably for each specific study, we finish with a case study from the field of human-AI (artificial intelligence) interaction research.
+
+## Prior Knowledge
+
+Simulation-based sample size planning for generalized linear models is a complex topic that touches on a variety of statistical concepts and programming skills.
+Although we give some short introduction to clarify our terminology, to profit the most from our tutorial, our readers require prior knowledge in the following topics (or refer to our collection of background literature):
+
+Readers should understand basic statistical concepts like hypothesis tests and their statistical power but also confidence intervals and their precision.
+Some background knowledge in empirical estimands, statistical estimates, and causal inference is very useful but not absolutely necessary.
+
+In addition, readers should have basic programming skills in R on how to simulate data and repeat these simulations in parallel to speed up computation.
+While there are a myriad options for data simulation in R beyond the basic functionality in the base and stats packages, in our tutorial we use functions from the tidyverse and the faux package.
+
+Finally, readers should be familiar with regression modeling in general and GLMMs in particular.
+In our tutorial, we simulate data by manually specifying the model equation of a GLMM that represents our assumed data generating process.
+While it is not necessary to understand the technical details of how GLMMs are estimated, it is crucial to understand the structure of a basic GLMM (e.g., logistic regression with random intercepts).
+
+
+Literature:
+
+- Lakens ebook
+- R for data science
+- Bruine article, faux documentation
+- draschkow power tutorial
+- what is your estimand? paper
+
+## General concepts
+ 
+### Planning for statistical power or precision
+
+The majority of empirical studies in psychology applies hypothesis testing.
+As a consequence, the dominant approach for sample size planning is based on the power analysis (i.e., planing for power).
+However, sample size planning can also be based on the precision of parameter estimates (planning for precision).
+
+
+#### Planning for power
+
+<!-- Some basics on statistical power -->
+In empirical research relying on hypothesis testing, the most common strategy for determining an adequate sample size is based on statistical power [@lakensSampleSizeJustification2022].
+Statistical power is defined as the probability that a hypothesis test has a significant p-value when analyzing repeated samples from a population with a true effect of some pre-specified size. Less formally, power is described as the probability that a hypothesis test correctly rejects the null hypothesis when the alternative hypothesis is true.
+If the sample size (i.e., the number of participants and/or stimuli) used for data collection is insufficient to detect the effects or relationships being investigated with high probability, the study would be considered "underpowered".
+
+<!-- what are the resulting issues with underpowered studies? -->
+Conducting underpowered research has many negative consequences. First, relying on underpowered experiments may yield inconclusive (if researchers acknowledge the small evidential value of an underpowered study in the limitations section) or misleading (if low power is ignored by the researchers) results, hindering the accumulation of knowledge. Second, underpowered studies waste resources by consuming time, effort, and funding without delivering meaningful results.
+
+
+#### Planning for precision
+
+
+### Generalized linear mixed models (GLMMs)
+
+## Simulation based sample size planning with GLMMs
+
+- Insert table on existing R packages for power analysis with GLMMs
+
+## When do we profit from tailored data simulation?
+
+Performing tailored simulation based design analysis is more complicated and time consuming than using existing software tools for sample size planning.
+Thus, it is worth discussing under which circumstances we most profit from or are forced to perform tailored simulation based design analysis, because existing software solutions do not meet our requirements.
+
+### Complex study designs
+
+Real studies are often more complex than the simplified designs assumed by many user-friendly software packages for sample size planning.
+
+#### Missing data
+
+Missing data is a frequent issue in applied data analysis.
+
+- Missing data processes; data missing by design; dropout
+
+#### Data generating processes beyond standard GLMMs
+
+While GLMMs are a very flexible model class that can handle a large variety of outcome variables, psychological researchers are becoming increasingly aware that many psychological datasets might profit from even more sophisticated models.
+Common examples are zero-inflated outcomes, censoring, and nonlinear predictor effects.
+
+    - possibility to extend beyond standard GLMMs (e.g. zero-inflated outcomes, censoring, nonlinear effects, …)
+
+### Complex statistical hypotheses
+
+The most common hypotheses tested in psychological research are of the type $H_0: \beta = 0$, where $\beta$ is some coefficient in a regression model.
+However, many research questions in psychology actually require testing more complex statistical hypotheses.
+
+#### Directed hypotheses and testing against values other than 0
+
+In the new era of preregistration and registered reports, most research questions are tested with directed hypotheses, because good theories should at least postulate whether some psychological effect of interest is positive or negative.
+Even better theories should be able to specify a smallest effect sizes of interest (SESOI) that must be exceeded if the psychological effect has some practical relevance in a specific application.
+In combination, this might require a test like $H_0: \beta \leq 0.1$.
+
+#### Combined hypotheses 
+
+Elaborate research questions often require testing hypotheses that consist of a combination of model parameters, for example $H_0: \beta_0 + \beta_1 \leq 0$.
+If the research question consists only of a single hypothesis of this sort, it is often possible to reduce the hypothesis to a single regression coefficient by clever coding and/or centering of predictor variables.
+However, interesting research questions often consist of combined hypotheses that consist of more than one separate statistical hypotheses.
+For example, a combined null hypothesis $H_0$ might consist of two single null hypotheses $H_{01}: \beta_1 \leq 0$ and $H_{02}: \beta_0 + \beta_1 \leq 0$.
+For some research questions, the combined null hypothesis $H_0$ would be rejected if both $H_{01}$ *AND* $H_{02}$ are rejected.
+For other research questions, the combined null hypothesis $H_0$ would be rejected if $H_{01}$ *OR* $H_{02}$ *OR* both are rejected.
+If the global hypothesis $H_0$ is combined with *OR*, the p-values of the single hypotheses must be corrected for multiple testing to avoid $\alpha$-inflation for the global hypothesis.
+However, if the global hypothesis $H_0$ is combined with *AND*, a correction for multiple testing is not necessary but rather a mistake that unnecessarily reduces the power of the global hypothesis test.
+
+None of the software packages for sample size planning in table X can handle combined hypotheses as discussed here.
+In contrast, our case study will demonstrate how we can test directed combined hypotheses with tailored simulation based design analysis. 
+
+### Planning for precision
+
+- Planning for expected width of confidence intervals
+    - The most interesting contrasts are usually on the scale of the outcome instead of the scale of the coefficients
+    
+### No prior studies or pilot data
+
+- No prior studies or pilot data available
+    - Detailed data simulation is necessary to identify plausible scenarios for effects sizes
+
+## General steps in simulation-based sample size planning
+
+Each tailored simulation based design analysis requires a series of steps and decisions.
+
+### Simulate the data generating process
+
+### Estimate the statistical model
+
+### Specify the estimand
+
+- Specify estimand (conditional vs. marginal perspective)
+
+### Compute the estimate
+
+- Compute hypothesis test or confidence interval
+
+### Perform repeated simulations
+
+- Write code to perform repeated simulations
+
+<!-- ### Sensitivity analysis -->
+
+
+
+## Strategies on specifying the population parameters
+
+As discussed earlier, tailored simulation based design analysis is especially relevant when studies have to be planned in the absence of previous studies with a similar design or any pilot data.
+In this scenario, researchers require strategies on how to specify the population parameters used in their data simulation.
+Population parameters are all model parameters estimated in a GLMM, in particular the regression coefficients of the fixed effects and the standard deviation of the random effects (and the correlation between random effects in more complicated models).
+In contrast to non-hierarchical linear regression, common heuristics based on standardized effect sizes are less useful or not even available.
+Our strategies to specify population parameters will require access to domain knowledge from domain experts.
+Because most domain knowledge of domain experts can only be expressed in unstandardized measurement units of a specific application, we argue that unstandardized effect sizes are usually preferred over standardized effect sizes for tailored simulation based design analysis.
+This requires new strategies on how the data generating process implied by certain values of population parameters can be quantified or visualized in an intuitive way that enables a calibration of population parameters based on the available domain knowledge of domain experts.
+
+Although we focus on frequentist statistics in our tutorial, selecting plausible values for data simulation shares many similarities with the specification of (weakly) informative prior distribution in applied Bayesian statistics.
+In this literature, there have been developed some strategies to monitor the plausibility of (prior) model assumptions, that can be adapted for our purposes.
+
+### Insightful descriptive statistics
+
+For most GLMMs, the interpretation of model parameters if quite complicated which makes it difficult to specify plausible values for a specific application.
+However, the mathematical structure of GLMMs determines which patterns in data would be produced by the model, if a specific set of values for the population parameters would be specified.
+The knowledge of how to simulate from a GLMM enables us to compute insightful descriptive statistics that can be compared to available domain knowledge much more easily than the opaque values of model parameters.
+For example, domain experts might not be able to specify plausible values for the $\beta$ coefficients in a logistic regression model (which are measured on the log-odds scale).
+However, they should be able to reason about the expected ratio of the binary dependent variable in different experimental condition, i.e. which descriptive statistics they expect to observe (on average), when they will analyse the actual dataset produced by the study under planning (if everything turns out as postulated by the investigated theory). 
+The job of the analyst who is familiar with the mathematical structure of the GLMM is to produce the model implied value of the insightful descriptive statistic expected by the domain expert.
+Although insightful descriptive statistics often depend on the model parameters in complicated ways, it is usually possible to manually adjust the population parameters (if only with the help of trial and error) until the model implied quantities produce the desired result.
+
+### Insightful model based quantities
+
+Because GLMMs are complicated models, descriptive statistics alone are usually not enough to specify plausible values for all model parameters.
+This is especially true for the standard deviation of random effects, that have complicated (and often unexpected) effects on the model-implied results.
+An important advantage of data simulation (where one has full control over parameter values and sample sizes) is that one can produce insightful model based quantities that can never be directly observed in an actual empirical dataset.
+For example, in a logistic model with random intercepts for participants, one can produce a visualization of the implied distribution of the probability that a participant on average solves a cognitive task.
+Although domain knowledge will probably not suffice to specify this distribution completely, it should be possible to rule out unplausible boundary conditions.
+For example, the domain expert might deem it unplausible that the 5% most able participants have a probability of more than 0.99 to solve the difficult cognitive task.
+
+
+### Iterative process with domain experts
+
+In our experience, the gathering of domain knowledge by domain experts and the consecutive specification of population parameter values used in data simulation is not a one-time event but rather an iterative process.
+In a first step, domain experts can be interviewed to "elicit" their domain knowledge about how the future data of the planned study is expected to look like.
+As most domain experts are no experts in statistical modeling and GLMMs, they often struggle without further guidance to communicate their knowledge in a way that is useful when specifying the parameters for data simulation.
+For this reason, we suggest that after an initial unstructured interview of domain experts, the analyst which is familiar with the structure of the GLMM under study selects an initial set of insightful descriptive statistics and model based quantities.
+Then they reenter into an iterative discussion where some set of population values are selected and the plausibility of resulting implied quantities are discussed with the domain experts.
+Then, the population parameters are updated based on this discussion until the domain experts are satisfied with the final result.
+During this process, the monitored model based quantities and descriptive statistics can be updated or extended to capture as much available domain knowledge as possible.
+
+# Case study
+
+# Conclusion
+
+----
 
 # Introduction
 
@@ -194,7 +375,7 @@ However, the model parameterization used by the lme4 package is quite technical,
 In a GLMM, the expected value of the dependent variable Y conditioned on the vector of predictor variables $\mathbf{X}$ and random effects $\mathbf{U}$, transformed by a link function $g()$ is modeled as a linear combination $\eta$ of the predictor variables $\mathbf{X}$, the random effects $\mathbf{U}$ and the model parameters $\mathbf{\beta}$ [@fahrmeirRegressionModelsMethods2021]: $$
 g(E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = \eta
 $$ Equivalently, the conditional expected value is modeled as the linear combination $\eta$, transformed by the inverse link function $g^{-1}()$: $$
-E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = g^{-1}(\eta)
+E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u}) = g^{-1}(\eta)
 $$ If the dependent variable (i.e., diagnostic decision) $Y$ is a binary variable with values $0$ (i.e., inaccurate), or $1$ (i.e., accurate), the conditional expected value is equivalent to the probability: $$
 P_{si} := P(Y = 1|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})
 $$ In our case study, $P_{si}$ is the conditional probability that a subject $s$ gives the correct response to item (i.e., CT scan) $i$.
@@ -353,6 +534,36 @@ inverse\_logit[(\beta_0 + u_{0s} + u_{0i}) + \beta_e + \beta_{a} + \beta_{c} + \
 $$ which simplifies to $\beta_{a} + \beta_{c} + \beta_{ea} + \beta_{ec} \leq 0$.
 
 We can specify and test hypotheses like these with the multcomp package [@hothornSimultaneousInferenceGeneral2008] as follows:
+
+```{r}
+library(marginaleffects)
+hypotheses(fit, hypothesis = c(
+  "`advice_present` + `advice_correct` + `expert:advice_present` +
+  `expert:advice_correct` = 0",
+  "`advice_present` + `advice_correct` = 0",
+  "`advice_present` + `expert:advice_present` = 0",
+  "`advice_present` = 0"
+), equivalence = 0)
+
+avg_predictions(fit, variables = list(expert = 0:1, advice_present = 0:1, advice_correct = 0:1)) %>%
+  hypotheses(hypothesis = c(
+    "b8 - b2 = 0",
+    "b7 - b1 = 0",
+    "b2 - b4 = 0",
+    "b1 - b3 = 0"
+    )) %>%
+  inferences(method = "delta")
+
+comparisons(fit)
+avg_comparisons(fit, hypothesis = c(
+  "`advice_present` + `advice_correct` + `expert:advice_present` +
+  `expert:advice_correct` = 0",
+  "`advice_present` + `advice_correct` = 0",
+  "`advice_present` + `expert:advice_present` = 0",
+  "`advice_present` = 0"
+))
+```
+
 
 ```{r, message=FALSE}
 library(multcomp)
