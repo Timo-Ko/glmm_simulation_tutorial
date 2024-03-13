@@ -616,6 +616,22 @@ hypotheses(fit, hypothesis = c(
 
 ## Interval estimation
 
+```{r}
+probs <- avg_predictions(fit, variables = list(
+  expert = 0:1, advice_present = 0:1, advice_correct = 0:1), 
+  re.form = NA, type = "response")
+
+probs
+
+probs %>% 
+  hypotheses(hypothesis = c(
+    "b8 - b2 = 0",
+    "b7 - b1 = 0",
+    "b2 - b4 = 0",
+    "b1 - b3 = 0"))
+```
+
+
 STILL MISSING
 
 
