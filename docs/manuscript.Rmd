@@ -577,36 +577,6 @@ $$ which simplifies to $\beta_{a} + \beta_{c} + \beta_{ea} + \beta_{ec} \leq 0$.
 
 We can specify and test hypotheses like these with the multcomp package [@hothornSimultaneousInferenceGeneral2008] as follows:
 
-```{r}
-library(marginaleffects)
-hypotheses(fit, hypothesis = c(
-  "`advice_present` + `advice_correct` + `expert:advice_present` +
-  `expert:advice_correct` = 0",
-  "`advice_present` + `advice_correct` = 0",
-  "`advice_present` + `expert:advice_present` = 0",
-  "`advice_present` = 0"
-), equivalence = 0)
-
-avg_predictions(fit, variables = list(expert = 0:1, advice_present = 0:1, advice_correct = 0:1)) %>%
-  hypotheses(hypothesis = c(
-    "b8 - b2 = 0",
-    "b7 - b1 = 0",
-    "b2 - b4 = 0",
-    "b1 - b3 = 0"
-    )) %>%
-  inferences(method = "delta")
-
-comparisons(fit)
-avg_comparisons(fit, hypothesis = c(
-  "`advice_present` + `advice_correct` + `expert:advice_present` +
-  `expert:advice_correct` = 0",
-  "`advice_present` + `advice_correct` = 0",
-  "`advice_present` + `expert:advice_present` = 0",
-  "`advice_present` = 0"
-))
-```
-
-
 ```{r, message=FALSE}
 library(multcomp)
 null_hypotheses <- c(
@@ -620,6 +590,29 @@ summary(glht, test = univariate())$test$pvalues
 ```
 
 Because all hypotheses tested simultaneously with the `glht` function must have the same direction, we flip the sign of inequalities three and four by multiplying them with $-1$. The multcomp package automatically adjusts p-values when multiple hypotheses are tested simultaneously [@hothornSimultaneousInferenceGeneral2008]. However, the combined null hypothesis in our exemplary research question should only be rejected if **all** individual null hypotheses are rejected [i.e., intersection-union setting; @dmitrienkoTraditionalMultiplicityAdjustment2013]. In such cases, the error probabilities do not accumulate, and we would waste power when correcting for multiple tests. Thus, we request unadjusted p-values by setting `test = univariate()` in the `summary` command. With a standard significance level of $\alpha = 0.05$, we would not reject all four null hypotheses (the p-value for hypothesis $H_{03}$ is not significant) and therefore also not reject the combined null hypothesis for this simulated dataset. Note that this decision would be wrong because we have simulated the data such that the combined alternative hypothesis is actually true in the population.
+
+We can specify and test hypothesis like these with the marginaleffects [@R-marginaleffects] package.
+
+```{r}
+library(marginaleffects)
+
+hypotheses(fit, hypothesis = c(
+  "`advice_present` + `advice_correct` + `expert:advice_present` +
+  `expert:advice_correct` = 0",
+  "`advice_present` + `advice_correct` = 0",
+  "`advice_present` + `expert:advice_present` = 0",
+  "`advice_present` = 0"
+), equivalence = 0)
+
+hypotheses(fit, hypothesis = c(
+  "`advice_present` + `advice_correct` + `expert:advice_present` +
+  `expert:advice_correct` = 0",
+  "`advice_present` + `advice_correct` = 0",
+  "-1 * (`advice_present` + `expert:advice_present`) = 0",
+  "-1 * (`advice_present`) = 0"
+), equivalence = 0)
+```
+
 
 ## Interval estimation
 
