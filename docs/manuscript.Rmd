@@ -399,18 +399,6 @@ This experimental design introduces some missing values by design since the advi
 In this example, recruiting task experts (i.e., radiologists) is more challenging due to their limited availability, while non-experts (i.e., students/interns) are more readily accessible. 
 The goal of the present simulation-based power analysis is to determine how many task experts and non-experts must be recruited to achieve sufficient statistical power in the planned experiment. 
 
-## The lme4 package in R
-
-<!-- describe the lme4 package and how it works-->
-In our case study, we use the lme4 R package [@batesFittingLinearMixedEffects2015], which is a state-of-the-art tool for fitting frequentist GLMMs.[^1]
-The lme4 package includes a function called `simulate` that allows researchers to simulate the dependent variable based on the same model formula used for model fitting, enabling simulation-based power analyses and other related analyses. 
-
-[^1]: For Bayesian GLMMs, the brms R package is currently the most prominent option [@burknerBrmsPackageBayesian2017].
-
-However, the model parameterization used by the lme4 package is quite technical, making it difficult for applied researchers to determine whether their specified population model (i.e., the theoretical model that describes the underlying data generation process for a specific population of interest) implies plausible associations in their simulated data. Therefore, in this tutorial, we simulate data for GLMMs from first principles (i.e., creating synthetic data step by step instead of using black box functions) to assist applied researchers in better understanding all model assumptions and then use lme4 to analyze the simulated datasets.[^2]
-
-[^2]: A less flexible alternative would be to use the simr package [@greenSIMRPackagePower2016], which can be used to both simulate data and perform power analysis for models supported by the lme4 package.
-
 ## Our specific GLMM
 
 <!-- deep dive into our specific example -->
@@ -490,6 +478,18 @@ In the first six lines of the function definition, we set some default parameter
 In our case study, each subject (`n_subjects` in total) is assumed to respond to each item (i.e., CT scan; `n_items` in total). Thus, the `add_random` command creates a fully-crossed `data.frame` with `n_subjects` $\times$ `n_items` rows. We add a between-subject effect with the `add_between` command, simulating that about $25\%$ of subjects are experts. The next two lines simulate that in $\frac{2}{3}$ of trials, subjects will be presented with AI advice, and if advice is presented, the advice will be correct in about $80\%$ of cases (the variable `advice_correct` is always 0 when no advice is presented). Next, we simulate one random effect for each subject (`u0s`) and for each item (`u0i`). As assumed by standard GLMMs, the `add_ranef` function draws the random effects from a normal distribution with a mean 0 and a standard deviation specified by the user. With all design variables done, we are ready to simulate our model equation outlined in the last section. The linear predictor variable `linpred` ($\eta$ in the GLMM model equations) combines the predictor variables, random effects, and model parameters as assumed by our model. We then transform the linear predictor with the inverse-link function to compute `y_prob`, the probability that the subject correctly solved the item (in R, the inverse-logit link is computed with `plogis` and the logit link with `qlogis`). In the final step, we simulate the binary dependent variable `y_bin` (i.e., whether the subject makes an accurate diagnostic decision for the CT scan) by -- for each trial -- drawing from a Bernoulli distribution with success probability `y_prob`.
 
 ## Model fitting
+
+<!-- ## The lme4 package in R -->
+
+<!-- describe the lme4 package and how it works-->
+In our case study, we use the lme4 R package [@batesFittingLinearMixedEffects2015], which is a state-of-the-art tool for fitting frequentist GLMMs.[^1]
+The lme4 package includes a function called `simulate` that allows researchers to simulate the dependent variable based on the same model formula used for model fitting, enabling simulation-based power analyses and other related analyses. 
+
+[^1]: For Bayesian GLMMs, the brms R package is currently the most prominent option [@burknerBrmsPackageBayesian2017].
+
+However, the model parameterization used by the lme4 package is quite technical, making it difficult for applied researchers to determine whether their specified population model (i.e., the theoretical model that describes the underlying data generation process for a specific population of interest) implies plausible associations in their simulated data. Therefore, in this tutorial, we simulate data for GLMMs from first principles (i.e., creating synthetic data step by step instead of using black box functions) to assist applied researchers in better understanding all model assumptions and then use lme4 to analyze the simulated datasets.[^2]
+
+[^2]: A less flexible alternative would be to use the simr package [@greenSIMRPackagePower2016], which can be used to both simulate data and perform power analysis for models supported by the lme4 package.
 
 In this section, we show how to fit a GLMM with lme4, interpret the model, and test hypotheses derived from a research question.
 We simulate data according to our model, in which 100 subjects respond to 50 items (we use `set.seed` to make the simulation reproducible). However, for the sake of the exercise, we can imagine that this would be real data resulting from our future experiment and think about how we would analyze this data.
@@ -620,6 +620,11 @@ summary(glht, test = univariate())$test$pvalues
 ```
 
 Because all hypotheses tested simultaneously with the `glht` function must have the same direction, we flip the sign of inequalities three and four by multiplying them with $-1$. The multcomp package automatically adjusts p-values when multiple hypotheses are tested simultaneously [@hothornSimultaneousInferenceGeneral2008]. However, the combined null hypothesis in our exemplary research question should only be rejected if **all** individual null hypotheses are rejected [i.e., intersection-union setting; @dmitrienkoTraditionalMultiplicityAdjustment2013]. In such cases, the error probabilities do not accumulate, and we would waste power when correcting for multiple tests. Thus, we request unadjusted p-values by setting `test = univariate()` in the `summary` command. With a standard significance level of $\alpha = 0.05$, we would not reject all four null hypotheses (the p-value for hypothesis $H_{03}$ is not significant) and therefore also not reject the combined null hypothesis for this simulated dataset. Note that this decision would be wrong because we have simulated the data such that the combined alternative hypothesis is actually true in the population.
+
+## Interval estimation
+
+STILL MISSING
+
 
 ## Specification of plausible parameter values
 
