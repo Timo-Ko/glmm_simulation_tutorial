@@ -116,11 +116,10 @@ While it is not necessary to understand the technical details of how GLMMs are e
 
 Literature:
 
-- Lakens ebook
-- R for data science
-- Bruine article, faux documentation
-- draschkow power tutorial
-- what is your estimand? paper
+- Lakens ebook evtl. Andy Field für die Basics?
+- R for data science, Bruine article, faux documentation für die R skills
+- kumle power tutorial und irgendwelche paper (am besten aus AMPPS) zu GLMMs
+- what is your estimand? paper für das estimand topic
 
 ## General concepts
  
@@ -288,18 +287,158 @@ However, we would argue that when tailored data simulations are necessary anyway
 
 Although the details differ depending on the specific study characteristics, each tailored simulation based sample size planning requires a series of steps and decisions that we will outline in this section.
 
+### Define the estimand
+
+#### THEORY
+
+The first step in every research process should always be a clear definition of which theoretical quantity is necessary to answer the specific research question of the study under planning.
+Unfortunately, many psychological researchers are still not well trained in this task.
+The theoretical estimand is a unit specific quantity defined outside of any statistical model.
+Depending on the research and whether the research question is causal, this quantity might be counterfactual and not directly observable.
+Part of the theoretical estimand is also a clear definition of the target population, for which the quantity is of interest.
+
+When the theoretical estimand has been specified, the next step is to define the empirical estimand, which reexpresses the theoretical estimand in a way that can be estimated based on the observed data that will be collected in the planned study.
+For many common research questions in psychology, the empirical estimand can be expressed as a statistical quantities that can be estimated with a regression model.
+Note however, that this is not always possible and that the literature on causal inference includes many estimation strategies beyond regression.
+
+When the empirical estimand has been specified, the last step is to clearly define how a concrete estimate of the empirical estimand shall be computed based on the observed study data.
+When a regression model is used for estimation, this includes decisions like which statistical framework and package is used to fit the model, and how to compute hypothesis tests or confidence intervals.
+
+@lundbergWhatYourEstimand2021 
+
+#### PRACTICE
+
+In the present case study, we consider the effectiveness of feedback provided by an artificial intelligence (AI) in an AI-enabled diagnostic decision support system.
+The context is a clinical setting, where expert radiologists and students under training must detect bleeding based on head scans from computer tomography.
+In the investigated AI-enabled diagnostic decision support system, an AI model can provide initial diagnostic advice, which can be used as guidance by the humans require to make the final diagnostic decision.
+The research goal is to validate the effectiveness of the AI-enabled advice.
+We consider the AI-enable as effective, if the following pattern holds, which we will here describe verbally:
+
+*We expect that for BOTH expert radiologists and students under training, correct AI-advice leads to a higher probability of accurately diagnosing a CT scan compared to no AI-advice presented, AND, we expect that for BOTH experts and non-experts, incorrect advice leads to a lower probability of accurately diagnosing a CT scan compared to no advice presented.*
+
+I becomes clear that our theoretical estimand is be a causal quantity, based on individual quantities define outside of any statistical model.
+To explain why, we focus on only on part of the research question concerning the comparison between correct AI-advice and no AI-advice for expert radiologists.
+For a specific expert radiologist and a specific CT scan, our question is concerned with the difference between the probability that a correct diagnosis is made if correct AI-advice were presented and the probability that a correct diagnosis is made if no AI-advice were presented.
+Mathematically, we could describe this unit-specific quantity with some pseudo-equation like this (where $s$ stands for a specific expert radiologist and $i$ stands for a specific CT scan):
+
+$$
+\begin{aligned}
+& P(\text{correct diagnosis} | \text{correct advice, a specific expert, a specific scan}) \\
+& \quad - P(\text{correct diagnosis} | \text{no advice, a specific expert, a specific scan})
+\end{aligned}
+$$
+However, our verbal description is not precise enough yet, because the above quantity exists and may differ for each combination of expert and scan.
+We must specify how we want to aggregate the quantity across different experts and scans.
+If we would compute the average of our individual quantity across all experts and scans in the target population, the result would be called the average treatment effect (ATE) in the population of experts.
+Although often debated whether this is a good idea, psychological research often focuses on a different quantity.
+Instead of averaging over experts and scans, we focus in a hypothetical *typical* expert and a *typical* scan, where *typical* is usually defined as an average score on all attributes of the expert or scan.
+With this definition, the theoretical estimand in our above example can be expressed as:
+
+$$
+\begin{aligned}
+& P(\text{correct diagnosis} | \text{correct advice, an average expert, an average scan}) \\
+& \quad - P(\text{correct diagnosis} | \text{no advice, an average expert, an average scan})
+\end{aligned}
+$$
+In total, our theoretical estimand consists of four expressions like the one above, the remaining three are:
+
+$$
+\begin{aligned}
+& P(\text{correct diagnosis} | \text{no advice, an average expert, an average scan}) \\
+& \quad - P(\text{correct diagnosis} | \text{wrong advice, an average expert, an average scan})
+\end{aligned}
+$$
+$$
+\begin{aligned}
+& P(\text{correct diagnosis} | \text{correct advice, an average student, an average scan}) \\
+& \quad - P(\text{correct diagnosis} | \text{no advice, an average student, an average scan})
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+& P(\text{correct diagnosis} | \text{no advice, an average student, an average scan}) \\
+& \quad - P(\text{correct diagnosis} | \text{wrong advice, an average student, an average scan})
+\end{aligned}
+$$
+To complete our definition of the theoretical estimand, we have to clearly define out target population that consists of both persons and scans:
+With respect to persons, we are only interested in expert radiologists and medical students at German universities.
+With respect to stimuli, we are only interested in the head CT scans made from subjects that do or do not suffer from intracerebral hemorrhage.
+Similarly, we are only interested in AI-advice given by the specific AI-enabled diagnostic decision support system under study.
+
+While a theoretical estimand is defined outside of any statistical model and be impossible to observe directly, an empirical estimand is a quantity that can be estimated based on observed data.
+For our exemplary research question, it is possible to construct an experimental study, where all participants are confronted with the same set of brain scans, but the kind of AI-advice given for each brain scan is randomly assigned within participants.
+This random intervention allows to estimate our theoretical estimand, although in reality, each person receives only one kind of AI-advice (correct advice, wrong advice, no advice) for each brain scan.
+
+For our example, each probability expression in our theoretical estimand can be modeled with a concrete GLMM.
+Estimating the GLMM based on the data observed in our planned study produces an estimate for each probability and these estimates can be used to compute an estimate for each of the four probability contrasts.
+
 ### Simulate the data generating process
 
-The first step is to write code that simulates the (assumed) data generating process of the planned study.
+#### THEORY
+
+When the estimand has been defined, the next step in the research process is to write code that simulates the (assumed) data generating process of the planned study.
 This requires specifying a generative process for all predictor variables used in the final data analysis.
-While such assumptions can be quite challenging for observational studies and/or continuous predictor variables, this is less of a problem for experimental studies with categorical predictor variables.
+While such assumptions can be quite challenging for observational studies and/or continuous predictor variables, this is less of a problem for experimental studies with only categorical predictor variables.
 When all predictor variables have been simulated, one can use the structure of a suitable GLMM to simulate the dependent variable.
 To simulate the GLMM, one requires plausible values for all model parameters.
 We will discuss strategies for how these values can be obtained later.
 Because one has full control over the data generating process in a tailored simulation, it is simple to also model highly specific aspects of the planned study, like data missing by design or assuming that subjects dropout (i.e. deleting their data from the simulated dataset) based on other variables in the simulated dataset.
 The quality of the results of the sample size planning crucially depends on the plausibility of the simulated data generating process.
-For this reasons, deciding on a specific set of assumptions can easily feel overwelming.
-However, we would argue that even a strongly simplified data generating process (e.g. including only a small number of interaction effect; including only random intercepts but no random slopes; making rather implausible assumptions for missing data) can yield informative result and should be strongly preferred to the current state of psychological research where most studies do not justify their sample size or use highly questionable heuristics that are independent of their specific research question.
+For this reason, deciding on a specific set of assumptions can easily feel overwelming.
+However, we would argue that even a strongly simplified data generating process (e.g. including only a small number of interaction effect; including only random intercepts but no random slopes; making rather implausible assumptions for missing data) can yield informative result and should be strongly preferred to the current status quo in psychological research, where most studies do not justify their sample size or use highly questionable heuristics that are independent of their specific research question.
+
+#### PRACTICE
+
+We simulate data for an experiment where the diagnostic performance of users of an AI-enabled diagnostic decision support system will be evaluated. 
+The goal is to understand how AI advice influences medical decision-making.
+Participants, radiologists (task experts) and students/interns (non-task experts), review head computer tomography (CT) scans to assess the presence of a bleeding. 
+To support their decision-making, an AI model provides initial diagnostic advice, which can be used as guidance by the participants. This AI advice can be either correct (80% of cases) or incorrect (20%). In the control condition, no AI advice is presented, meaning that the participants have to read the CT scan without any support. After reviewing the CT scan, participants deliver a medical diagnosis (bleeding or no bleeding), which may be either accurate or inaccurate.
+This experimental design introduces some missing values by design since the advice is neither correct nor incorrect when no advice is present, which must be taken into account when simulating and analyzing the data. With this experiment, we want to determine if (a) experts are better than non-experts in reading head CT scans and if (b) correct AI advice leads to better diagnostic accuracy than incorrect AI advice.
+In this example, recruiting task experts (i.e., radiologists) is more challenging due to their limited availability, while non-experts (i.e., students/interns) are more readily accessible. 
+The goal of the present simulation-based power analysis is to determine how many task experts and non-experts must be recruited to achieve sufficient statistical power in the planned experiment. 
+
+#### Strategies on specifying the population parameters
+
+As discussed earlier, tailored simulation based sample size planning is especially relevant when studies have to be planned in the absence of previous studies with a similar design or any pilot data.
+In this scenario, researchers require strategies on how to specify the population parameters used in their data simulation.
+Population parameters are all model parameters estimated in a GLMM, in particular the regression coefficients of the fixed effects and the standard deviation of the random effects (and the correlation between random effects in more complicated models).
+In contrast to non-hierarchical linear regression, common heuristics based on standardized effect sizes are less useful or not even available.
+Our strategies to specify population parameters will require access to domain knowledge from domain experts.
+Because most domain knowledge of domain experts can only be expressed in unstandardized measurement units of a specific application, we argue that unstandardized effect sizes are usually preferred over standardized effect sizes for tailored simulation based sample size planning.
+This requires new strategies on how the data generating process implied by certain values of population parameters can be quantified or visualized in an intuitive way that enables a calibration of population parameters based on the available domain knowledge of domain experts.
+
+Although we focus on frequentist statistics in our tutorial, selecting plausible values for data simulation shares many similarities with the specification of (weakly) informative prior distribution in applied Bayesian statistics.
+In this literature, there have been developed some strategies to monitor the plausibility of (prior) model assumptions, that can be adapted for our purposes.
+
+#### Insightful descriptive statistics
+
+For most GLMMs, the interpretation of model parameters if quite complicated which makes it difficult to specify plausible values for a specific application.
+However, the mathematical structure of GLMMs determines which patterns in data would be produced by the model, if a specific set of values for the population parameters would be specified.
+The knowledge of how to simulate from a GLMM enables us to compute insightful descriptive statistics that can be compared to available domain knowledge much more easily than the opaque values of model parameters.
+For example, domain experts might not be able to specify plausible values for the $\beta$ coefficients in a logistic regression model (which are measured on the log-odds scale).
+However, they should be able to reason about the expected ratio of the binary dependent variable in different experimental condition, i.e. which descriptive statistics they expect to observe (on average), when they will analyse the actual dataset produced by the study under planning (if everything turns out as postulated by the investigated theory). 
+The job of the analyst who is familiar with the mathematical structure of the GLMM is to produce the model implied value of the insightful descriptive statistic expected by the domain expert.
+Although insightful descriptive statistics often depend on the model parameters in complicated ways, it is usually possible to manually adjust the population parameters (if only with the help of trial and error) until the model implied quantities produce the desired result.
+
+#### Insightful model based quantities
+
+Because GLMMs are complicated models, descriptive statistics alone are usually not enough to specify plausible values for all model parameters.
+This is especially true for the standard deviation of random effects, that have complicated (and often unexpected) effects on the model-implied results.
+An important advantage of data simulation (where one has full control over parameter values and sample sizes) is that one can produce insightful model based quantities that can never be directly observed in an actual empirical dataset.
+For example, in a logistic model with random intercepts for participants, one can produce a visualization of the implied distribution of the probability that a participant on average solves a cognitive task.
+Although domain knowledge will probably not suffice to specify this distribution completely, it should be possible to rule out unplausible boundary conditions.
+For example, the domain expert might deem it unplausible that the 5% most able participants have a probability of more than 0.99 to solve the difficult cognitive task.
+
+#### Iterative process with domain experts
+
+In our experience, the gathering of domain knowledge by domain experts and the consecutive specification of population parameter values used in data simulation is not a one-time event but rather an iterative process.
+In a first step, domain experts can be interviewed to "elicit" their domain knowledge about how the future data of the planned study is expected to look like.
+As most domain experts are no experts in statistical modeling and GLMMs, they often struggle without further guidance to communicate their knowledge in a way that is useful when specifying the parameters for data simulation.
+For this reason, we suggest that after an initial unstructured interview of domain experts, the analyst which is familiar with the structure of the GLMM under study selects an initial set of insightful descriptive statistics and model based quantities.
+Then they reenter into an iterative discussion where some set of population values are selected and the plausibility of resulting implied quantities are discussed with the domain experts.
+Then, the population parameters are updated based on this discussion until the domain experts are satisfied with the final result.
+During this process, the monitored model based quantities and descriptive statistics can be updated or extended to capture as much available domain knowledge as possible.
 
 ### Estimate the statistical model
 
@@ -311,18 +450,10 @@ On the one hand, using a simpler model for data simulation than for model estima
 On the other hand, using a more complex model (that perhaps even goes beyond a standard GLMM) for data simulation than for model estimation can be a useful strategy in scenarios where one has specific domain knowledge about aspects of the data generating process that are still difficult to estimate with the current state-of-the-art in multilevel modeling.
 In such more complicated scenarios, the final model specification might also depend on the next decision on specifying the theoretical estimand.
 
-### Specify the estimand
-
-This step requires a clear definition of which theoretical quantity is necessary to answer the specific research question of the study under planning.
-In an ideal world, this should be the first step in every research process.
-However in our experience, many psychological researchers are still not well trained in this task.
-We think that simulating data from a generic GLMM that is suited to describe (at least a rough approximation of) the assumed data generating process, can help to better reason about what information is actually needed to answer the specific research question, and how this information is actually represented in the context of the statistical model representing the data generating process of the planned study.
-
 ### Compute the estimate
 
 When the theoretical and empirical estimands have been identified in the modeling framework used to estimate the GLMM, one has to decide on whether hypothesis testing or interval estimation should be used to answer the research question.
 This decision is then followed by selecting the specific statistical method that shall be applied to compute the hypothesis test(s) or confidence interval(s) (e.g., compute hypothesis tests with the marginaleffects R package, using the delta method).
-
 
 ### Perform repeated simulations
 
@@ -339,49 +470,6 @@ When planning for precision, we compute the average width of the confidence inte
 Lastly, we have to repeat the complete simulation for different sample sizes, to determine how big the sample must be in order to achieve the targeted statistical power or the expected width of the confidence interval.
 
 <!-- ### Sensitivity analysis -->
-
-## Strategies on specifying the population parameters
-
-As discussed earlier, tailored simulation based sample size planning is especially relevant when studies have to be planned in the absence of previous studies with a similar design or any pilot data.
-In this scenario, researchers require strategies on how to specify the population parameters used in their data simulation.
-Population parameters are all model parameters estimated in a GLMM, in particular the regression coefficients of the fixed effects and the standard deviation of the random effects (and the correlation between random effects in more complicated models).
-In contrast to non-hierarchical linear regression, common heuristics based on standardized effect sizes are less useful or not even available.
-Our strategies to specify population parameters will require access to domain knowledge from domain experts.
-Because most domain knowledge of domain experts can only be expressed in unstandardized measurement units of a specific application, we argue that unstandardized effect sizes are usually preferred over standardized effect sizes for tailored simulation based sample size planning.
-This requires new strategies on how the data generating process implied by certain values of population parameters can be quantified or visualized in an intuitive way that enables a calibration of population parameters based on the available domain knowledge of domain experts.
-
-Although we focus on frequentist statistics in our tutorial, selecting plausible values for data simulation shares many similarities with the specification of (weakly) informative prior distribution in applied Bayesian statistics.
-In this literature, there have been developed some strategies to monitor the plausibility of (prior) model assumptions, that can be adapted for our purposes.
-
-### Insightful descriptive statistics
-
-For most GLMMs, the interpretation of model parameters if quite complicated which makes it difficult to specify plausible values for a specific application.
-However, the mathematical structure of GLMMs determines which patterns in data would be produced by the model, if a specific set of values for the population parameters would be specified.
-The knowledge of how to simulate from a GLMM enables us to compute insightful descriptive statistics that can be compared to available domain knowledge much more easily than the opaque values of model parameters.
-For example, domain experts might not be able to specify plausible values for the $\beta$ coefficients in a logistic regression model (which are measured on the log-odds scale).
-However, they should be able to reason about the expected ratio of the binary dependent variable in different experimental condition, i.e. which descriptive statistics they expect to observe (on average), when they will analyse the actual dataset produced by the study under planning (if everything turns out as postulated by the investigated theory). 
-The job of the analyst who is familiar with the mathematical structure of the GLMM is to produce the model implied value of the insightful descriptive statistic expected by the domain expert.
-Although insightful descriptive statistics often depend on the model parameters in complicated ways, it is usually possible to manually adjust the population parameters (if only with the help of trial and error) until the model implied quantities produce the desired result.
-
-### Insightful model based quantities
-
-Because GLMMs are complicated models, descriptive statistics alone are usually not enough to specify plausible values for all model parameters.
-This is especially true for the standard deviation of random effects, that have complicated (and often unexpected) effects on the model-implied results.
-An important advantage of data simulation (where one has full control over parameter values and sample sizes) is that one can produce insightful model based quantities that can never be directly observed in an actual empirical dataset.
-For example, in a logistic model with random intercepts for participants, one can produce a visualization of the implied distribution of the probability that a participant on average solves a cognitive task.
-Although domain knowledge will probably not suffice to specify this distribution completely, it should be possible to rule out unplausible boundary conditions.
-For example, the domain expert might deem it unplausible that the 5% most able participants have a probability of more than 0.99 to solve the difficult cognitive task.
-
-
-### Iterative process with domain experts
-
-In our experience, the gathering of domain knowledge by domain experts and the consecutive specification of population parameter values used in data simulation is not a one-time event but rather an iterative process.
-In a first step, domain experts can be interviewed to "elicit" their domain knowledge about how the future data of the planned study is expected to look like.
-As most domain experts are no experts in statistical modeling and GLMMs, they often struggle without further guidance to communicate their knowledge in a way that is useful when specifying the parameters for data simulation.
-For this reason, we suggest that after an initial unstructured interview of domain experts, the analyst which is familiar with the structure of the GLMM under study selects an initial set of insightful descriptive statistics and model based quantities.
-Then they reenter into an iterative discussion where some set of population values are selected and the plausibility of resulting implied quantities are discussed with the domain experts.
-Then, the population parameters are updated based on this discussion until the domain experts are satisfied with the final result.
-During this process, the monitored model based quantities and descriptive statistics can be updated or extended to capture as much available domain knowledge as possible.
 
 # Case study
 
