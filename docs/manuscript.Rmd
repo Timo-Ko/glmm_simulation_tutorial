@@ -546,6 +546,17 @@ Then they reenter into an iterative discussion where some set of population valu
 Then, the population parameters are updated based on this discussion until the domain experts are satisfied with the final result.
 During this process, the monitored model based quantities and descriptive statistics can be updated or extended to capture as much available domain knowledge as possible.
 
+##### PRACTICE
+
+All parameter values in our present case study have been determined from results from related prior work and repeated discussions with our affiliated domain experts in Radiology to validate our assumptions.
+Initially, we reviewed the literature to establish a reasonable baseline performance rate for examining head CT scans for ICH. Existing studies indicate that radiologists typically demonstrate high accuracies, often exceeding or hovering around 90%, while interns have been shown to perform below 80%, and medical students fall even shorter.
+For simplicity, we assumed plausible probability values of .90 for experts and .70 for non-experts, respectively.
+Our experts confirmed that these values are realistic baselines for reviewing diverse head CT images without AI assistance. Subsequently, we consulted several published papers investigating the effect of correct and incorrect advice on decision-making performance in other settings.
+From their findings, we inferred that both experts and non-experts would benefit from correct and suffer losses from incorrect advice.
+However, the magnitude of these effects would be substantially greater for non-experts, given their demonstrated reliance on advice compared to experts.
+We further validated the plausibility of our estimated gains and losses with the collaborating radiologists.
+For our simulation, we used the probabilities of average participants to solve an average case, as shown in Table 1.
+
 ## Estimate the statistical model
 
 ### THEORY
@@ -1139,7 +1150,7 @@ Earlier, we have already encountered one way to visualize the implied marginal d
 ```{r margdist1, fig.cap="(ref:margdist1-caption)"}
 library(tidyverse)
 library(ggdist)
-dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0s = 0.5, sd_u0i = 0.5)
+dat <- simulate(n_subjects = 3000, n_items = 3000, sd_u0s = 0.5, sd_u0i = 0.5)
 dat %>% 
   mutate(condition = fct_cross(
     factor(expert), factor(advice_present), factor(advice_correct))) %>%
@@ -1151,6 +1162,22 @@ dat %>%
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
 ```
+
+```{r}
+library(tidyverse)
+library(ggdist)
+dat <- simulate(n_subjects = 3000, n_items = 3000, sd_u0s = 0.5, sd_u0i = 0.5)
+dat %>% 
+  mutate(condition = fct_cross(
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+  mutate(condition = fct_recode(condition,
+    "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+    "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>%
+  group_by(condition) %>%
+  summarize(freq_y_1 = sum(y_bin) / n())
+```
+
 
 Figure \@ref(fig:margdist1) shows the model implied marginal distributions, including the mean, 66% and 95% intervals. We can see that, indeed, the average probabilities (black dots) slightly differ from the probabilities of average subjects and items considered in the previous section. This difference increases with the variability of the random effects.
 
