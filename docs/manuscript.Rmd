@@ -98,7 +98,7 @@ When planning experimental research, it is essential to determine an appropriate
 <!-- <!-- Old Summary / Wrap-Up, pick up main arguments and what the paper provides, keep this short! --> -->
 <!-- Based on the need for well-powered experimental research using GLMMs and the lack of tools to conduct corresponding power analyses, in this tutorial paper, we present a case study that serves as a practical demonstration of how to perform a simulation-based a priori power analysis with GLMMs. Thereby, we aim to equip researchers with the tools needed to simulate data and determine appropriate sample sizes for their own research. -->
 
-## Prior Knowledge
+# Prior Knowledge
 
 Simulation-based sample size planning for generalized linear models is a complex topic that touches on a variety of statistical concepts and programming skills.
 Although we give some short introduction to clarify our terminology, to profit the most from our tutorial, our readers require prior knowledge in the following topics (or refer to our collection of background literature):
@@ -121,9 +121,9 @@ Literature:
 - kumle power tutorial und irgendwelche paper (am besten aus AMPPS) zu GLMMs
 - what is your estimand? paper für das estimand topic
 
-## General concepts
+# General concepts
  
-### Planning for statistical power or precision
+## Planning for statistical power or precision
 
 Conducting research with too small sample sizes can have many negative consequences.
 First, experiments may yield inconclusive or misleading results, hindering the accumulation of knowledge.
@@ -143,7 +143,7 @@ The majority of empirical studies in psychology applies hypothesis testing.
 As a consequence, the dominant approach for sample size planning is based on power analysis (i.e., planing for power).
 However, sample size planning can also be based on the precision of parameter estimates (i.e., planning for precision).
 
-#### Planning for power
+### Planning for power
 
 <!-- Some basics on statistical power -->
 In empirical research relying on hypothesis testing, the most common strategy for determining an adequate sample size is based on statistical power [@lakensSampleSizeJustification2022].
@@ -154,7 +154,7 @@ If the sample size (i.e., the number of participants and/or stimuli) used for da
 When planning for power, a target is set for the statistical power of a hypothesis test of interest (a very common heuristic is 0.8).
 Assuming some effect size of interest and a desired significance level, a minimum sample size can be determined that (on average) would guarantee reaching this target.
 
-#### Planning for precision
+### Planning for precision
 
 Not all research questions are best answered using hypothesis testing.
 Especially for exploratory studies when little previous research has been conducted, only estimating effects of interest is often more useful.
@@ -169,7 +169,7 @@ Because bigger samples carry more information, they lead to smaller confidence i
 When planning for precision, a target is set for the expected width of a confidence interval of interest.
 Assuming some effect size of interest and a desired confidence level, a minimum sample size can be determined that (on average) would guarantee reaching this target.
 
-### Generalized linear mixed models (GLMMs)
+## Generalized linear mixed models (GLMMs)
 
 <!-- Advantages of GLMMs over "simpler" models -->
 As study designs become more complex, psychological researchers require more sophisticated statistical models to capture the nuanced relationships and grouping structures introduced by their study designs [@yarkoniGeneralizabilityCrisis2022].
@@ -192,7 +192,7 @@ Here, participants’ behavior is measured repeatedly (e.g., over several sessio
 The click patterns of participants in one session are likely to be correlated with their previous sessions.
 Finally, the outcome variable is binary (click/no click) for each session, which follows a binomial distribution. 
 
-## Simulation based sample size planning with GLMMs
+# Simulation based sample size planning with GLMMs
 
 For simpler statistical models, like t-tests, ANOVA, and linear regression, with common study designs (e.g., mean comparison between two groups), user-friendly software for a priori sample size planning is readily available [@faulStatisticalPowerAnalyses2009; @champelyPackagePwr2018; @kelleyObtainingPowerObtaining2003; @kelleySampleSizePlanning2006]. 
 However, these software packages are often not flexible enough to perform sample size planning for complex designs.
@@ -208,16 +208,16 @@ Existing tutorials often rely on heuristics for specifying variance components (
 
 - Insert table on existing R packages for power analysis with GLMMs
 
-## When do we profit from tailored data simulation?
+# When do we profit from tailored data simulation?
 
 Performing tailored simulation based sample size planning is more complicated and time consuming than using existing software tools for sample size planning.
 Thus, it is worth discussing under which circumstances we most profit from or are forced to perform tailored simulation based sample size planning, because existing software solutions do not meet our requirements.
 
-### Complex study designs
+## Complex study designs
 
 Real studies are often more complex than the simplified designs assumed by many user-friendly software packages for sample size planning.
 
-#### Missing data
+### Missing data
 
 Missing data is a frequent issue in applied data analysis.
 There can be various reasons for why data is missing.
@@ -229,25 +229,25 @@ Whether missing data has an effect on the result of sample size planning depends
 However, except for very simple scenarios, deciding whether missing data can be safely ignored in the sample size planning is often difficult to decide on a theoretical basis.
 A better strategy is to explicitly include the (assumed) process of missing data into the data simulation process.
 
-#### Data generating processes beyond standard GLMMs
+### Data generating processes beyond standard GLMMs
 
 While GLMMs are a very flexible model class that can handle a large variety of outcome variables, psychological researchers are becoming increasingly aware that many psychological datasets might profit from even more sophisticated models.
 Common examples are zero-inflated outcomes, censoring, and nonlinear predictor effects.
 
     - possibility to extend beyond standard GLMMs (e.g. zero-inflated outcomes, censoring, nonlinear effects, …)
 
-### Complex statistical hypotheses
+## Complex statistical hypotheses
 
 The most common hypotheses tested in psychological research are of the type $H_0: \beta = 0$, where $\beta$ is some coefficient in a regression model.
 However, many research questions in psychology actually require testing more complex statistical hypotheses.
 
-#### Directed hypotheses and testing against values other than 0
+### Directed hypotheses and testing against values other than 0
 
 In the new era of preregistration and registered reports, most research questions are tested with directed hypotheses, because good theories should at least postulate whether some psychological effect of interest is positive or negative.
 Even better theories should be able to specify a smallest effect sizes of interest (SESOI) that must be exceeded if the psychological effect has some practical relevance in a specific application.
 In combination, this might require a test like $H_0: \beta \leq 0.1$.
 
-#### Combined hypotheses 
+### Combined hypotheses 
 
 Elaborate research questions often require testing hypotheses that consist of a combination of model parameters, for example $H_0: \beta_0 + \beta_1 \leq 0$.
 If the research question consists only of a single hypothesis of this sort, it is often possible to reduce the hypothesis to a single regression coefficient by clever coding and/or centering of predictor variables.
@@ -261,7 +261,7 @@ However, if the global hypothesis $H_0$ is combined with *AND*, a correction for
 None of the software packages for sample size planning in table X can handle combined hypotheses as discussed here.
 In contrast, our case study will demonstrate how we can test directed combined hypotheses with tailored simulation based sample size planning. 
 
-### Planning for precision
+## Planning for precision
 
 As discussed earlier, the two major frameworks for sample size planning are planning for power and planning for precision.
 Although planning for precision has been increasingly discussed as a more suitable strategy for exploratory research, all available software packages for sample size planning with GLMMs are based on power analysis.
@@ -271,7 +271,7 @@ However, we demonstrate in our case study that in realistic research projects wi
 We will show that tailored simulation based sample size planning can easily handle the planning for precision scenario.
 The only change in procedure is that instead of computing hypothesis tests for each simulated dataset and estimating statistical power across repetitions, confidence intervals are computed for each simulated dataset and the expected width is estimated. 
     
-### No prior studies or pilot data
+## No prior studies or pilot data
 
 All frameworks for sample size planning require the user to make assumptions about the expected effect size.
 Assuming the true effect is of this size (or greater), one can compute the (minimum) power of a hypothesis test or the (maximum) expected width of a confidence interval.
@@ -283,13 +283,13 @@ In our experience, using domain knowledge to construct a tailored data simulatio
 It would be possible to use these tailored simulations to extract plausible values for standardized effect sizes that could then be inserted in existing software packages for sample size planning.
 However, we would argue that when tailored data simulations are necessary anyways, performing the whole desing analysis in a customized way is preferred over using the existing software packages.
 
-## General steps in tailored simulation-based sample size planning
+# General steps in tailored simulation-based sample size planning
 
 Although the details differ depending on the specific study characteristics, each tailored simulation based sample size planning requires a series of steps and decisions that we will outline in this section.
 
-### Define the estimand
+## Define the estimand
 
-#### THEORY
+### THEORY
 
 The first step in every research process should always be a clear definition of which theoretical quantity is necessary to answer the specific research question of the study under planning.
 Unfortunately, many psychological researchers are still not well trained in this task.
@@ -306,7 +306,7 @@ When a regression model is used for estimation, this includes decisions like whi
 
 @lundbergWhatYourEstimand2021 
 
-#### PRACTICE
+### PRACTICE
 
 In the present case study, we consider the effectiveness of feedback provided by an artificial intelligence (AI) in an AI-enabled diagnostic decision support system.
 The context is a clinical setting, where expert radiologists and students under training must detect bleeding based on head scans from computer tomography.
@@ -373,7 +373,9 @@ This random intervention allows to estimate our theoretical estimand, although i
 For our example, each probability expression in our theoretical estimand can be modeled with a concrete GLMM.
 Estimating the GLMM based on the data observed in our planned study produces an estimate for each probability and these estimates can be used to compute an estimate for each of the four probability contrasts.
 
-### Simulate the data generating process
+## Simulate the data generating process
+
+### Data simulation
 
 #### THEORY
 
@@ -391,14 +393,118 @@ However, we would argue that even a strongly simplified data generating process 
 #### PRACTICE
 
 We simulate data for an experiment where the diagnostic performance of users of an AI-enabled diagnostic decision support system will be evaluated. 
-The goal is to understand how AI advice influences medical decision-making.
-Participants, radiologists (task experts) and students/interns (non-task experts), review head computer tomography (CT) scans to assess the presence of a bleeding. 
-To support their decision-making, an AI model provides initial diagnostic advice, which can be used as guidance by the participants. This AI advice can be either correct (80% of cases) or incorrect (20%). In the control condition, no AI advice is presented, meaning that the participants have to read the CT scan without any support. After reviewing the CT scan, participants deliver a medical diagnosis (bleeding or no bleeding), which may be either accurate or inaccurate.
-This experimental design introduces some missing values by design since the advice is neither correct nor incorrect when no advice is present, which must be taken into account when simulating and analyzing the data. With this experiment, we want to determine if (a) experts are better than non-experts in reading head CT scans and if (b) correct AI advice leads to better diagnostic accuracy than incorrect AI advice.
+<!-- The goal is to understand how AI advice influences medical decision-making. -->
+Participants, radiologists (task experts; 1/4 of participants) and students/interns (non-task experts; 3/4), review a series of head computer tomography (CT) scans to assess the presence of a bleeding. 
+To support their decision-making, an AI model provides initial diagnostic advice (2/3 of cases), which can be used as guidance by the participants.
+In the control condition (1/3), no AI advice is presented, meaning that the participants have to read the CT scan without any support.
+When AI advice is given, this advice can be either correct (4/5 of cases) or incorrect (1/5).
+The type of advice (no advice, wrong advice, correct advice) is randomized within subjects across brain scans.
+After reviewing a CT scan, participants deliver a medical diagnosis (bleeding or no bleeding), which may be either accurate or inaccurate.
+This experimental design introduces some missing values by design since the advice is neither correct nor incorrect when no advice is present, which must be taken into account when simulating and analyzing the data.
+<!-- With this experiment, we want to determine if (a) experts are better than non-experts in reading head CT scans and if (b) correct AI advice leads to better diagnostic accuracy than incorrect AI advice. -->
 In this example, recruiting task experts (i.e., radiologists) is more challenging due to their limited availability, while non-experts (i.e., students/interns) are more readily accessible. 
-The goal of the present simulation-based power analysis is to determine how many task experts and non-experts must be recruited to achieve sufficient statistical power in the planned experiment. 
+The goal of simulation-based sample size planning is to determine how many task experts and non-experts must be recruited to achieve sufficient statistical power or precision in the planned experiment.
 
-#### Strategies on specifying the population parameters
+##### Our specific GLMM
+
+In a GLMM, the expected value of the dependent variable Y conditioned on the vector of predictor variables $\mathbf{X}$ and random effects $\mathbf{U}$, transformed by a link function $g()$ is modeled as a linear combination $\eta$ of the predictor variables $\mathbf{X}$, the random effects $\mathbf{U}$ and the model parameters $\mathbf{\beta}$ [@fahrmeirRegressionModelsMethods2021]: 
+$$
+g(E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = \eta
+$$
+Equivalently, the conditional expected value is modeled as the linear combination $\eta$, transformed by the inverse link function $g^{-1}()$: 
+$$
+E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u}) = g^{-1}(\eta)
+$$
+If the dependent variable (i.e., diagnostic decision) $Y$ is a binary variable with values $0$ (i.e., inaccurate), or $1$ (i.e., accurate), the conditional expected value is equivalent to the probability: 
+$$
+P_{si} := P(Y = 1|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})
+$$
+In our case study, $P_{si}$ is the conditional probability that a subject $s$ gives the correct response to item (i.e., CT scan) $i$.
+
+In such a setting, we model this probability as
+$$
+P_{si} = \text{inverse_logit}(\eta_{si})
+$$
+with the inverse-logit link $g^{-1}(\eta_{si}) = inverse\_logit(\eta_{si}) = \frac{exp(\eta_{si})}{1 + exp(\eta_{si})}$ or equivalently
+$$
+\text{logit}(P_{si}) = \eta_{si}
+$$
+with the logit link $g(P_{si}) = \text{logit}(P_{si}) = \text{ln} (\frac{P_{si}}{1 - P_{si}})$.
+
+In our case study, the probability of making an accurate diagnostic decision is assumed to depend on the predictors: 
+
+- $advice\_present_{si}$: whether subject $s$ was presented with AI advice (1) or not (0) when asked to assess item $i$ 
+- $advice\_correct_{si}$: whether this advice was correct (1) or not (0) 
+- $expert_s$: whether subject $s$ was a task expert (1) or not (0)
+
+and the random effects:
+
+-   $u_{0s}$: the deviation of subject $s$ from the average ability to solve an item (i.e., CT scan) with average difficulty; assumed to be distributed as $u_{0s} \sim N(0, \sigma_S^2)$
+-   $u_{0i}$: the deviation of item (i.e., CT scan) $i$ from the average difficulty to be solved by a person with average ability; assumed to be distributed as $u_{0i} \sim N(0, \sigma_I^2)$
+
+In total, we assume the model
+$$
+\begin{aligned}
+\text{logit}[P_{si}] =\ (&\beta_0 + u_{0s} + u_{0i}) + \\
+&\beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
+&\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}
+\end{aligned}
+$$
+or equivalently
+$$
+\begin{aligned}
+P_{si} = \text{inverse_logit}[&(\beta_0 + u_{0s} + u_{0i}) + \\
+&\beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
+&\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
+\end{aligned}
+$$
+with model parameters $\beta_0$, $\beta_e$, $\beta_a$, $\beta_c$, $\beta_{ea}$, $\beta_{ec}$, $\sigma_S$, and $\sigma_I$.
+
+In the GLMM literature, this would be called a binomial GLMM with two random intercepts (for subjects and items), two level-1 predictors ($advice\_present$, $advice\_correct$), one level-2 predictor ($expert$) and two cross-level interactions ($expert \cdot advice\_present$, $expert \cdot advice\_correct$).
+To limit complexity, we do not consider random slopes, additional predictors or higher-level interactions.
+
+##### Simulation function in R
+
+The following R function simulates a full dataset structured according to the design of our case study.
+The faux package [@R-faux] contains useful functions when simulating factorial designs, including random effects.
+
+```{r}
+simulate <- function(n_subjects = 100, n_items = 50,
+  b_0 = 0.847, b_e = 1.350, b_a = -1.253, b_c = 2.603,
+  b_ea = 0.790, b_ec = -1.393,
+  sd_u0s = 0.5, sd_u0i = 0.5, ...){
+  require(dplyr)
+  require(faux)
+  # simulate design
+  dat <- add_random(subject = n_subjects, item = n_items) %>%
+    add_between("subject", expert = c(1, 0), .prob = c(0.25, 0.75)) %>%
+    mutate(advice_present = rbinom(n(), 1, prob = 2/3)) %>%
+    mutate(advice_correct = if_else(advice_present == 1L, 
+                                    rbinom(n(), 1L, prob = 0.8), 0L)) %>%
+    # add random effects
+    add_ranef("subject", u0s = sd_u0s) %>%
+    add_ranef("item", u0i = sd_u0i) %>%
+    # compute dependent variable
+    mutate(linpred = b_0 + u0i + u0s +
+        b_e * expert + b_a * advice_present + b_c * advice_correct +
+        b_ea * expert * advice_present + b_ec * expert * advice_correct) %>%
+    mutate(y_prob = plogis(linpred)) %>%
+    mutate(y_bin = rbinom(n = n(), size = 1, prob = y_prob))
+  dat
+}
+```
+
+In the first six lines of the function definition, we set some default parameter values (which we will explain in the next section) and load the packages we use to manipulate and simulate data. 
+In our case study, each subject (`n_subjects` in total) is assumed to respond to each item (i.e., CT scan; `n_items` in total). Thus, the `add_random` command creates a fully-crossed `data.frame` with `n_subjects` $\times$ `n_items` rows.
+We add a between-subject effect with the `add_between` command, simulating that about $25\%$ of subjects are experts.
+The next two lines simulate that in $\frac{2}{3}$ of trials, subjects will be presented with AI advice, and if advice is presented, the advice will be correct in about $80\%$ of cases (the variable `advice_correct` is always 0 when no advice is presented). Next, we simulate one random effect for each subject (`u0s`) and for each item (`u0i`).
+As assumed by standard GLMMs, the `add_ranef` function draws the random effects from a normal distribution with a mean 0 and a standard deviation specified by the user.
+With all design variables done, we are ready to simulate our model equation outlined in the last section.
+The linear predictor variable `linpred` ($\eta$ in the GLMM model equations) combines the predictor variables, random effects, and model parameters as assumed by our model.
+We then transform the linear predictor with the inverse-link function to compute `y_prob`, the probability that the subject correctly solved the item (in R, the inverse-logit link is computed with `plogis` and the logit link with `qlogis`).
+In the final step, we simulate the binary dependent variable `y_bin` (i.e., whether the subject makes an accurate diagnostic decision for the CT scan) by -- for each trial -- drawing from a Bernoulli distribution with success probability `y_prob`.
+
+### Strategies on specifying the population parameters
 
 As discussed earlier, tailored simulation based sample size planning is especially relevant when studies have to be planned in the absence of previous studies with a similar design or any pilot data.
 In this scenario, researchers require strategies on how to specify the population parameters used in their data simulation.
@@ -411,7 +517,7 @@ This requires new strategies on how the data generating process implied by certa
 Although we focus on frequentist statistics in our tutorial, selecting plausible values for data simulation shares many similarities with the specification of (weakly) informative prior distribution in applied Bayesian statistics.
 In this literature, there have been developed some strategies to monitor the plausibility of (prior) model assumptions, that can be adapted for our purposes.
 
-#### Insightful descriptive statistics
+##### Insightful descriptive statistics
 
 For most GLMMs, the interpretation of model parameters if quite complicated which makes it difficult to specify plausible values for a specific application.
 However, the mathematical structure of GLMMs determines which patterns in data would be produced by the model, if a specific set of values for the population parameters would be specified.
@@ -421,7 +527,7 @@ However, they should be able to reason about the expected ratio of the binary de
 The job of the analyst who is familiar with the mathematical structure of the GLMM is to produce the model implied value of the insightful descriptive statistic expected by the domain expert.
 Although insightful descriptive statistics often depend on the model parameters in complicated ways, it is usually possible to manually adjust the population parameters (if only with the help of trial and error) until the model implied quantities produce the desired result.
 
-#### Insightful model based quantities
+##### Insightful model based quantities
 
 Because GLMMs are complicated models, descriptive statistics alone are usually not enough to specify plausible values for all model parameters.
 This is especially true for the standard deviation of random effects, that have complicated (and often unexpected) effects on the model-implied results.
@@ -440,7 +546,9 @@ Then they reenter into an iterative discussion where some set of population valu
 Then, the population parameters are updated based on this discussion until the domain experts are satisfied with the final result.
 During this process, the monitored model based quantities and descriptive statistics can be updated or extended to capture as much available domain knowledge as possible.
 
-### Estimate the statistical model
+## Estimate the statistical model
+
+### THEORY
 
 At this point, the researcher is capable of producing a simulated dataset similar to the actual dataset that will later be collected in the planned study.
 The next step is to specify how the statistical model shall be estimated in the actual study collected later.
@@ -450,12 +558,172 @@ On the one hand, using a simpler model for data simulation than for model estima
 On the other hand, using a more complex model (that perhaps even goes beyond a standard GLMM) for data simulation than for model estimation can be a useful strategy in scenarios where one has specific domain knowledge about aspects of the data generating process that are still difficult to estimate with the current state-of-the-art in multilevel modeling.
 In such more complicated scenarios, the final model specification might also depend on the next decision on specifying the theoretical estimand.
 
-### Compute the estimate
+### PRACTICE
+
+In our case study, we use the lme4 R package [@batesFittingLinearMixedEffects2015], which is a state-of-the-art tool for fitting frequentist GLMMs.[^1]
+The lme4 package includes a function called `simulate` that allows researchers to simulate the dependent variable based on the same model formula used for model fitting, enabling simulation-based power analyses and other related analyses. 
+
+[^1]: For Bayesian GLMMs, the brms R package is currently the most prominent option [@burknerBrmsPackageBayesian2017].
+
+However, the model parameterization used by the lme4 package is quite technical, making it difficult for applied researchers to determine whether their specified population model (i.e., the theoretical model that describes the underlying data generation process for a specific population of interest) implies plausible associations in their simulated data. Therefore, in this tutorial, we simulate data for GLMMs from first principles (i.e., creating synthetic data step by step instead of using black box functions) to assist applied researchers in better understanding all model assumptions and then use lme4 to analyze the simulated datasets.[^2]
+
+[^2]: A less flexible alternative would be to use the simr package [@greenSIMRPackagePower2016], which can be used to both simulate data and perform power analysis for models supported by the lme4 package.
+
+In this section, we show how to fit a GLMM with lme4, interpret the model, and test hypotheses derived from a research question.
+We simulate data according to our model, in which 100 subjects respond to 50 items (we use `set.seed` to make the simulation reproducible). However, for the sake of the exercise, we can imagine that this would be real data resulting from our future experiment and think about how we would analyze this data.
+
+```{r, message=FALSE}
+library(tidyverse)
+set.seed(1)
+dat <- simulate(n_subjects = 100, n_items = 50)
+```
+
+The lme4 package uses a special syntax for model specification. Our specific GLMM is represented by the formula:
+
+```{r, message=FALSE}
+library(lme4)
+f <- y_bin ~ 1 + expert + advice_present + advice_correct + 
+  expert:advice_present + expert:advice_correct +
+  (1|subject) + (1|item)
+```
+
+The first two lines look similar to any linear model in R (general intercept indicated by `1`; main effects indicated by variable names in the dataset; interactions indicated by `variable1:variable2`). The third line specifies a random intercept for each subject `(1|subject)` and for each item `(1|item)`. The complete set of rules for the syntax is outlined in @batesFittingLinearMixedEffects2015 and in the documentation of the lme4 package.
+
+In lme4, a GLMM is fitted with the `glmer` function. By setting `family =  "binomial"`, we request a binomial GLMM appropriate for our binary dependent variable `y_bin` (the binomial GLMM uses the canonical logit link by default), which is defined as an accurate (1) vs. inaccurate (0) diagnosis.
+
+```{r}
+fit <- glmer(f, data = dat, family = "binomial")
+```
+
+## Compute the estimate
+
+### THEORY
 
 When the theoretical and empirical estimands have been identified in the modeling framework used to estimate the GLMM, one has to decide on whether hypothesis testing or interval estimation should be used to answer the research question.
 This decision is then followed by selecting the specific statistical method that shall be applied to compute the hypothesis test(s) or confidence interval(s) (e.g., compute hypothesis tests with the marginaleffects R package, using the delta method).
 
-### Perform repeated simulations
+### PRACTICE
+
+#### Model interpretation
+
+We can inspect the estimates for all model parameters with the `summary` command:
+
+```{r}
+summary(fit)
+```
+
+In the output, the `Estimate` column in the `Fixed effects` table contains the estimates for the $\beta$ parameters, while the `Std.Dev.` column in the `Random effects` table contains the estimates for $\sigma_S$ and $\sigma_I$.
+
+Unfortunately, the model parameters in a binomial GLMM are hard to interpret because 1) the $\beta$ parameters are connected to the modeled probability via the non-linear inverse-logit link, and 2) we also have to consider the random effects. The most simple interpretation works by imagining a subject with average ability ($u_{0s} = 0$) responding to an item (i.e., CT scan) with average difficulty ($u_{0i} = 0$). Then the model implied probability that such a person solves such an item accurately is given by: 
+$$
+\begin{aligned}
+P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0}) = \\
+= inverse\_logit[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
+&\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
+\end{aligned}
+$$
+
+In fact, we would only need the full equation if the subject is an expert and correct advice is presented. In all other experimental conditions, some terms drop from the equation because they are multiplied by $0$. The other extreme case would be the probability that a non-expert with average ability solves an item with average difficulty when no advice is presented:
+$$
+\begin{aligned}
+P(Y=1|expert = 0, advice\_present = 0, advice\_correct = 0, u_{0s} = 0, u_{0i} = 0) = \\
+= inverse\_logit[\beta_0]
+\end{aligned}
+$$
+
+Due to this complicated relationship, we argue not to focus too much on interpreting single model parameters when working with GLMMs. Instead, it can be more intuitive to consider model predictions and the model-implied distribution of the dependent variable for each experimental condition across all subjects and items.
+
+With the marginaleffects package [@R-marginaleffects], we can easily compute predictions for all observations in the dataset based on the fitted GLMM (including all fixed **and** random effects), and plot the average probability with confidence intervals for each experimental condition in Figure \@ref(fig:marginaleffects):
+
+(ref:marginaleffects) Marginal distributions including means and 95% confidence intervals for all experimental conditions computed with the marginaleffects package.
+
+```{r marginaleffects, message=FALSE, fig.cap="(ref:marginaleffects)"}
+library(marginaleffects)
+plot_predictions(fit, by = c("advice_present", "advice_correct", "expert"),
+  type = "response") + ylim(c(0.3, 1))
+```
+
+#### Hypothesis testing
+
+However, we need to think about the model parameters again when we want to test hypotheses that we have theoretically derived from some research question. Because the inverse-logit link is still a continuously increasing function, positive parameter values always correspond to increases in probability and vice versa.
+
+The `Fixed effects` table in the lme4 summary output also includes p-values for hypothesis tests with null hypotheses of the style $H_0: \beta = 0$. However, for many research questions of interest, we are not interested in these two-sided tests that refer to only a single parameter.
+
+For our case study, imagine the following combined hypothesis: *We expect that for both experts and non-experts, correct advice leads to a higher probability of accurately diagnosing a CT scan compared to no advice presented, AND, we expect that for both experts and non-experts, incorrect advice leads to a lower probability of accurately diagnosing a CT scan compared to no advice presented.*
+
+This combined hypothesis leads to the following four separate null hypotheses to be tested: $$
+\begin{aligned}
+H_{01}:\ &\beta_{a} + \beta_{c} + \beta_{ea} + \beta_{ec} \leq 0 \\
+H_{02}:\ &\beta_{a} + \beta_{c} \leq 0 \\
+H_{03}:\ &\beta_{a} + \beta_{ea} \geq 0 \\
+H_{04}:\ &\beta_{a} \geq 0
+\end{aligned}
+$$
+
+We arrive at these inequalities based on the following logic, exemplified here only for $H_{01}$: The first null hypothesis states that *an expert responding to an item while presented with correct advice has a lower or equal probability of solving the item compared to the same expert facing the same item without any advice.* This implies the following inequality for each subject $s$ and item $i$ $$
+inverse\_logit[(\beta_0 + u_{0s} + u_{0i}) + \beta_e + \beta_{a} + \beta_{c} + \beta_{ea} + \beta_{ec}] \leq inverse\_logit[(\beta_0 + u_{0s} + u_{0i}) + \beta_e]
+$$ which simplifies to $\beta_{a} + \beta_{c} + \beta_{ea} + \beta_{ec} \leq 0$.
+
+We can specify and test hypotheses like these with the multcomp package [@hothornSimultaneousInferenceGeneral2008] as follows:
+
+```{r, message=FALSE}
+library(multcomp)
+null_hypotheses <- c(
+  "advice_present + advice_correct + expert:advice_present + 
+   expert:advice_correct <= 0",
+  "advice_present + advice_correct <= 0",
+  "-1 * (advice_present + expert:advice_present) <= 0",
+  "-1 * (advice_present) <= 0")
+glht <- glht(fit, linfct = null_hypotheses)
+summary(glht, test = univariate())$test$pvalues
+```
+
+Because all hypotheses tested simultaneously with the `glht` function must have the same direction, we flip the sign of inequalities three and four by multiplying them with $-1$. The multcomp package automatically adjusts p-values when multiple hypotheses are tested simultaneously [@hothornSimultaneousInferenceGeneral2008]. However, the combined null hypothesis in our exemplary research question should only be rejected if **all** individual null hypotheses are rejected [i.e., intersection-union setting; @dmitrienkoTraditionalMultiplicityAdjustment2013]. In such cases, the error probabilities do not accumulate, and we would waste power when correcting for multiple tests. Thus, we request unadjusted p-values by setting `test = univariate()` in the `summary` command. With a standard significance level of $\alpha = 0.05$, we would not reject all four null hypotheses (the p-value for hypothesis $H_{03}$ is not significant) and therefore also not reject the combined null hypothesis for this simulated dataset. Note that this decision would be wrong because we have simulated the data such that the combined alternative hypothesis is actually true in the population.
+
+We can specify and test hypothesis like these with the marginaleffects [@R-marginaleffects] package.
+
+```{r}
+library(marginaleffects)
+
+hypotheses(fit, hypothesis = c(
+  "`advice_present` + `advice_correct` + `expert:advice_present` +
+  `expert:advice_correct` = 0",
+  "`advice_present` + `advice_correct` = 0",
+  "`advice_present` + `expert:advice_present` = 0",
+  "`advice_present` = 0"
+), equivalence = 0)
+
+hypotheses(fit, hypothesis = c(
+  "`advice_present` + `advice_correct` + `expert:advice_present` +
+  `expert:advice_correct` = 0",
+  "`advice_present` + `advice_correct` = 0",
+  "-1 * (`advice_present` + `expert:advice_present`) = 0",
+  "-1 * (`advice_present`) = 0"
+), equivalence = 0)
+```
+
+
+#### Interval estimation
+
+```{r}
+probs <- avg_predictions(fit, variables = list(
+  expert = 0:1, advice_present = 0:1, advice_correct = 0:1), 
+  re.form = NA, type = "response")
+
+probs
+
+probs %>% 
+  hypotheses(hypothesis = c(
+    "b8 - b2 = 0",
+    "b7 - b1 = 0",
+    "b2 - b4 = 0",
+    "b1 - b3 = 0"))
+```
+
+
+## Perform repeated simulations
+
+### THEORY
 
 Conducting the previous steps enable the analyst to 1) simulate a dataset, 2) estimate a GLMM, and 3) compute hypothesis tests or confidence intervals for estimands of interest, mirroring the analysis that will later be performed for the actual dataset of the planned study.
 The last missing piece is to write code to perform the above steps repeatedly and allow for a setting using different sample sizes.
@@ -469,9 +737,115 @@ When planning for power, we compute the relative frequency of a significant p-va
 When planning for precision, we compute the average width of the confidence interval.
 Lastly, we have to repeat the complete simulation for different sample sizes, to determine how big the sample must be in order to achieve the targeted statistical power or the expected width of the confidence interval.
 
-<!-- ### Sensitivity analysis -->
+### PRACTICE
 
-# Case study
+With all these considerations addressed, we are finally ready to perform a power analysis. Wrapping the `simulate` function already constructed earlier, the helper function `sim_and_analyse` performs all previous steps (simulate a dataset, fit a GLMM, compute p-values) in a single command.
+
+```{r}
+sim_and_analyse <- function(
+  formula_chr = "y_bin ~ 1 + expert + advice_present + advice_correct + 
+    expert:advice_present + expert:advice_correct + (1|subject) + (1|item)", 
+  null_hypotheses = c("advice_present + advice_correct + 
+    expert:advice_present + expert:advice_correct <= 0",
+    "advice_present + advice_correct <= 0",
+    "-1 * (advice_present + expert:advice_present) <= 0",
+    "-1 * (advice_present) <= 0"), ...){
+  require(lme4)
+  require(multcomp)
+  # simulate data
+  dat <- simulate(...)
+  # fit model
+  model <- glmer(as.formula(formula_chr), data = dat, family = "binomial")
+  # compute p-values
+  glht <- glht(model, linfct = null_hypotheses)
+  pvalues <- summary(glht, test = univariate())$test$pvalues
+  setNames(pvalues, paste0("p_H0", 1:length(null_hypotheses)))
+}
+```
+
+Power analysis can quickly become computationally intensive when we repeatedly simulate data and fit models for different parameter combinations or sample sizes. Thus, we use the future [@R-RJ-2021-048] and furrr [@R-furrr] packages to perform computations in parallel. First, we enable parallelization and specify how many parallel cores ("workers") of our computer to use (users can find out the maximum number of cores on their computer with the command `parallel::detectCores()`), and set a seed to make the simulation reproducible.
+
+```{r, message=FALSE, eval=FALSE}
+library(future)
+plan("multisession", workers = 6)
+set.seed(2)
+```
+
+The next code chunk specifies a simulation grid with different settings for both the number of subjects (`n_subjects`) and the number of items (`n_items`), each combination being repeated `rep` times. We chose 300 repetitions for the data simulation at hand as it strikes a balance between achieving a robust statistical estimate and remaining computationally feasible.
+With the current settings, this simulation takes about one hour on a MacBook Pro from 2020 with M1 chip and 16 GB working memory. If you want to quickly experiment with the code yourself, a setting with `workers = 4` and `rep = 5` should finish in less than 5 minutes, even on smaller machines. 
+
+```{r, message=FALSE, echo=FALSE, eval=FALSE}
+library(future)
+library(furrr)
+plan("multisession", workers = 6)
+set.seed(2)
+sim_design <- crossing(
+  rep = 1:300,
+  n_subjects = c(100, 150, 200, 250),
+  n_items = c(10, 30, 50, 70)
+) %>%
+  mutate(pvalues = future_pmap(., sim_and_analyse, 
+    .options = furrr_options(seed = TRUE))) %>%
+  unnest_wider(pvalues)
+saveRDS(sim_design, file = "results.rds")
+```
+
+```{r, message=FALSE, eval=FALSE}
+library(furrr)
+sim_design <- crossing(
+  rep = 1:300,
+  n_subjects = c(100, 150, 200, 250),
+  n_items = c(10, 30, 50, 70)
+) %>%
+  mutate(pvalues = future_pmap(., sim_and_analyse, 
+    .options = furrr_options(seed = TRUE))) %>%
+  unnest_wider(pvalues)
+```
+
+The result of the computation is a data frame that contains the p-values of all tested hypotheses for each simulated dataset.
+In some iterations (predominantly in conditions with small sample sizes), model estimation did not converge with the lme4 package. When the model fails to converge, it means that the statistical model being fitted to the data failed to reach a stable or valid solution during the estimation process. We do not remove these results because non-convergence can also happen when analyzing the real data we plan to collect, thus, we want to factor in this possibility to keep our simulation more realistic.
+
+For our exemplary combined hypothesis, power is defined as the (long-run) percentage of simulations in which all four p-values of our component hypotheses are significant at the $\alpha = 0.05$ level. Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% confidence intervals) and visualize the results with the following code.[^3]
+
+[^3]: This code was inspired by the "Mixed Design Simulation" vignette of the faux package at <https://debruine.github.io/faux/articles/sim_mixed.html>.
+
+```{r, echo=FALSE}
+sim_design <- readRDS(file = "results.rds")
+```
+
+```{r finalpwr, fig.cap="Simulation-based power estimates including 95% confidence interval of the case study for different numbers of subjects and items, based on a significance level of 0.05."}
+library(binom)
+alpha <- 0.05
+power <- sim_design %>%
+  group_by(n_subjects, n_items) %>% 
+  summarise(power = mean(p_H01 < alpha & p_H02 < alpha & 
+                           p_H03 < alpha & p_H04 < alpha), 
+    n_sig = sum(p_H01 < alpha & p_H02 < alpha & 
+                  p_H03 < alpha & p_H04 < alpha),
+    n = n(),
+    ci.lwr = binom.confint(n_sig, n, method = "wilson")$lower,
+    ci.upr = binom.confint(n_sig, n, method = "wilson")$upper, 
+    .groups = "drop")
+power %>%
+  mutate(across(c(n_subjects, n_items), factor)) %>%
+  ggplot(aes(n_subjects, n_items, fill = power)) +
+  geom_tile() +
+  geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 
+                                power, ci.lwr, ci.upr)), 
+    color = "white", size = 4) +
+  scale_fill_viridis_c(limits = c(0, 1)) +
+  xlab("number of subjects") + ylab("number of items")
+```
+
+<!-- How many participants/stimuli are needed for concrete example -->
+
+As should be the case, power estimates in Figure \@ref(fig:finalpwr) increase with both the number of subjects and the number of items. The confidence intervals indicate how precisely power was estimated by our simulation. Higher precision (which would be reflected in narrower confidence intervals) could be obtained by increasing the number of repetitions (`rep`) in the simulation. In practice, data simulations are often run multiple times with adjusted combinations of sample sizes. When running for the first time, it might be revealed that power is way too low (or much higher than required) for some combinations of `n_subjects` and `n_items`. When narrowing down the best combination that achieves sufficient power while at the same time striking a good balance of how many subjects and items are practically feasible, later rounds of data simulation will typically include a smaller grid of sample sizes combined with a higher number of repetitions. This will assure high precision for the final power estimates, which are then used for the sample size justification of the future study.
+
+Much has been written on the optimal amount of power to target in empirical research. The most prominent heuristic is to target a power of 0.8 (when combined with a type I error rate of $\alpha = 0.05$), but depending on the research goals of the study, there are often good reasons to move away from this standard depending on the research goals and resource constraints  [@lakensJustifyYourAlpha2018; @lakensSampleSizeJustification2022]. When target power has been specified, the number of subjects and the number of items in our study design can be traded against each other based on practical considerations. For the sake of the example, let the targeted power be indeed about 0.8, using an $\alpha$ of 0.05 to detect an effect of the expected size implied by our data simulation. This could be achieved by collecting data from 200 subjects (about 25% of which will be experts), each completing the same 50 items (with advice present in about 67% of cases, which is correct in about 80% of cases with present advice). If collecting data from 200 subjects is not feasible, an alternative would be to recruit 150 subjects but increase the length of the experiment to over 70 items. However, 70 items might take too long to complete for the radiologists participating in the study, who have a busy schedule. The simulation suggests that it might also be possible to plan a shorter experiment with only 30 items if it is feasible to recruit an even higher number of subjects (\> 250, to be determined by additional rounds of power analysis). Design parameters that also affect power, and which could be investigated in the simulation to find a more optimal trade-off, are the ratio of experts, the frequency of whether advice is presented and whether it is correct.
+
+<!-- ## Sensitivity analysis -->
+
+# THIS WAS THE OLD CASE STUDY CHAPTER
 
 <!-- overview of this section -->
 
@@ -490,19 +864,29 @@ The goal of the present simulation-based power analysis is to determine how many
 ## Our specific GLMM
 
 <!-- deep dive into our specific example -->
-In a GLMM, the expected value of the dependent variable Y conditioned on the vector of predictor variables $\mathbf{X}$ and random effects $\mathbf{U}$, transformed by a link function $g()$ is modeled as a linear combination $\eta$ of the predictor variables $\mathbf{X}$, the random effects $\mathbf{U}$ and the model parameters $\mathbf{\beta}$ [@fahrmeirRegressionModelsMethods2021]: $$
+In a GLMM, the expected value of the dependent variable Y conditioned on the vector of predictor variables $\mathbf{X}$ and random effects $\mathbf{U}$, transformed by a link function $g()$ is modeled as a linear combination $\eta$ of the predictor variables $\mathbf{X}$, the random effects $\mathbf{U}$ and the model parameters $\mathbf{\beta}$ [@fahrmeirRegressionModelsMethods2021]: 
+$$
 g(E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = \eta
-$$ Equivalently, the conditional expected value is modeled as the linear combination $\eta$, transformed by the inverse link function $g^{-1}()$: $$
+$$
+Equivalently, the conditional expected value is modeled as the linear combination $\eta$, transformed by the inverse link function $g^{-1}()$: 
+$$
 E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u}) = g^{-1}(\eta)
-$$ If the dependent variable (i.e., diagnostic decision) $Y$ is a binary variable with values $0$ (i.e., inaccurate), or $1$ (i.e., accurate), the conditional expected value is equivalent to the probability: $$
+$$
+If the dependent variable (i.e., diagnostic decision) $Y$ is a binary variable with values $0$ (i.e., inaccurate), or $1$ (i.e., accurate), the conditional expected value is equivalent to the probability: 
+$$
 P_{si} := P(Y = 1|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})
-$$ In our case study, $P_{si}$ is the conditional probability that a subject $s$ gives the correct response to item (i.e., CT scan) $i$.
+$$
+In our case study, $P_{si}$ is the conditional probability that a subject $s$ gives the correct response to item (i.e., CT scan) $i$.
 
-In such a setting, we model this probability as $$
+In such a setting, we model this probability as
+$$
 P_{si} = inverse\_logit(\eta_{si})
-$$ with the inverse-logit link $g^{-1}(\eta_{si}) = inverse\_logit(\eta_{si}) = \frac{exp(\eta_{si})}{1 + exp(\eta_{si})}$ or equivalently $$
+$$
+with the inverse-logit link $g^{-1}(\eta_{si}) = inverse\_logit(\eta_{si}) = \frac{exp(\eta_{si})}{1 + exp(\eta_{si})}$ or equivalently
+$$
 logit(P_{si}) = \eta_{si}
-$$ with the logit link $g(P_{si}) = logit(P_{si}) = ln (\frac{P_{si}}{1 - P_{si}})$.
+$$
+with the logit link $g(P_{si}) = logit(P_{si}) = ln (\frac{P_{si}}{1 - P_{si}})$.
 
 In our case study, the probability of making an accurate diagnostic decision is assumed to depend on the predictors: 
 
@@ -515,19 +899,23 @@ and the random effects:
 -   $u_{0s}$: the deviation of subject $s$ from the average ability to solve an item (i.e., CT scan) with average difficulty; assumed to be distributed as $u_{0s} \sim N(0, \sigma_S^2)$
 -   $u_{0i}$: the deviation of item (i.e., CT scan) $i$ from the average difficulty to be solved by a person with average ability; assumed to be distributed as $u_{0i} \sim N(0, \sigma_I^2)$
 
-In total, we assume the model $$
+In total, we assume the model
+$$
 \begin{aligned}
 logit[P_{si}] =\ (&\beta_0 + u_{0s} + u_{0i}) + \\
 &\beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
 &\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}
 \end{aligned}
-$$ or equivalently $$
+$$
+or equivalently
+$$
 \begin{aligned}
 P_{si} = inverse\_logit[&(\beta_0 + u_{0s} + u_{0i}) + \\
 &\beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
 &\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
 \end{aligned}
-$$ with model parameters $\beta_0$, $\beta_e$, $\beta_a$, $\beta_c$, $\beta_{ea}$, $\beta_{ec}$, $\sigma_S$, and $\sigma_I$.
+$$
+with model parameters $\beta_0$, $\beta_e$, $\beta_a$, $\beta_c$, $\beta_{ea}$, $\beta_{ec}$, $\sigma_S$, and $\sigma_I$.
 
 In the GLMM literature, this would be called a binomial GLMM with two random intercepts (for subjects and items), two level-1 predictors ($advice\_present$, $advice\_correct$), one level-2 predictor ($expert$) and two cross-level interactions ($expert \cdot advice\_present$, $expert \cdot advice\_correct$).
 To limit complexity, we do not consider random slopes, additional predictors or higher-level interactions.
@@ -615,7 +1003,8 @@ summary(fit)
 
 In the output, the `Estimate` column in the `Fixed effects` table contains the estimates for the $\beta$ parameters, while the `Std.Dev.` column in the `Random effects` table contains the estimates for $\sigma_S$ and $\sigma_I$.
 
-Unfortunately, the model parameters in a binomial GLMM are hard to interpret because 1) the $\beta$ parameters are connected to the modeled probability via the non-linear inverse-logit link, and 2) we also have to consider the random effects. The most simple interpretation works by imagining a subject with average ability ($u_{0s} = 0$) responding to an item (i.e., CT scan) with average difficulty ($u_{0i} = 0$). Then the model implied probability that such a person solves such an item accurately is given by: $$
+Unfortunately, the model parameters in a binomial GLMM are hard to interpret because 1) the $\beta$ parameters are connected to the modeled probability via the non-linear inverse-logit link, and 2) we also have to consider the random effects. The most simple interpretation works by imagining a subject with average ability ($u_{0s} = 0$) responding to an item (i.e., CT scan) with average difficulty ($u_{0i} = 0$). Then the model implied probability that such a person solves such an item accurately is given by: 
+$$
 \begin{aligned}
 P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0}) = \\
 = inverse\_logit[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
@@ -623,7 +1012,8 @@ P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0}) = \\
 \end{aligned}
 $$
 
-In fact, we would only need the full equation if the subject is an expert and correct advice is presented. In all other experimental conditions, some terms drop from the equation because they are multiplied by $0$. The other extreme case would be the probability that a non-expert with average ability solves an item with average difficulty when no advice is presented: $$
+In fact, we would only need the full equation if the subject is an expert and correct advice is presented. In all other experimental conditions, some terms drop from the equation because they are multiplied by $0$. The other extreme case would be the probability that a non-expert with average ability solves an item with average difficulty when no advice is presented:
+$$
 \begin{aligned}
 P(Y=1|expert = 0, advice\_present = 0, advice\_correct = 0, u_{0s} = 0, u_{0i} = 0) = \\
 = inverse\_logit[\beta_0]
@@ -678,49 +1068,6 @@ summary(glht, test = univariate())$test$pvalues
 ```
 
 Because all hypotheses tested simultaneously with the `glht` function must have the same direction, we flip the sign of inequalities three and four by multiplying them with $-1$. The multcomp package automatically adjusts p-values when multiple hypotheses are tested simultaneously [@hothornSimultaneousInferenceGeneral2008]. However, the combined null hypothesis in our exemplary research question should only be rejected if **all** individual null hypotheses are rejected [i.e., intersection-union setting; @dmitrienkoTraditionalMultiplicityAdjustment2013]. In such cases, the error probabilities do not accumulate, and we would waste power when correcting for multiple tests. Thus, we request unadjusted p-values by setting `test = univariate()` in the `summary` command. With a standard significance level of $\alpha = 0.05$, we would not reject all four null hypotheses (the p-value for hypothesis $H_{03}$ is not significant) and therefore also not reject the combined null hypothesis for this simulated dataset. Note that this decision would be wrong because we have simulated the data such that the combined alternative hypothesis is actually true in the population.
-
-We can specify and test hypothesis like these with the marginaleffects [@R-marginaleffects] package.
-
-```{r}
-library(marginaleffects)
-
-hypotheses(fit, hypothesis = c(
-  "`advice_present` + `advice_correct` + `expert:advice_present` +
-  `expert:advice_correct` = 0",
-  "`advice_present` + `advice_correct` = 0",
-  "`advice_present` + `expert:advice_present` = 0",
-  "`advice_present` = 0"
-), equivalence = 0)
-
-hypotheses(fit, hypothesis = c(
-  "`advice_present` + `advice_correct` + `expert:advice_present` +
-  `expert:advice_correct` = 0",
-  "`advice_present` + `advice_correct` = 0",
-  "-1 * (`advice_present` + `expert:advice_present`) = 0",
-  "-1 * (`advice_present`) = 0"
-), equivalence = 0)
-```
-
-
-## Interval estimation
-
-```{r}
-probs <- avg_predictions(fit, variables = list(
-  expert = 0:1, advice_present = 0:1, advice_correct = 0:1), 
-  re.form = NA, type = "response")
-
-probs
-
-probs %>% 
-  hypotheses(hypothesis = c(
-    "b8 - b2 = 0",
-    "b7 - b1 = 0",
-    "b2 - b4 = 0",
-    "b1 - b3 = 0"))
-```
-
-
-STILL MISSING
 
 
 ## Specification of plausible parameter values
