@@ -370,7 +370,7 @@ While a theoretical estimand is defined outside of any statistical model and be 
 For our exemplary research question, it is possible to construct an experimental study, where all participants are confronted with the same set of brain scans, but the kind of AI-advice given for each brain scan is randomly assigned within participants.
 This random intervention allows to estimate our theoretical estimand, although in reality, each person receives only one kind of AI-advice (correct advice, wrong advice, no advice) for each brain scan.
 
-For our example, each probability expression in our theoretical estimand can be modeled with a concrete GLMM.
+For our example, each probability expression in our theoretical estimand can be modeled with a GLMM.
 Estimating the GLMM based on the data observed in our planned study produces an estimate for each probability and these estimates can be used to compute an estimate for each of the four probability contrasts.
 
 ## Simulate the data generating process
@@ -385,14 +385,14 @@ While such assumptions can be quite challenging for observational studies and/or
 When all predictor variables have been simulated, one can use the structure of a suitable GLMM to simulate the dependent variable.
 To simulate the GLMM, one requires plausible values for all model parameters.
 We will discuss strategies for how these values can be obtained later.
-Because one has full control over the data generating process in a tailored simulation, it is simple to also model highly specific aspects of the planned study, like data missing by design or assuming that subjects dropout (i.e. deleting their data from the simulated dataset) based on other variables in the simulated dataset.
+Because one has full control over the data generating process in a tailored simulation, it is simple to also model highly specific aspects of the planned study, like data missing by design or assuming that subjects drop out (i.e. deleting their data from the simulated dataset) based on other variables in the simulated dataset.
 The quality of the results of the sample size planning crucially depends on the plausibility of the simulated data generating process.
 For this reason, deciding on a specific set of assumptions can easily feel overwelming.
 However, we would argue that even a strongly simplified data generating process (e.g. including only a small number of interaction effect; including only random intercepts but no random slopes; making rather implausible assumptions for missing data) can yield informative result and should be strongly preferred to the current status quo in psychological research, where most studies do not justify their sample size or use highly questionable heuristics that are independent of their specific research question.
 
 #### PRACTICE
 
-We simulate data for an experiment where the diagnostic performance of users of an AI-enabled diagnostic decision support system will be evaluated. 
+In our case study, we simulate data for an experiment where the diagnostic performance of users of an AI-enabled diagnostic decision support system will be evaluated. 
 <!-- The goal is to understand how AI advice influences medical decision-making. -->
 Participants, radiologists (task experts; 1/4 of participants) and students/interns (non-task experts; 3/4), review a series of head computer tomography (CT) scans to assess the presence of a bleeding. 
 To support their decision-making, an AI model provides initial diagnostic advice (2/3 of cases), which can be used as guidance by the participants.
@@ -611,126 +611,162 @@ fit <- glmer(f, data = dat, family = "binomial")
 ### THEORY
 
 When the theoretical and empirical estimands have been identified in the modeling framework used to estimate the GLMM, one has to decide on whether hypothesis testing or interval estimation should be used to answer the research question.
-This decision is then followed by selecting the specific statistical method that shall be applied to compute the hypothesis test(s) or confidence interval(s) (e.g., compute hypothesis tests with the marginaleffects R package, using the delta method).
+This decision is then followed by selecting the specific statistical method that shall be applied to compute the hypothesis test(s) or confidence interval(s) (e.g., compute hypothesis tests and confidence intervals with the marginaleffects R package using the delta method).
 
 ### PRACTICE
 
-#### Model interpretation
+For our case study, we investigate the following research question:
+*We expect that for both experts and non-experts, correct advice leads to a higher probability of accurately diagnosing a CT scan compared to no advice presented, AND, we expect that for both experts and non-experts, incorrect advice leads to a lower probability of accurately diagnosing a CT scan compared to no advice presented.*
 
-We can inspect the estimates for all model parameters with the `summary` command:
+In the earlier section on our theoretical estimand we translated this verbal description into four probability statements that are specified outside of any specific statistical model.
+The next translation step is to specify how these probabilites can be estimated within the framework of our concrete GLMM.
+
+The first of the four statements was: 
+
+$$
+\begin{aligned}
+& P(\text{correct diagnosis} | \text{correct advice, an average expert, an average scan}) \\
+& \quad - P(\text{correct diagnosis} | \text{no advice, an average expert, an average scan})
+\end{aligned}
+$$
+In the context of our GLMM, the corresponding model based quantity is:
+
+$$
+\begin{aligned}
+& P(Y=1|advice\_present = 1, advice\_correct = 1, expert = 1, u_{0s} = 0, u_{0i} = 0) \\
+& \quad - P(Y=1|advice\_present = 0, advice\_correct = 0, expert = 1, u_{0s} = 0, u_{0i} = 0)
+\end{aligned}
+$$
+Plugging in the model equation of the GLMM produces an equation on how to compute this contrast when all model parameters are known.
+
+<!-- $$ -->
+<!-- \begin{aligned} -->
+<!-- & \text{inverse_logit}[\beta_0 + \beta_a \cdot 1 + \beta_c \cdot 1 + \beta_e \cdot 1 + \beta_{ea} \cdot 1 \cdot 1 + \beta_{ec} \cdot 1 \cdot 1]\\ -->
+<!-- & \quad - \text{inverse_logit}[\beta_0 + \beta_a \cdot 0 + \beta_c \cdot 0 + \beta_e \cdot 1 + \beta_{ea} \cdot 1 \cdot 0 + \beta_{ec} \cdot 1 \cdot 0] = \\ -->
+<!-- & = \text{inverse_logit}[\beta_0 + \beta_a  + \beta_c + \beta_e + \beta_{ea} + \beta_{ec} ]\\ -->
+<!-- & \quad - \text{inverse_logit}[\beta_0 + \beta_e ] \\ -->
+<!-- \end{aligned} -->
+<!-- $$ -->
+
+When model parameters are not known, the corresponding parameter estimates are plugged into the equation to compute an estimate of the contrast instead.
+
+In general, we can inspect the estimates for all model parameters with the `summary` command:
 
 ```{r}
 summary(fit)
 ```
 
-In the output, the `Estimate` column in the `Fixed effects` table contains the estimates for the $\beta$ parameters, while the `Std.Dev.` column in the `Random effects` table contains the estimates for $\sigma_S$ and $\sigma_I$.
+In the lme4 output, the `Estimate` column in the `Fixed effects` table contains the estimates for the $\beta$ parameters, while the `Std.Dev.` column in the `Random effects` table contains the estimates for $\sigma_S$ and $\sigma_I$.
 
-Unfortunately, the model parameters in a binomial GLMM are hard to interpret because 1) the $\beta$ parameters are connected to the modeled probability via the non-linear inverse-logit link, and 2) we also have to consider the random effects. The most simple interpretation works by imagining a subject with average ability ($u_{0s} = 0$) responding to an item (i.e., CT scan) with average difficulty ($u_{0i} = 0$). Then the model implied probability that such a person solves such an item accurately is given by: 
+Unfortunately, there is no single model parameter that corresponds with our contrast of interest.
+the model parameters in a binomial GLMM are hard to interpret because 1) the $\beta$ parameters are connected to the modeled probability via the non-linear inverse-logit link, and 2) we also have to consider the random effects.
+When we are interested in a subject with average ability ($u_{0s} = 0$) responding to an item (i.e., CT scan) with average difficulty ($u_{0i} = 0$), the model implied probability that such a person solves such an item accurately is given by: 
 $$
 \begin{aligned}
 P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0}) = \\
-= inverse\_logit[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
+= \text{inverse_logit}[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
 &\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
 \end{aligned}
 $$
-
-In fact, we would only need the full equation if the subject is an expert and correct advice is presented. In all other experimental conditions, some terms drop from the equation because they are multiplied by $0$. The other extreme case would be the probability that a non-expert with average ability solves an item with average difficulty when no advice is presented:
+In fact, we would only need the full equation if the subject is an expert and correct advice is presented.
+In all other experimental conditions, some terms drop from the equation because they are multiplied by $0$.
+The other extreme case would be the probability that a non-expert with average ability solves an item with average difficulty when no advice is presented:
 $$
 \begin{aligned}
-P(Y=1|expert = 0, advice\_present = 0, advice\_correct = 0, u_{0s} = 0, u_{0i} = 0) = \\
-= inverse\_logit[\beta_0]
+P(Y=1| advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0) = \\
+= \text{inverse_logit}[\beta_0]
 \end{aligned}
 $$
+One could use such reasoning, to determine the exact formula needed to compute our contrast of interest.
+However, this would be very tedious and we can use R to compute this contrast for us without doing the math.
 
-Due to this complicated relationship, we argue not to focus too much on interpreting single model parameters when working with GLMMs. Instead, it can be more intuitive to consider model predictions and the model-implied distribution of the dependent variable for each experimental condition across all subjects and items.
+We can use the predict function of the lme4 package to compute the predicted probability for a correct diagnosis based on our model, plugin the two sets of predictor values, and compute the difference between the two estimated probabilities.
 
-With the marginaleffects package [@R-marginaleffects], we can easily compute predictions for all observations in the dataset based on the fitted GLMM (including all fixed **and** random effects), and plot the average probability with confidence intervals for each experimental condition in Figure \@ref(fig:marginaleffects):
-
-(ref:marginaleffects) Marginal distributions including means and 95% confidence intervals for all experimental conditions computed with the marginaleffects package.
-
-```{r marginaleffects, message=FALSE, fig.cap="(ref:marginaleffects)"}
-library(marginaleffects)
-plot_predictions(fit, by = c("advice_present", "advice_correct", "expert"),
-  type = "response") + ylim(c(0.3, 1))
+```{r}
+pred_df <- data.frame(advice_present = c(1, 0), advice_correct = c(1, 0), expert = c(1, 1))
+pred_df
+preds <- predict(fit, newdata = pred_df, type = "response", re.form = NA)
+preds
+preds[1] - preds[2]
 ```
+
+The argument `type = "response"` specifies that predictions are made on the probability scale, while `re.form = NA` sets all random effects to 0.
+
+We could use this method to compute point estimates for all four contrast that are part of our estimand.
+However, depending on whether we are interested in hypothesis testing or parameter estimation, we also need a method to compute hypothesis tests or confidence interval for our point estimates.
+
+The marginaleffects package [@R-marginaleffects] is a very flexible package to compute hypothesis tests and confidence intervals for contrasts with a variety of statistical models, including GLMM estimated with lme4.
+
+First, we compute estimated probabilities for all experimental conditions in our experiment with the `predictions` function:
+
+```{r}
+pred_df <- expand_grid(advice_present = 0:1, advice_correct = 0:1, expert = 0:1)
+probs <- predictions(fit, newdata = pred_df, type = "response", re.form = NA)
+probs
+```
+
+Note that the result also contains the two missing by design conditions that are never observed in the actual study ($advice\_present = 0, advice\_correct = 1, expert = 1$ and $advice\_present = 0, advice\_correct = 1, expert = 0$), and we should never interpret those.
+
+Next, we use these predictions to compute the four specific contrasts that are part of our estimand.
+For this we must specify which rows in `probs` have to be subtracted from each other.
+We will use the `hypotheses` function to compute our four contrasts of interest together with hypothesis tests and confidence intervals.
+We use the default inference options of the marginaleffects package that compute hypothesis tests and confidence intervals based on the approximate delta method.
+
+```{r}
+probs %>% 
+  hypotheses(hypothesis = c(
+    "b8 = b2",
+    "b2 = b6",
+    "b7 = b1",
+    "b1 = b5"),
+    equivalence = c(0, 0))
+```
+
+The expression `"b8 = b2"` is special syntax to subtract the estimate in row number 8 from the estimate in row number 2.
+The argument `equivalence = c(0, 0)` can be used to compute one-sided p-values testing whether the constrast in the population is smaller than 0 (`p (NonSub)` column) or greater than zero (`p (NonInf)` column).
+We computed the contrasts in a way that we expect positive values for all four of them.
 
 #### Hypothesis testing
 
-However, we need to think about the model parameters again when we want to test hypotheses that we have theoretically derived from some research question. Because the inverse-logit link is still a continuously increasing function, positive parameter values always correspond to increases in probability and vice versa.
+If we are interested in hypothesis testing in our case study, we test a combined null hypothesis that consists of four separate null hypotheses:
 
-The `Fixed effects` table in the lme4 summary output also includes p-values for hypothesis tests with null hypotheses of the style $H_0: \beta = 0$. However, for many research questions of interest, we are not interested in these two-sided tests that refer to only a single parameter.
-
-For our case study, imagine the following combined hypothesis: *We expect that for both experts and non-experts, correct advice leads to a higher probability of accurately diagnosing a CT scan compared to no advice presented, AND, we expect that for both experts and non-experts, incorrect advice leads to a lower probability of accurately diagnosing a CT scan compared to no advice presented.*
-
-This combined hypothesis leads to the following four separate null hypotheses to be tested: $$
+$$
 \begin{aligned}
-H_{01}:\ &\beta_{a} + \beta_{c} + \beta_{ea} + \beta_{ec} \leq 0 \\
-H_{02}:\ &\beta_{a} + \beta_{c} \leq 0 \\
-H_{03}:\ &\beta_{a} + \beta_{ea} \geq 0 \\
-H_{04}:\ &\beta_{a} \geq 0
+H_{01}:\ & P(Y=1|advice\_present = 1, advice\_correct = 1, expert = 1, u_{0s} = 0, u_{0i} = 0) \leq \\
+& P(Y=1|advice\_present = 0, advice\_correct = 0, expert = 1, u_{0s} = 0, u_{0i} = 0) \\
+H_{02}:\ &P(Y=1|advice\_present = 0, advice\_correct = 0, expert = 1, u_{0s} = 0, u_{0i} = 0) \leq \\
+& P(Y=1|advice\_present = 1, advice\_correct = 0, expert = 1, u_{0s} = 0, u_{0i} = 0) \\
+H_{03}:\ &P(Y=1|advice\_present = 1, advice\_correct = 1, expert = 0, u_{0s} = 0, u_{0i} = 0) \leq \\
+& P(Y=1|advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0) \\
+H_{04}:\ & P(Y=1|advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0) \leq \\
+& P(Y=1|advice\_present = 1, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0)
 \end{aligned}
 $$
+The combined null hypothesis should only be rejected if **all** individual null hypotheses are rejected [i.e., intersection-union setting; @dmitrienkoTraditionalMultiplicityAdjustment2013].
+In such cases, the error probabilities do not accumulate, and we would waste power when correcting for multiple tests.
 
-We arrive at these inequalities based on the following logic, exemplified here only for $H_{01}$: The first null hypothesis states that *an expert responding to an item while presented with correct advice has a lower or equal probability of solving the item compared to the same expert facing the same item without any advice.* This implies the following inequality for each subject $s$ and item $i$ $$
-inverse\_logit[(\beta_0 + u_{0s} + u_{0i}) + \beta_e + \beta_{a} + \beta_{c} + \beta_{ea} + \beta_{ec}] \leq inverse\_logit[(\beta_0 + u_{0s} + u_{0i}) + \beta_e]
-$$ which simplifies to $\beta_{a} + \beta_{c} + \beta_{ea} + \beta_{ec} \leq 0$.
-
-We can specify and test hypotheses like these with the multcomp package [@hothornSimultaneousInferenceGeneral2008] as follows:
-
-```{r, message=FALSE}
-library(multcomp)
-null_hypotheses <- c(
-  "advice_present + advice_correct + expert:advice_present + 
-   expert:advice_correct <= 0",
-  "advice_present + advice_correct <= 0",
-  "-1 * (advice_present + expert:advice_present) <= 0",
-  "-1 * (advice_present) <= 0")
-glht <- glht(fit, linfct = null_hypotheses)
-summary(glht, test = univariate())$test$pvalues
-```
-
-Because all hypotheses tested simultaneously with the `glht` function must have the same direction, we flip the sign of inequalities three and four by multiplying them with $-1$. The multcomp package automatically adjusts p-values when multiple hypotheses are tested simultaneously [@hothornSimultaneousInferenceGeneral2008]. However, the combined null hypothesis in our exemplary research question should only be rejected if **all** individual null hypotheses are rejected [i.e., intersection-union setting; @dmitrienkoTraditionalMultiplicityAdjustment2013]. In such cases, the error probabilities do not accumulate, and we would waste power when correcting for multiple tests. Thus, we request unadjusted p-values by setting `test = univariate()` in the `summary` command. With a standard significance level of $\alpha = 0.05$, we would not reject all four null hypotheses (the p-value for hypothesis $H_{03}$ is not significant) and therefore also not reject the combined null hypothesis for this simulated dataset. Note that this decision would be wrong because we have simulated the data such that the combined alternative hypothesis is actually true in the population.
-
-We can specify and test hypothesis like these with the marginaleffects [@R-marginaleffects] package.
-
-```{r}
-library(marginaleffects)
-
-hypotheses(fit, hypothesis = c(
-  "`advice_present` + `advice_correct` + `expert:advice_present` +
-  `expert:advice_correct` = 0",
-  "`advice_present` + `advice_correct` = 0",
-  "`advice_present` + `expert:advice_present` = 0",
-  "`advice_present` = 0"
-), equivalence = 0)
-
-hypotheses(fit, hypothesis = c(
-  "`advice_present` + `advice_correct` + `expert:advice_present` +
-  `expert:advice_correct` = 0",
-  "`advice_present` + `advice_correct` = 0",
-  "-1 * (`advice_present` + `expert:advice_present`) = 0",
-  "-1 * (`advice_present`) = 0"
-), equivalence = 0)
-```
-
+With a standard significance level of $\alpha = 0.05$, we would not reject all four null hypotheses (the p-value in the `p (NonInf)` column for the third hypothesis is not significant) and therefore also not reject the combined null hypothesis for this simulated dataset.
+Note that this decision would be wrong because we have simulated the data such that the combined alternative hypothesis is actually true in the population.
 
 #### Interval estimation
 
-```{r}
-probs <- avg_predictions(fit, variables = list(
-  expert = 0:1, advice_present = 0:1, advice_correct = 0:1), 
-  re.form = NA, type = "response")
+If we are interested in parameter estimation in our case study, we focus on the two-sided confidence intervals of the four contrasts of interest.
+With a standard confidence level of $1 - \alpha = 0.95$, plausible values are clearly in the positive range for the first, third and fourth contrast, while both negative and positive values seem plausible for the second contrast.
+Note that due to the constrained range of the probability scale, the width of the confidence interval differs between the four contrasts.
+The smallest width is observed for the first contrast where both underlying probabilities are close to 1.
+The largest width is observed for the fourth contrast, where both underlying probabilities are closer to 0.5.
 
-probs
+<!-- Due to this complicated relationship, we argue not to focus too much on interpreting single model parameters when working with GLMMs. Instead, it can be more intuitive to consider model predictions and the model-implied distribution of the dependent variable for each experimental condition across all subjects and items. -->
 
-probs %>% 
-  hypotheses(hypothesis = c(
-    "b8 - b2 = 0",
-    "b7 - b1 = 0",
-    "b2 - b4 = 0",
-    "b1 - b3 = 0"))
-```
+<!-- With the marginaleffects package [@R-marginaleffects], we can easily compute predictions for all observations in the dataset based on the fitted GLMM (including all fixed **and** random effects), and plot the average probability with confidence intervals for each experimental condition in Figure \@ref(fig:marginaleffects): -->
 
+<!-- (ref:marginaleffects) Marginal distributions including means and 95% confidence intervals for all experimental conditions computed with the marginaleffects package. -->
+
+<!-- ```{r marginaleffects, message=FALSE, fig.cap="(ref:marginaleffects)"} -->
+<!-- library(marginaleffects) -->
+<!-- plot_predictions(fit, by = c("advice_present", "advice_correct", "expert"), -->
+<!--   type = "response") + ylim(c(0.3, 1)) -->
+<!-- ``` -->
 
 ## Perform repeated simulations
 
