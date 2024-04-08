@@ -87,7 +87,7 @@ r_refs("r-references.bib")
 ```{r analysis-preferences}
 # Seed for random number generation
 set.seed(42)
-knitr::opts_chunk$set(cache.extra = knitr::rand_seed, echo = TRUE, eval = FALSE, fig.keep = "high", dev = "jpeg")
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed, echo = TRUE, fig.keep = "high", dev = "jpeg")
 ```
 
 # Introduction
@@ -468,6 +468,15 @@ To limit complexity, we do not consider random slopes, additional predictors or 
 The following R function simulates a full dataset structured according to the design of our case study.
 The faux package [@R-faux] contains useful functions when simulating factorial designs, including random effects.
 
+```{r, echo = FALSE}
+b_0 = 0.847
+b_e = 1.350
+b_a = -1.253
+b_c = 2.603
+b_ea = 0.790
+b_ec = -1.393
+```
+
 ```{r}
 simulate <- function(n_subjects = 100, n_items = 50,
   b_0 = 0.847, b_e = 1.350, b_a = -1.253, b_c = 2.603,
@@ -753,8 +762,8 @@ Note that this decision would be wrong because we have simulated the data such t
 If we are interested in parameter estimation in our case study, we focus on the two-sided confidence intervals of the four contrasts of interest.
 With a standard confidence level of $1 - \alpha = 0.95$, plausible values are clearly in the positive range for the first, third and fourth contrast, while both negative and positive values seem plausible for the second contrast.
 Note that due to the constrained range of the probability scale, the width of the confidence interval differs between the four contrasts.
-The smallest width is observed for the first contrast where both underlying probabilities are close to 1.
-The largest width is observed for the fourth contrast, where both underlying probabilities are closer to 0.5.
+The smallest width is observed for the first contrast (expert with correct advice vs. expert without advice) where both underlying probabilities are close to 1.
+The largest width is observed for the fourth contrast (non-expert with wrong advice vs. non-expert without advice), where both underlying probabilities are closer to 0.5.
 
 <!-- Due to this complicated relationship, we argue not to focus too much on interpreting single model parameters when working with GLMMs. Instead, it can be more intuitive to consider model predictions and the model-implied distribution of the dependent variable for each experimental condition across all subjects and items. -->
 
@@ -786,31 +795,28 @@ Lastly, we have to repeat the complete simulation for different sample sizes, to
 
 ### PRACTICE
 
-With all these considerations addressed, we are finally ready to perform a power analysis. Wrapping the `simulate` function already constructed earlier, the helper function `sim_and_analyse` performs all previous steps (simulate a dataset, fit a GLMM, compute p-values) in a single command.
+With all these considerations addressed, we are finally ready to run our simulation-based sample size planning analyses to plan for power and precision. Wrapping the `simulate` function already constructed earlier, the helper function `sim_and_analyse` performs all previous steps (simulate a dataset, fit a GLMM, compute p-values and confidence intervals) in a single command.
 
 ```{r}
 sim_and_analyse <- function(
   formula_chr = "y_bin ~ 1 + expert + advice_present + advice_correct + 
-    expert:advice_present + expert:advice_correct + (1|subject) + (1|item)", 
-  null_hypotheses = c("advice_present + advice_correct + 
-    expert:advice_present + expert:advice_correct <= 0",
-    "advice_present + advice_correct <= 0",
-    "-1 * (advice_present + expert:advice_present) <= 0",
-    "-1 * (advice_present) <= 0"), ...){
+    expert:advice_present + expert:advice_correct + (1|subject) + (1|item)",
+  contrasts = c("b8 = b2", "b2 = b6", "b7 = b1", "b1 = b5"), ...){
   require(lme4)
-  require(multcomp)
+  require(marginaleffects)
+  require(tidyr)
   # simulate data
   dat <- simulate(...)
   # fit model
   model <- glmer(as.formula(formula_chr), data = dat, family = "binomial")
-  # compute p-values
-  glht <- glht(model, linfct = null_hypotheses)
-  pvalues <- summary(glht, test = univariate())$test$pvalues
-  setNames(pvalues, paste0("p_H0", 1:length(null_hypotheses)))
+  # compute contrasts
+  contr_df <- expand_grid(advice_present = 0:1, advice_correct = 0:1, expert = 0:1)
+  predictions(model, newdata = contr_df, type = "response", re.form = NA) %>%
+    hypotheses(hypothesis = contrasts, equivalence = c(0, 0))
 }
 ```
 
-Power analysis can quickly become computationally intensive when we repeatedly simulate data and fit models for different parameter combinations or sample sizes. Thus, we use the future [@R-RJ-2021-048] and furrr [@R-furrr] packages to perform computations in parallel. First, we enable parallelization and specify how many parallel cores ("workers") of our computer to use (users can find out the maximum number of cores on their computer with the command `parallel::detectCores()`), and set a seed to make the simulation reproducible.
+Simulation-based smaple size planning can quickly become computationally intensive when we repeatedly simulate data and fit models for different parameter combinations or sample sizes. Thus, we use the future [@R-RJ-2021-048] and furrr [@R-furrr] packages to perform computations in parallel. First, we enable parallelization and specify how many parallel cores ("workers") of our computer to use (users can find out the maximum number of cores on their computer with the command `parallel::detectCores()`), and set a seed to make the simulation reproducible.
 
 ```{r, message=FALSE, eval=FALSE}
 library(future)
@@ -826,49 +832,54 @@ library(future)
 library(furrr)
 plan("multisession", workers = 6)
 set.seed(2)
-sim_design <- crossing(
-  rep = 1:300,
+sim_result <- crossing(
+  rep = 1:100,
   n_subjects = c(100, 150, 200, 250),
   n_items = c(10, 30, 50, 70)
 ) %>%
-  mutate(pvalues = future_pmap(., sim_and_analyse, 
+  mutate(res = future_pmap(., sim_and_analyse, 
     .options = furrr_options(seed = TRUE))) %>%
-  unnest_wider(pvalues)
-saveRDS(sim_design, file = "results.rds")
+  unnest(col = res)
+saveRDS(sim_result, file = "results.rds")
 ```
 
 ```{r, message=FALSE, eval=FALSE}
 library(furrr)
-sim_design <- crossing(
-  rep = 1:300,
+sim_result <- crossing(
+  rep = 1:5,
   n_subjects = c(100, 150, 200, 250),
   n_items = c(10, 30, 50, 70)
 ) %>%
-  mutate(pvalues = future_pmap(., sim_and_analyse, 
+  mutate(res = future_pmap(., sim_and_analyse, 
     .options = furrr_options(seed = TRUE))) %>%
-  unnest_wider(pvalues)
+  unnest(col = res)
 ```
 
-The result of the computation is a data frame that contains the p-values of all tested hypotheses for each simulated dataset.
+The result of the computation is a data frame that contains the p-values and confidence intervals of all specified contrasts for each simulated dataset.
 In some iterations (predominantly in conditions with small sample sizes), model estimation did not converge with the lme4 package. When the model fails to converge, it means that the statistical model being fitted to the data failed to reach a stable or valid solution during the estimation process. We do not remove these results because non-convergence can also happen when analyzing the real data we plan to collect, thus, we want to factor in this possibility to keep our simulation more realistic.
+
+#### Power results
 
 For our exemplary combined hypothesis, power is defined as the (long-run) percentage of simulations in which all four p-values of our component hypotheses are significant at the $\alpha = 0.05$ level. Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% confidence intervals) and visualize the results with the following code.[^3]
 
 [^3]: This code was inspired by the "Mixed Design Simulation" vignette of the faux package at <https://debruine.github.io/faux/articles/sim_mixed.html>.
 
 ```{r, echo=FALSE}
-sim_design <- readRDS(file = "results.rds")
+sim_result <- readRDS(file = "results.rds")
 ```
 
 ```{r finalpwr, fig.cap="Simulation-based power estimates including 95% confidence interval of the case study for different numbers of subjects and items, based on a significance level of 0.05."}
 library(binom)
 alpha <- 0.05
-power <- sim_design %>%
+power <- sim_result %>%
+  pivot_wider(names_from = term, names_sep = "_", 
+    values_from = estimate:p.value.equiv) %>%
   group_by(n_subjects, n_items) %>% 
-  summarise(power = mean(p_H01 < alpha & p_H02 < alpha & 
-                           p_H03 < alpha & p_H04 < alpha), 
-    n_sig = sum(p_H01 < alpha & p_H02 < alpha & 
-                  p_H03 < alpha & p_H04 < alpha),
+  summarise(
+    power = mean(`p.value.noninf_b1=b5` < alpha & `p.value.noninf_b8=b2` < alpha &
+      `p.value.noninf_b2=b6` < alpha & `p.value.noninf_b7=b1` < alpha), 
+    n_sig = sum(`p.value.noninf_b1=b5` < alpha & `p.value.noninf_b8=b2` < alpha &
+      `p.value.noninf_b2=b6` < alpha & `p.value.noninf_b7=b1` < alpha),
     n = n(),
     ci.lwr = binom.confint(n_sig, n, method = "wilson")$lower,
     ci.upr = binom.confint(n_sig, n, method = "wilson")$upper, 
@@ -889,6 +900,51 @@ power %>%
 As should be the case, power estimates in Figure \@ref(fig:finalpwr) increase with both the number of subjects and the number of items. The confidence intervals indicate how precisely power was estimated by our simulation. Higher precision (which would be reflected in narrower confidence intervals) could be obtained by increasing the number of repetitions (`rep`) in the simulation. In practice, data simulations are often run multiple times with adjusted combinations of sample sizes. When running for the first time, it might be revealed that power is way too low (or much higher than required) for some combinations of `n_subjects` and `n_items`. When narrowing down the best combination that achieves sufficient power while at the same time striking a good balance of how many subjects and items are practically feasible, later rounds of data simulation will typically include a smaller grid of sample sizes combined with a higher number of repetitions. This will assure high precision for the final power estimates, which are then used for the sample size justification of the future study.
 
 Much has been written on the optimal amount of power to target in empirical research. The most prominent heuristic is to target a power of 0.8 (when combined with a type I error rate of $\alpha = 0.05$), but depending on the research goals of the study, there are often good reasons to move away from this standard depending on the research goals and resource constraints  [@lakensJustifyYourAlpha2018; @lakensSampleSizeJustification2022]. When target power has been specified, the number of subjects and the number of items in our study design can be traded against each other based on practical considerations. For the sake of the example, let the targeted power be indeed about 0.8, using an $\alpha$ of 0.05 to detect an effect of the expected size implied by our data simulation. This could be achieved by collecting data from 200 subjects (about 25% of which will be experts), each completing the same 50 items (with advice present in about 67% of cases, which is correct in about 80% of cases with present advice). If collecting data from 200 subjects is not feasible, an alternative would be to recruit 150 subjects but increase the length of the experiment to over 70 items. However, 70 items might take too long to complete for the radiologists participating in the study, who have a busy schedule. The simulation suggests that it might also be possible to plan a shorter experiment with only 30 items if it is feasible to recruit an even higher number of subjects (\> 250, to be determined by additional rounds of power analysis). Design parameters that also affect power, and which could be investigated in the simulation to find a more optimal trade-off, are the ratio of experts, the frequency of whether advice is presented and whether it is correct.
+
+#### Precision results
+
+When planning for precision, one could monitor the width of all four confidence intervals at the same time.
+However, because the confidence intervals of the four contrasts strongly differ in width, it is not trivial to decide which width one should target when deciding on the appropriate sample size.
+In contrast to planning for power, there are no common standards on how to specify the targeted precision.
+For our example, we use a simple heuristic but we strongly encourage readers to think about better alternatives that are appropriate in their own applications.
+
+Our simulations show that the smallest confidence interval can be expected for the first contrast (expert with correct advice vs. expert without advice).
+The true contrast in probability for an average expert and an average item in this condition is `plogis(b_0 + b_e + b_a + b_c + b_ea + b_ec) - plogis(b_0 + b_e) =` $`r round(plogis(b_0 + b_e + b_a + b_c + b_ea + b_ec) - plogis(b_0 + b_e), 3)`$.
+We want the width of this confidence interval to be smaller than 0.1.
+This would mean that if the point estimate happens to be close to the true value, the plausible values inside of a 95% confidence interval would all be positive.
+
+Thus in our example, precision is defined as the (long-run) average width of a 95% confidence interval for the probability contrast between experts with correct advice and experts without advice.
+Of course, lower width implies better precision.
+Based on our simulation outcomes, we compute the precision estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% confidence intervals) and visualize the results with the following code.
+
+```{r finalprecision, fig.cap="Simulation-based precision estimates (expected width of confidence intervals) including 95% confidence interval of the case study for different numbers of subjects and items, based on a confidence level of 0.95."}
+precision <- sim_result %>%
+  pivot_wider(names_from = term, names_sep = "_", 
+    values_from = estimate:p.value.equiv) %>%
+  group_by(n_subjects, n_items) %>%
+  mutate(width = `conf.high_b8=b2` - `conf.low_b8=b2`) %>%
+  summarise(precision = mean(width),
+    ci.lwr = t.test(width)$conf.int[1],
+    ci.upr = t.test(width)$conf.int[2], 
+    .groups = "drop")
+precision %>%
+  mutate(across(c(n_subjects, n_items), factor)) %>%
+  ggplot(aes(n_subjects, n_items, fill = precision)) +
+  geom_tile() +
+  geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 
+                                precision, ci.lwr, ci.upr)), 
+    color = "white", size = 6) +
+  scale_fill_viridis_c(limits = c(0, 0.3), direction = -1) + guides(fill = guide_legend(reverse=FALSE))
+```
+
+As should be the case, precision estimates in Figure \@ref(fig:finalprecision) increase  (i.e., average width of confidence interval decreases) with both the number of subjects and the number of items.
+Applying our simple heuristic of targeting an expected width smaller than 0.1, we see the same trade-off between the number of subjects and the number of items as with planning for power.
+We could either choose 100 subjects and 30 items or 200 subjects and 10 items.
+
+Note that our simple heuristic for determining sample size in the planning for precision scenario was quite liberal.
+This is reflected by the result that we would need a smaller sample size than in the planning for power scenario.
+With a more conservative precision target, the result is generally the opposite: As a rule, precise parameter estimates usually require bigger samples than null hypothesis testing.
+
 
 <!-- ## Sensitivity analysis -->
 
@@ -1345,11 +1401,11 @@ For our exemplary combined hypothesis, power is defined as the (long-run) percen
 
 [^3]: This code was inspired by the "Mixed Design Simulation" vignette of the faux package at <https://debruine.github.io/faux/articles/sim_mixed.html>.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=FALSE}
 sim_design <- readRDS(file = "results.rds")
 ```
 
-```{r finalpwr, fig.cap="Simulation-based power estimates including 95% confidence interval of the case study for different numbers of subjects and items, based on a significance level of 0.05."}
+```{r finpwr, fig.cap="Simulation-based power estimates including 95% confidence interval of the case study for different numbers of subjects and items, based on a significance level of 0.05.", eval=FALSE}
 library(binom)
 alpha <- 0.05
 power <- sim_design %>%
@@ -1375,7 +1431,7 @@ power %>%
 
 <!-- How many participants/stimuli are needed for concrete example -->
 
-As should be the case, power estimates in Figure \@ref(fig:finalpwr) increase with both the number of subjects and the number of items. The confidence intervals indicate how precisely power was estimated by our simulation. Higher precision (which would be reflected in narrower confidence intervals) could be obtained by increasing the number of repetitions (`rep`) in the simulation. In practice, data simulations are often run multiple times with adjusted combinations of sample sizes. When running for the first time, it might be revealed that power is way too low (or much higher than required) for some combinations of `n_subjects` and `n_items`. When narrowing down the best combination that achieves sufficient power while at the same time striking a good balance of how many subjects and items are practically feasible, later rounds of data simulation will typically include a smaller grid of sample sizes combined with a higher number of repetitions. This will assure high precision for the final power estimates, which are then used for the sample size justification of the future study.
+As should be the case, power estimates in Figure \@ref(fig:finpwr) increase with both the number of subjects and the number of items. The confidence intervals indicate how precisely power was estimated by our simulation. Higher precision (which would be reflected in narrower confidence intervals) could be obtained by increasing the number of repetitions (`rep`) in the simulation. In practice, data simulations are often run multiple times with adjusted combinations of sample sizes. When running for the first time, it might be revealed that power is way too low (or much higher than required) for some combinations of `n_subjects` and `n_items`. When narrowing down the best combination that achieves sufficient power while at the same time striking a good balance of how many subjects and items are practically feasible, later rounds of data simulation will typically include a smaller grid of sample sizes combined with a higher number of repetitions. This will assure high precision for the final power estimates, which are then used for the sample size justification of the future study.
 
 Much has been written on the optimal amount of power to target in empirical research. The most prominent heuristic is to target a power of 0.8 (when combined with a type I error rate of $\alpha = 0.05$), but depending on the research goals of the study, there are often good reasons to move away from this standard depending on the research goals and resource constraints  [@lakensJustifyYourAlpha2018; @lakensSampleSizeJustification2022]. When target power has been specified, the number of subjects and the number of items in our study design can be traded against each other based on practical considerations. For the sake of the example, let the targeted power be indeed about 0.8, using an $\alpha$ of 0.05 to detect an effect of the expected size implied by our data simulation. This could be achieved by collecting data from 200 subjects (about 25% of which will be experts), each completing the same 50 items (with advice present in about 67% of cases, which is correct in about 80% of cases with present advice). If collecting data from 200 subjects is not feasible, an alternative would be to recruit 150 subjects but increase the length of the experiment to over 70 items. However, 70 items might take too long to complete for the radiologists participating in the study, who have a busy schedule. The simulation suggests that it might also be possible to plan a shorter experiment with only 30 items if it is feasible to recruit an even higher number of subjects (\> 250, to be determined by additional rounds of power analysis). Design parameters that also affect power, and which could be investigated in the simulation to find a more optimal trade-off, are the ratio of experts, the frequency of whether advice is presented and whether it is correct.
 
