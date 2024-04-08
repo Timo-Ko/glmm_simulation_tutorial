@@ -513,7 +513,9 @@ The linear predictor variable `linpred` ($\eta$ in the GLMM model equations) com
 We then transform the linear predictor with the inverse-link function to compute `y_prob`, the probability that the subject correctly solved the item (in R, the inverse-logit link is computed with `plogis` and the logit link with `qlogis`).
 In the final step, we simulate the binary dependent variable `y_bin` (i.e., whether the subject makes an accurate diagnostic decision for the CT scan) by -- for each trial -- drawing from a Bernoulli distribution with success probability `y_prob`.
 
-### Strategies on specifying the population parameters
+## Strategies on specifying the population parameters
+
+### THEORY
 
 As discussed earlier, tailored simulation based sample size planning is especially relevant when studies have to be planned in the absence of previous studies with a similar design or any pilot data.
 In this scenario, researchers require strategies on how to specify the population parameters used in their data simulation.
@@ -526,9 +528,90 @@ This requires new strategies on how the data generating process implied by certa
 Although we focus on frequentist statistics in our tutorial, selecting plausible values for data simulation shares many similarities with the specification of (weakly) informative prior distribution in applied Bayesian statistics.
 In this literature, there have been developed some strategies to monitor the plausibility of (prior) model assumptions, that can be adapted for our purposes.
 
-##### Insightful descriptive statistics
+### PRACTICE
 
-For most GLMMs, the interpretation of model parameters if quite complicated which makes it difficult to specify plausible values for a specific application.
+When introducing our simulation function and simulating data for the above example, we have used theoretically plausible values as defaults for all model parameters ($\beta_0$, $\beta_e$, $\beta_a$, $\beta_c$, $\beta_{ea}$, $\beta_{ec}$, $\sigma_S$, and $\sigma_I$), but have not talked about where these numbers came from. 
+
+Ideally, one would rely on meta-analytic results or conclusive data from pilot studies. However, these are sometimes not readily available. All parameter values in our present case study have been determined based on results from related study designs from the literature. Additionally, we had repeated discussions with our affiliated domain experts in radiology to check whether our assumptions seems plausible. 
+
+We now outline the strategies we used to determine plausible parameter values:
+Unfortunately, the model parameters in a binomial GLMM are hard to interpret in isolation because 1) the $\beta$ parameters are connected to the modeled probability via the non-linear inverse-logit link, and 2) we also have to consider the random effects.
+The most simple interpretation works by imagining a subject with average ability ($u_{0s} = 0$) responding to an item (i.e., CT scan) with average difficulty ($u_{0i} = 0$).
+Then the model implied probability that such a person solves such an item accurately is given by: 
+
+$$
+\begin{aligned}
+P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0}) = \\
+= \text{inverse\_logit}[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
+&\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
+\end{aligned}
+$$
+In fact, we would only need the full equation if the subject is an expert and correct advice is presented.
+In all other experimental conditions, some terms drop from the equation because they are multiplied by $0$.
+The other extreme case would be the probability that a non-expert with average ability solves an item with average difficulty when no advice is presented:
+$$
+\begin{aligned}
+P(Y=1| advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0) = \\
+= \text{inverse\_logit}[\beta_0]
+\end{aligned}
+$$
+We can revert this perspective by choosing plausible probability values and deriving the parameter values implied by these probabilities (that a subject with average ability solves an item with average difficulty) for each experimental condition.
+
+```{r probtable, echo=FALSE}
+probtable <- data.frame(
+  col1 = 
+    c("no advice, no expert", "no advice, expert", "false advice, no expert", 
+      "false advice, expert", "correct advice, no expert", "correct advice, expert"),
+  col2 =
+    c("0.70", "0.90", "0.40", "0.85", "0.90", "0.95"),
+  col3 = 
+    c("$logit(0.70) = \\beta_0$",
+      "$logit(0.90) = \\beta_0 + \\beta_e$", 
+      "$logit(0.40) = \\beta_0 + \\beta_a$",
+      "$logit(0.85) = \\beta_0 + \\beta_e + \\beta_{a} + \\beta_{ea}$",
+      "$logit(0.90) = \\beta_0 + \\beta_a + \\beta_c$",
+      "$logit(0.95) = \\beta_0 + \\beta_e + \\beta_a + \\beta_c + \\beta_{ea} + \\beta_{ec}$"))
+apa_table(
+  probtable
+  , col.names = c("Experimental condition",
+    "$P(Y=1|\\mathbf{X=x}, \\mathbf{U} = \\mathbf{0})$",
+    "Implied equation")
+  , caption = "Assumed probabilities that an average subject solves an average item in each experimental condition."
+  , note = "Implied equations are derived based on the model equations and setting all random intercept terms to 0."
+  , escape = FALSE
+)
+```
+
+Table \@ref(tab:probtable) shows our set of assumptions concerning the probability that an average subject solves an average item for each experimental condition, as well as the corresponding equations implied by the model.
+The table can be used to compute the implied values for the $\beta$ parameters, starting with the first equation and reinserting the computed $\beta$ values in all following equations:
+
+```{r}
+b_0 <- qlogis(0.7)
+b_e <- qlogis(0.9) - b_0
+b_a <- qlogis(0.4) - b_0
+b_ea <- qlogis(0.85) - b_0 - b_e - b_a
+b_c <- qlogis(0.9) - b_0 - b_a
+b_ec <- qlogis(0.95) - b_0 - b_e - b_a - b_c - b_ea
+c(b_0 = b_0, b_e = b_e, b_a = b_a, b_c = b_c, b_ea = b_ea, b_ec = b_ec)
+```
+
+It is always possible to double-check these computations by transforming the parameter values back to probabilities, e.g. 
+$$
+\begin{aligned}
+P(Y=1|expert = 1, advice\_present = 1, advice\_correct = 1, u_{0s} = 0, u_{0i} = 0) = \\
+= inverse\_logit[\beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}]
+\end{aligned}
+$$
+
+```{r}
+plogis(b_0 + b_e + b_a + b_c + b_ea + b_ec)
+```
+
+### Insightful descriptive statistics
+
+#### THEORY
+
+For most GLMMs, the interpretation of model parameters are quite complicated which makes it difficult to specify plausible values for a specific application.
 However, the mathematical structure of GLMMs determines which patterns in data would be produced by the model, if a specific set of values for the population parameters would be specified.
 The knowledge of how to simulate from a GLMM enables us to compute insightful descriptive statistics that can be compared to available domain knowledge much more easily than the opaque values of model parameters.
 For example, domain experts might not be able to specify plausible values for the $\beta$ coefficients in a logistic regression model (which are measured on the log-odds scale).
@@ -536,7 +619,43 @@ However, they should be able to reason about the expected ratio of the binary de
 The job of the analyst who is familiar with the mathematical structure of the GLMM is to produce the model implied value of the insightful descriptive statistic expected by the domain expert.
 Although insightful descriptive statistics often depend on the model parameters in complicated ways, it is usually possible to manually adjust the population parameters (if only with the help of trial and error) until the model implied quantities produce the desired result.
 
-##### Insightful model based quantities
+#### PRACTICE
+
+In the last section, we showed how we can derive the model implied probability for each experimental condition, that a subject with average ability solves an item with average difficulty.
+Although these derivations are straightforward, it is important not to misinterpret their implications: In binomial GLMMs, the average probability to solve an item (averaged across persons of varying ability and items of varying difficulty) is **not** equal to the probability that a person with average ability solves an item with average difficulty.
+The first perspective implies a so-called marginal interpretation, while the second one implies a conditional interpretation.
+For example, we determined the $\beta$ parameters in a way that corresponds to a desired conditional probability of $0.95$, that an expert with average ability solves an item with average difficulty when presented with correct advice.
+
+However, even if the model were true, we would not observe that 95% of experts responding to items presented with correct advice from a big sample of subjects drawn from their natural distribution of ability and items drawn from their natural distribution of difficulty.
+How much this estimated probability differs from the model implied probability of an average expert and an average items depends on the standard deviation of the random subject and random item intercepts (the two quantities are only equal if both standard deviations would be zero).
+We can use the model implied observed proportion of correct diagnoses in each experimental condition as an insightful descriptive statistics to determine plausible values for the random effect standard deviations.
+
+We will simulate a large dataset (for which the observed values of the descriptive statistic will be close to their model implied true values) and simply compute the relative frequency of correct diagnoses for each experimental conditions.
+
+```{r}
+library(tidyverse)
+set.seed(1)
+dat <- simulate(n_subjects = 3000, n_items = 3000,
+  sd_u0s = 0.5, sd_u0i = 0.5)
+dat %>% 
+  mutate(condition = fct_cross(
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+  mutate(condition = fct_recode(condition,
+    "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+    "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
+  group_by(condition) %>%
+  summarize(relative_frequency = sum(y_bin) / n())
+```
+
+We can use these descriptive statistics to judge whether our chosen values for the random effect standard deviations would produce data that align with out domain expertise.
+
+However, in our example they are not informative enough to determine a final set of plausible parameter values.
+For this reason, we will additionally look at insightful model based quantities.
+
+### Insightful model based quantities
+
+#### THEORY
 
 Because GLMMs are complicated models, descriptive statistics alone are usually not enough to specify plausible values for all model parameters.
 This is especially true for the standard deviation of random effects, that have complicated (and often unexpected) effects on the model-implied results.
@@ -545,7 +664,106 @@ For example, in a logistic model with random intercepts for participants, one ca
 Although domain knowledge will probably not suffice to specify this distribution completely, it should be possible to rule out unplausible boundary conditions.
 For example, the domain expert might deem it unplausible that the 5% most able participants have a probability of more than 0.99 to solve the difficult cognitive task.
 
-#### Iterative process with domain experts
+#### PRACTICE
+
+The inequality of conditional and marginal effects in GLMMs [@fahrmeirRegressionModelsMethods2021] makes their interpretation more difficult. One must be careful when specifying parameter values based on previous studies or pilot data that use the marginal interpretation (e.g., a pilot study providing an estimate of how often neurologists make an accurate diagnosis based on brain scans). However, this does not mean that we cannot use the marginal interpretation (average probability across persons and items) to inform plausible parameter values: When parameter values have been selected, we can compute the implied marginal distributions and compare this information to our domain knowledge. Then, we can iteratively adjust the parameter values until we are satisfied with the implied distributions.
+
+In the last section, we simulated a large simulated dataset and computed a descriptive statistic, the relative frequencies of correct diagnoses, for each experimental condition.
+We will now use the model implied probability of each simulated data entry (y_prob) to visualize the whole model based implied marginal distribution of correct diagnoses for each condition.
+
+(ref:margdist1-caption) Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions.
+
+```{r margdist1, fig.cap="(ref:margdist1-caption)"}
+library(tidyverse)
+library(ggdist)
+dat <- simulate(n_subjects = 3000, n_items = 3000, sd_u0s = 0.5, sd_u0i = 0.5)
+dat %>% 
+  mutate(condition = fct_cross(
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+  mutate(condition = fct_recode(condition,
+    "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+    "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
+  ggplot(aes(x = y_prob, y = condition)) +
+  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
+  scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
+```
+
+```{r}
+library(tidyverse)
+library(ggdist)
+dat <- simulate(n_subjects = 3000, n_items = 3000, sd_u0s = 0.5, sd_u0i = 0.5)
+dat %>% 
+  mutate(condition = fct_cross(
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+  mutate(condition = fct_recode(condition,
+    "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+    "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>%
+  group_by(condition) %>%
+  summarize(freq_y_1 = sum(y_bin) / n())
+```
+
+
+Figure \@ref(fig:margdist1) shows the model implied marginal distributions, including the mean, 66% and 95% intervals. We can see that, indeed, the average probabilities (black dots) slightly differ from the probabilities of average subjects and items considered in the previous section. This difference increases with the variability of the random effects.
+
+We can use plots like the one above as a useful tool to decide whether the specified standard deviations of the subject and item random intercepts ($\sigma_S$ and $\sigma_I$) are reasonable by comparing the ranges and overlap between conditions to domain knowledge.
+
+In the next plot, we have set the item standard deviation to almost zero ($\sigma_I = 0.01$). This gives us a better way to see the variability between persons.
+
+(ref:margdist2-caption) Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions while setting the standard deviation of item random intercepts to 0.01.
+
+```{r margdist2, echo=FALSE, fig.cap="(ref:margdist2-caption)"}
+dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0i = 0.01)
+dat %>% 
+  mutate(condition = fct_cross(
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+  mutate(condition = fct_recode(condition,
+    "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+    "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
+  ggplot(aes(x = y_prob, y = condition)) +
+  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
+  scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
+```
+
+As an example, Figure \@ref(fig:margdist2) reveals a number of implicit assumptions about the comparison between experts and non-experts: With wrong advice, virtually all experts have a higher probability of making a correct diagnosis compared to non-experts when considering only items with average difficulty. In contrast, there is considerable overlap in probability between experts and non-experts with no advice and even higher overlap with correct advice. Patterns like these should be considered carefully and discussed with the domain experts. Parameter values ($\beta$ parameters, and $\sigma_S$) should be adjusted if the implications do not seem reasonable.
+
+We could also have a closer look at variability between items by setting the subject standard deviation to almost zero ($\sigma_S = 0.01$).
+
+```{r, include=FALSE}
+dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0s = 0.01)
+dat %>% 
+  mutate(condition = fct_cross(
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+  mutate(condition = fct_recode(condition,
+    "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+    "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
+  ggplot(aes(x = y_prob, y = condition)) +
+  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
+  scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
+```
+
+The final plot demonstrates that these plots are also useful for spotting standard deviations that are specified too high. For Figure \@ref(fig:margdist3), we have set $\sigma_S = 3$ and $\sigma_I = 3$. This implies that in each experimental condition, the probabilities that a subject solves an item are usually close to either 0 or 1, which is not a plausible assumption. However, these high standard deviations do not account for the inherent variability and complexity of human performance. For example, we would expect that a participant with low ability compared to other task experts to solve a difficult item with a probability substantially larger than zero even when presented with wrong advice. 
+
+(ref:margdist3-caption) Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions while setting the standard deviation of subject and item random intercepts to 3.
+
+```{r margdist3, echo=FALSE, fig.cap="(ref:margdist3-caption)"}
+dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0s = 3, sd_u0i = 3)
+dat %>% 
+  mutate(condition = fct_cross(
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+  mutate(condition = fct_recode(condition,
+    "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+    "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
+  ggplot(aes(x = y_prob, y = condition)) +
+  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
+  scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
+```
+
+### Iterative process with domain experts
 
 In our experience, the gathering of domain knowledge by domain experts and the consecutive specification of population parameter values used in data simulation is not a one-time event but rather an iterative process.
 In a first step, domain experts can be interviewed to "elicit" their domain knowledge about how the future data of the planned study is expected to look like.
@@ -1181,7 +1399,7 @@ Ideally, one would rely on meta-analytic results or conclusive data from pilot s
 
 We now outline a few strategies on how to determine plausible parameter values. We have already seen in our discussion of model interpretation how we can derive the model implied probability for each experimental condition, that a subject with average ability solves an item with average difficulty. We can revert this perspective by choosing plausible probability values and deriving the parameter values implied by these probabilities (for an average subject and an average item).
 
-```{r probtable, echo=FALSE}
+```{r, echo=FALSE}
 probtable <- data.frame(
   col1 = 
     c("no advice, no expert", "no advice, expert", "false advice, no expert", 
@@ -1239,7 +1457,7 @@ Earlier, we have already encountered one way to visualize the implied marginal d
 
 (ref:margdist1-caption) Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions.
 
-```{r margdist1, fig.cap="(ref:margdist1-caption)"}
+```{r}
 library(tidyverse)
 library(ggdist)
 dat <- simulate(n_subjects = 3000, n_items = 3000, sd_u0s = 0.5, sd_u0i = 0.5)
@@ -1279,7 +1497,7 @@ In the next plot, we have set the item standard deviation to almost zero ($\sigm
 
 (ref:margdist2-caption) Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions while setting the standard deviation of item random intercepts to 0.01.
 
-```{r margdist2, echo=FALSE, fig.cap="(ref:margdist2-caption)"}
+```{r}
 dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0i = 0.01)
 dat %>% 
   mutate(condition = fct_cross(
@@ -1315,7 +1533,7 @@ The final plot demonstrates that these plots are also useful for spotting standa
 
 (ref:margdist3-caption) Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions while setting the standard deviation of subject and item random intercepts to 3.
 
-```{r margdist3, echo=FALSE, fig.cap="(ref:margdist3-caption)"}
+```{r}
 dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0s = 3, sd_u0i = 3)
 dat %>% 
   mutate(condition = fct_cross(
