@@ -423,7 +423,7 @@ In our case study, $P_{si}$ is the conditional probability that a subject $s$ gi
 
 In such a setting, we model this probability as
 $$
-P_{si} = \text{inverse_logit}(\eta_{si})
+P_{si} = \text{inverse\_logit}(\eta_{si})
 $$
 with the inverse-logit link $g^{-1}(\eta_{si}) = inverse\_logit(\eta_{si}) = \frac{exp(\eta_{si})}{1 + exp(\eta_{si})}$ or equivalently
 $$
@@ -453,7 +453,7 @@ $$
 or equivalently
 $$
 \begin{aligned}
-P_{si} = \text{inverse_logit}[&(\beta_0 + u_{0s} + u_{0i}) + \\
+P_{si} = \text{inverse\_logit}[&(\beta_0 + u_{0s} + u_{0i}) + \\
 &\beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
 &\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
 \end{aligned}
@@ -650,7 +650,7 @@ Plugging in the model equation of the GLMM produces an equation on how to comput
 
 <!-- $$ -->
 <!-- \begin{aligned} -->
-<!-- & \text{inverse_logit}[\beta_0 + \beta_a \cdot 1 + \beta_c \cdot 1 + \beta_e \cdot 1 + \beta_{ea} \cdot 1 \cdot 1 + \beta_{ec} \cdot 1 \cdot 1]\\ -->
+<!-- & \text{omv}[\beta_0 + \beta_a \cdot 1 + \beta_c \cdot 1 + \beta_e \cdot 1 + \beta_{ea} \cdot 1 \cdot 1 + \beta_{ec} \cdot 1 \cdot 1]\\ -->
 <!-- & \quad - \text{inverse_logit}[\beta_0 + \beta_a \cdot 0 + \beta_c \cdot 0 + \beta_e \cdot 1 + \beta_{ea} \cdot 1 \cdot 0 + \beta_{ec} \cdot 1 \cdot 0] = \\ -->
 <!-- & = \text{inverse_logit}[\beta_0 + \beta_a  + \beta_c + \beta_e + \beta_{ea} + \beta_{ec} ]\\ -->
 <!-- & \quad - \text{inverse_logit}[\beta_0 + \beta_e ] \\ -->
@@ -673,7 +673,7 @@ When we are interested in a subject with average ability ($u_{0s} = 0$) respondi
 $$
 \begin{aligned}
 P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0}) = \\
-= \text{inverse_logit}[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
+= \text{inverse\_logit}[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
 &\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
 \end{aligned}
 $$
@@ -683,7 +683,7 @@ The other extreme case would be the probability that a non-expert with average a
 $$
 \begin{aligned}
 P(Y=1| advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0) = \\
-= \text{inverse_logit}[\beta_0]
+= \text{inverse\_logit}[\beta_0]
 \end{aligned}
 $$
 One could use such reasoning, to determine the exact formula needed to compute our contrast of interest.
