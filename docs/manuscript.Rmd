@@ -287,6 +287,7 @@ However, we would argue that when tailored data simulations are necessary anyway
 
 Although the details differ depending on the specific study characteristics, each tailored simulation based sample size planning requires a series of steps and decisions that we will outline in the remainder of our tutorial.
 Will introduce each step in a theoretical section, followed by the practical application based on a case study.
+All code in this manuscript and simulation results are available in the project's repository on the Open Science Framework (https://osf.io/dhwf4/).
 
 ## Define the estimand
 
@@ -368,13 +369,11 @@ Similarly, we are only interested in AI-advice given by the specific AI-enabled 
 While a theoretical estimand is defined outside of any statistical model and can be impossible to be observe directly, an empirical estimand is a quantity that can be estimated based on observed data.
 For our exemplary research question, it is possible to construct an experimental study, where all participants are confronted with the same set of brain scans, but the kind of AI-advice given for each brain scan is randomly assigned within participants.
 This random intervention allows to estimate our theoretical estimand, although in reality, each person receives only one kind of AI-advice (correct advice, wrong advice, no advice) for each brain scan.
-
-For our example, each probability expression in our theoretical estimand can be modeled with a GLMM.
+For our example, each probability expression in our theoretical estimand can be modeled with the same GLMM.
 Estimating the GLMM based on the data observed in our planned study produces an estimate for each probability and these estimates can be used to compute an estimate for each of the four probability contrasts.
+For pedagogical reasons, we will skip the concrete definition of our empirical estimand until we have discussed how to simulate data based on a concrete GLMM in the next section. 
 
 ## Simulate the data generating process
-
-### Data simulation
 
 #### THEORY
 
@@ -516,16 +515,16 @@ In the final step, we simulate the binary dependent variable `y_bin` (i.e., whet
 
 ### THEORY
 
-As discussed earlier, tailored simulation based sample size planning is especially relevant when studies have to be planned in the absence of previous studies with a similar design or any pilot data.
+Tailored simulation based sample size planning is especially relevant when studies have to be planned in the absence of previous studies with the same design or pilot data.
 In this scenario, researchers require strategies on how to specify the population parameters used in their data simulation.
 Population parameters are all model parameters estimated in a GLMM, in particular the regression coefficients of the fixed effects and the standard deviation of the random effects (and the correlation between random effects in more complicated models).
 In contrast to non-hierarchical linear regression, common heuristics based on standardized effect sizes are less useful or not even available for GLMMs.
 Our strategies to specify population parameters will require access to domain knowledge from domain experts.
 Because most domain knowledge of domain experts can only be expressed in unstandardized measurement units of a specific application, we argue that unstandardized effect sizes are usually preferable over standardized effect sizes for tailored simulation based sample size planning.
-This requires new strategies on how the data generating process implied by certain values of population parameters can be quantified or visualized in an intuitive way that enables a calibration of population parameters based on the available knowledge of domain experts.
+The basic idea of all strategies is how the data generating process implied by certain values of population parameters can be quantified or visualized in an intuitive way that enables a calibration of population parameters based on the available knowledge of domain experts.
 
 Although we focus on frequentist statistics in our tutorial, selecting plausible values for data simulation shares many similarities with the specification of (weakly) informative prior distribution in applied Bayesian statistics.
-In this literature, there have been developed some strategies to monitor the plausibility of (prior) model assumptions [@gelmanBayesianWorkflow2020], that can be adapted for our purposes.
+In this literature, strategies have been developed to monitor the plausibility of (prior) model assumptions [@gelmanBayesianWorkflow2020], that can be adapted for our purposes.
 
 ### PRACTICE
 
@@ -629,9 +628,9 @@ In the last section, we showed how we can derive the model implied probability f
 Although these derivations are straightforward, it is important not to misinterpret their implications: In binomial GLMMs, the average probability to solve an item (averaged across persons of varying ability and items of varying difficulty) is **not** equal to the probability that a person with average ability solves an item with average difficulty [@fahrmeirRegressionModelsMethods2021].
 The first perspective implies a so-called marginal interpretation, while the second one implies a conditional interpretation.
 
-For example, we determined the $\beta$ parameters in a way that corresponds to a desired conditional probability of $0.95$, that an expert with average ability solves an item with average difficulty when presented with correct advice.
-However, even if the model were true, we would not observe that 95% of experts responding to items presented with correct advice from a big sample of subjects drawn from their natural distribution of ability and items drawn from their natural distribution of difficulty.
-How much this estimated probability differs from the model implied probability of an average expert and an average items depends on the standard deviations of the random intercepts (the two quantities are only equal if both standard deviations would be zero).
+For example, we determined the $\beta$ parameters in a way that corresponds to a desired conditional probability of $0.95$, that an expert with average ability solves an item with average difficulty when presented with correct advice (the conditional perspective).
+However, even if the model were true, we would not observe that 95% of experts responding to items presented with correct advice from a big sample of subjects drawn from their natural distribution of ability and items drawn from their natural distribution of difficulty (the marginal perspective).
+How much the two probabilities differ depend on the standard deviations of the random intercepts (the two probabilities are only equal if both standard deviations would be zero).
 We want to use the model implied observed proportion of correct diagnoses in each experimental condition as an insightful descriptive statistics to determine plausible values for the random effect standard deviations.
 
 We will simulate a large dataset (for which the observed values of the descriptive statistic will be close to their model implied true values) and simply compute the relative frequency of correct diagnoses for each experimental condition.
@@ -653,7 +652,7 @@ dat %>%
 ```
 
 We tried using these descriptive statistics to judge together with our domain experts whether our chosen values for the random effect standard deviations would produce data that align with out domain expertise.
-However, in our example they are not informative enough to determine a final set of plausible parameter values.
+However although they result was deemed plausible, in our example these statistics are not informative enough to determine a final set of plausible parameter values.
 For this reason, we will additionally look at insightful model based quantities.
 
 ### Insightful model based quantities
@@ -669,13 +668,13 @@ For example, the domain expert might deem it unplausible that the 5% most able p
 
 #### PRACTICE
 
-The already discussed inequality of conditional and marginal effects in GLMMs [@fahrmeirRegressionModelsMethods2021] makes their interpretation more difficult.
+The discussed inequality of conditional and marginal effects in GLMMs [@fahrmeirRegressionModelsMethods2021] makes their interpretation more difficult.
 One must be careful when specifying parameter values based on previous studies or pilot data that use the marginal interpretation (e.g., a pilot study providing an estimate of how often neurologists make an accurate diagnosis based on brain scans). 
 However, this does not mean that we cannot use the marginal interpretation (average probability across persons and items) to inform plausible parameter values: When parameter values have been selected, we can compute the implied marginal distributions and compare this information to our domain knowledge.
 Then, we can iteratively adjust the parameter values until we are satisfied with the implied distributions.
 
 In the last section, we simulated a large simulated dataset and computed descriptive statistics, the relative frequencies of correct diagnoses, for each experimental condition.
-We will now use the model implied probability of each simulated data point (stored in the variable `y_prob`) to visualize the whole model based implied marginal distribution of correct diagnoses for each experimental condition.
+We will now use the model implied probability of each simulated data point (stored in the variable `y_prob`) to visualize the whole model implied marginal distribution of correct diagnoses for each experimental condition.
 
 (ref:margdist1-caption) Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions.
 
@@ -839,7 +838,8 @@ In the lme4 output, the `Estimate` column in the `Fixed effects` table contains 
 ### THEORY
 
 When the theoretical and empirical estimands have been identified in the modeling framework used to estimate the GLMM, one has to decide on whether hypothesis testing or interval estimation should be used to answer the research question.
-This decision is then followed by selecting the specific statistical method that shall be applied to compute the hypothesis test(s) or confidence interval(s) (e.g., compute hypothesis tests and confidence intervals with the marginaleffects R package using the delta method).
+While the majority of psychological research uses hypothesis testing, there are repeated claims that a focus on estimation can also be a good choice in many circumstances (CITATION).
+This decision on testing or estimating is then followed by selecting the specific statistical method that shall be applied to compute the hypothesis test(s) or confidence interval(s) (e.g., compute hypothesis tests and confidence intervals with the marginaleffects R package using the delta method).
 
 ### PRACTICE
 
@@ -847,17 +847,17 @@ For our case study, we investigate the following research question:
 *We expect that for both experts and non-experts, correct advice leads to a higher probability of accurately diagnosing a CT scan compared to no advice presented, AND, we expect that for both experts and non-experts, incorrect advice leads to a lower probability of accurately diagnosing a CT scan compared to no advice presented.*
 
 In the earlier section on our theoretical estimand we translated this verbal description into four probability statements that are specified outside of any specific statistical model.
-The next translation step is to specify how these probabilites can be estimated within the framework of our concrete GLMM.
+The next translation step is to specify the empirical estimand, that is how these probabilites can be estimated within the scope of our concrete GLMM.
 
-The first of the four statements was: 
+The first of the four statements of the theoretical estimand was: 
 
 $$
 \begin{aligned}
-& P(\text{correct diagnosis} | \text{correct advice, an average expert, an average scan}) \\
-& \quad - P(\text{correct diagnosis} | \text{no advice, an average expert, an average scan})
+& P(\text{correct diagnosis} | \text{correct advice, average expert, average scan}) \\
+& \quad - P(\text{correct diagnosis} | \text{no advice, average expert, average scan})
 \end{aligned}
 $$
-In the context of our GLMM, the corresponding model based quantity is:
+In the context of our GLMM, the corresponding probability statement is:
 
 $$
 \begin{aligned}
@@ -866,6 +866,8 @@ $$
 \end{aligned}
 $$
 Plugging in the model equation of the GLMM produces an equation on how to compute this contrast when all model parameters are known.
+We have already discussed how to compute the individual probabilities in the section on specifying population parameters.
+When we want to estimate the above contrast based on observed data, the only difference is that model parameters are not known and we instead plug the corresponding parameter estimates into the equation.
 
 <!-- $$ -->
 <!-- \begin{aligned} -->
@@ -876,31 +878,10 @@ Plugging in the model equation of the GLMM produces an equation on how to comput
 <!-- \end{aligned} -->
 <!-- $$ -->
 
-When model parameters are not known, the corresponding parameter estimates are plugged into the equation to compute an estimate of the contrast instead.
+We could use our knowledge of the structure of our GLMM to determine the exact formula needed to compute our contrast of interest and then plug in the parameter estimates manually from the `summary(fit)` output.
+However, this would be very tedious and we can use R to compute this contrast without doing the math.
 
-Unfortunately, there is no single model parameter that corresponds with our contrast of interest.
-the model parameters in a binomial GLMM are hard to interpret because 1) the $\beta$ parameters are connected to the modeled probability via the non-linear inverse-logit link, and 2) we also have to consider the random effects.
-When we are interested in a subject with average ability ($u_{0s} = 0$) responding to an item (i.e., CT scan) with average difficulty ($u_{0i} = 0$), the model implied probability that such a person solves such an item accurately is given by: 
-$$
-\begin{aligned}
-P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0}) = \\
-= \text{inverse\_logit}[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
-&\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
-\end{aligned}
-$$
-In fact, we would only need the full equation if the subject is an expert and correct advice is presented.
-In all other experimental conditions, some terms drop from the equation because they are multiplied by $0$.
-The other extreme case would be the probability that a non-expert with average ability solves an item with average difficulty when no advice is presented:
-$$
-\begin{aligned}
-P(Y=1| advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0) = \\
-= \text{inverse\_logit}[\beta_0]
-\end{aligned}
-$$
-One could use such reasoning, to determine the exact formula needed to compute our contrast of interest.
-However, this would be very tedious and we can use R to compute this contrast for us without doing the math.
-
-We can use the predict function of the lme4 package to compute the predicted probability for a correct diagnosis based on our model, plugin the two sets of predictor values, and compute the difference between the two estimated probabilities.
+We could use the `predict` function of the lme4 package to compute the predicted probability for a correct diagnosis based on our model, plug in the two sets of predictor values, and compute the difference between the two estimated probabilities.
 
 ```{r}
 pred_df <- data.frame(advice_present = c(1, 0), advice_correct = c(1, 0), expert = c(1, 1))
@@ -910,14 +891,14 @@ preds
 preds[1] - preds[2]
 ```
 
-The argument `type = "response"` specifies that predictions are made on the probability scale, while `re.form = NA` sets all random effects to 0.
+The argument `type = "response"` specifies that predictions are made on the probability scale (instead of the log-odds scale of the $\beta$ parameters), while `re.form = NA` sets all random effects to 0.
 
-We could use this method to compute point estimates for all four contrast that are part of our estimand.
+We could use this method to compute point estimates for all four contrast that are part of our empirical estimand.
 However, depending on whether we are interested in hypothesis testing or parameter estimation, we also need a method to compute hypothesis tests or confidence interval for our point estimates.
 
-The marginaleffects package [@R-marginaleffects] is a very flexible package to compute hypothesis tests and confidence intervals for contrasts with a variety of statistical models, including GLMM estimated with lme4.
+The marginaleffects package [@R-marginaleffects] is a very flexible, increasingly popular package to compute hypothesis tests and confidence intervals for contrasts with a variety of statistical models, including GLMMs estimated with lme4.
 
-First, we compute estimated probabilities for all experimental conditions in our experiment with the `predictions` function:
+First, we specify a grid of all combinations of predictor variable and then compute estimated probabilities for all experimental conditions in our experiment with the `predictions` function:
 
 ```{r}
 pred_df <- expand_grid(advice_present = 0:1, advice_correct = 0:1, expert = 0:1)
@@ -925,9 +906,11 @@ probs <- predictions(fit, newdata = pred_df, type = "response", re.form = NA)
 probs
 ```
 
-Note that the result also contains the two missing by design conditions that are never observed in the actual study ($advice\_present = 0, advice\_correct = 1, expert = 1$ and $advice\_present = 0, advice\_correct = 1, expert = 0$), and we should never interpret those.
+The point estimates for all experimental conditions are reported in the `Estimate` column.
+Note that the output also contains the two missing by design conditions that will never be observed in the actual study ($advice\_present = 0, advice\_correct = 1, expert = 1$ and $advice\_present = 0, advice\_correct = 1, expert = 0$).
+This is no problem as long as we never interpret those estimates.
 
-Next, we use these predictions to compute the four specific contrasts that are part of our estimand.
+Next, we use the estimated probabilities to compute the four specific contrasts that are part of our empirical estimand.
 For this we must specify which rows in `probs` have to be subtracted from each other.
 We will use the `hypotheses` function to compute our four contrasts of interest together with hypothesis tests and confidence intervals.
 We use the default inference options of the marginaleffects package that compute hypothesis tests and confidence intervals based on the approximate delta method.
@@ -943,12 +926,13 @@ probs %>%
 ```
 
 The expression `"b8 = b2"` is special syntax to subtract the estimate in row number 8 from the estimate in row number 2.
-The argument `equivalence = c(0, 0)` can be used to compute one-sided p-values testing whether the constrast in the population is smaller than 0 (`p (NonSub)` column) or greater than zero (`p (NonInf)` column).
-We computed the contrasts in a way that we expect positive values for all four of them.
+The argument `equivalence = c(0, 0)` can be used to compute one-sided p-values, testing whether the contrast in the population is smaller than 0 (`p (NonSub)` column) or greater than 0 (`p (NonInf)` column).
+The point estimates for four contrasts are reported in the `Estimate` column.
+Note that to facilitate interpretation, we arranged the contrasts in a way that we theoretically expect positive values for all four of them.
 
 #### Hypothesis testing
 
-If we are interested in hypothesis testing in our case study, we test a combined null hypothesis that consists of four separate null hypotheses:
+If we chose hypothesis testing for our case study, we would test a combined null hypothesis $H_0$ that consists of four separate null hypotheses:
 
 $$
 \begin{aligned}
@@ -962,17 +946,17 @@ H_{04}:\ & P(Y=1|advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 
 & P(Y=1|advice\_present = 1, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0)
 \end{aligned}
 $$
-The combined null hypothesis should only be rejected if **all** individual null hypotheses are rejected [i.e., intersection-union setting; @dmitrienkoTraditionalMultiplicityAdjustment2013].
+The combined null hypothesis $H_0$ should only be rejected if **all** individual null hypotheses are rejected [i.e., intersection-union setting\; @dmitrienkoTraditionalMultiplicityAdjustment2013].
 In such cases, the error probabilities do not accumulate, and we would waste power when correcting for multiple tests.
 
-With a standard significance level of $\alpha = 0.05$, we would not reject all four null hypotheses (the p-value in the `p (NonInf)` column for the third hypothesis is not significant) and therefore also not reject the combined null hypothesis for this simulated dataset.
-Note that this decision would be wrong because we have simulated the data such that the combined alternative hypothesis is actually true in the population.
+With a standard significance level of $\alpha = 0.05$, we would not reject all four null hypotheses (the p-value in the `p (NonInf)` column for the third hypothesis is not significant) and therefore also not reject the combined null hypothesis for this particular (simulated) dataset.
+Note that this decision would be wrong because we have simulated the data such that the combined alternative hypothesis $H_1$ is actually true in the population.
 
 #### Interval estimation
 
-If we are interested in parameter estimation in our case study, we focus on the two-sided confidence intervals of the four contrasts of interest.
+If we chose parameter estimation for our case study, we would focus on the two-sided confidence intervals of the four contrasts of interest.
 With a standard confidence level of $1 - \alpha = 0.95$, plausible values are clearly in the positive range for the first, third and fourth contrast, while both negative and positive values seem plausible for the second contrast.
-Note that due to the constrained range of the probability scale, the width of the confidence interval differs between the four contrasts.
+Note that due to the constrained range of the probability scale, the width of the confidence interval differs between the four contrasts (which the expected behavior for binomial GLMMs).
 The smallest width is observed for the first contrast (expert with correct advice vs. expert without advice) where both underlying probabilities are close to 1.
 The largest width is observed for the fourth contrast (non-expert with wrong advice vs. non-expert without advice), where both underlying probabilities are closer to 0.5.
 
@@ -992,21 +976,21 @@ The largest width is observed for the fourth contrast (non-expert with wrong adv
 
 ### THEORY
 
-Conducting the previous steps enable the analyst to 1) simulate a dataset, 2) estimate a GLMM, and 3) compute hypothesis tests or confidence intervals for estimands of interest, mirroring the analysis that will later be performed for the actual dataset of the planned study.
+Conducting all previous steps enables the analyst to 1) simulate a dataset, 2) estimate a GLMM, and 3) compute hypothesis tests or confidence intervals for estimands of interest, mirroring the analysis that will later be performed for the actual dataset of the planned study.
 The last missing piece is to write code to perform the above steps repeatedly and allow for a setting using different sample sizes.
-On a conceptual level, we first require a function, that takes as input the sample size and the full set of population parameter.
+On a conceptual level, we first require a function, that takes as input the sample size and the full set of population parameter values.
 When planning for power, the function should return the p-value(s) of the hypothesis test(s) of interest when conducted on the simulated dataset.
-When planning for precision, the function should instead return the width of the confidence interval(s) of interest.
-Secondly, we must run this function repeatedly with the same sample and population parameters.
-Because even fitting GLMMs with frequentist methods can quickly become time-consuming, it is recommended to use parallel computations, that is running simulations on multiple cores of the computer at the same time to reduce total computation time.
+When planning for precision, the function should return the width of the confidence interval(s) of interest.
+Secondly, we must run this function repeatedly with the same sample size and population parameters.
+Because even fitting GLMMs with frequentist methods can quickly become time-consuming, it is recommended to use parallel computing, that is running simulations on multiple cores of the computer at the same time to reduce total run time.
 Thirdly, the results of the repeated simulation must be collected and aggregated.
-When planning for power, we compute the relative frequency of a significant p-value across repeated simulations.
-When planning for precision, we compute the average width of the confidence interval.
-Lastly, we have to repeat the complete simulation for different sample sizes, to determine how big the sample must be in order to achieve the targeted statistical power or the expected width of the confidence interval.
+When planning for power, we compute the relative frequency of a significant p-value(s) across repeated simulations.
+When planning for precision, we compute the average width of the confidence interval(s).
+Lastly, we have to repeat the complete simulation for different sample sizes, to determine how big the sample must be in order to achieve the targeted power or precision.
 
 ### PRACTICE
 
-With all these considerations addressed, we are finally ready to run our simulation-based sample size planning analyses to plan for power and precision. Wrapping the `simulate` function already constructed earlier, the helper function `sim_and_analyse` performs all previous steps (simulate a dataset, fit a GLMM, compute p-values and confidence intervals) in a single command.
+We are finally ready to run our simulation-based sample size planning analyses to plan for power and for precision. Wrapping the `simulate` function already constructed earlier, the helper function `sim_and_analyse` performs all previous steps (simulate a dataset, fit a GLMM, compute p-values and confidence intervals) in a single command.
 
 ```{r}
 sim_and_analyse <- function(
@@ -1027,7 +1011,7 @@ sim_and_analyse <- function(
 }
 ```
 
-Simulation-based smaple size planning can quickly become computationally intensive when we repeatedly simulate data and fit models for different parameter combinations or sample sizes. Thus, we use the future [@R-RJ-2021-048] and furrr [@R-furrr] packages to perform computations in parallel. First, we enable parallelization and specify how many parallel cores ("workers") of our computer to use (users can find out the maximum number of cores on their computer with the command `parallel::detectCores()`), and set a seed to make the simulation reproducible.
+Simulation-based sample size planning can quickly become computationally intensive when we repeatedly simulate data and fit models for different parameter combinations or sample sizes. Thus, we use the future [@R-RJ-2021-048] and furrr [@R-furrr] packages to perform computations in parallel. First, we enable parallelization with the `plan` function and specify how many parallel cores ("workers") of our computer to use (users can find out the maximum number of cores on their computer with the command `parallel::detectCores()`), and set a seed to make the simulation reproducible.
 
 ```{r, message=FALSE, eval=FALSE}
 library(future)
@@ -1035,7 +1019,8 @@ plan("multisession", workers = 6)
 set.seed(2)
 ```
 
-The next code chunk specifies a simulation grid with different settings for both the number of subjects (`n_subjects`) and the number of items (`n_items`), each combination being repeated `rep` times. We chose 300 repetitions for the data simulation at hand as it strikes a balance between achieving a robust statistical estimate and remaining computationally feasible.
+The next code chunk specifies a simulation grid with different settings for both the number of subjects (`n_subjects`) and the number of items (`n_items`), each combination being repeated `rep` times.
+We chose 300 repetitions for the data simulation at hand as it strikes a balance between achieving a robust statistical estimate and remaining computationally feasible.
 With the current settings, this simulation takes about one hour on a MacBook Pro from 2020 with M1 chip and 16 GB working memory. If you want to quickly experiment with the code yourself, a setting with `workers = 4` and `rep = 5` should finish in less than 5 minutes, even on smaller machines. 
 
 ```{r, message=FALSE, echo=FALSE, eval=FALSE}
@@ -1066,12 +1051,12 @@ sim_result <- crossing(
   unnest(col = res)
 ```
 
-The result of the computation is a data frame that contains the p-values and confidence intervals of all specified contrasts for each simulated dataset.
+The result of this computation is a data frame that contains the p-values and confidence intervals of all specified contrasts for each simulated dataset.
 In some iterations (predominantly in conditions with small sample sizes), model estimation did not converge with the lme4 package. When the model fails to converge, it means that the statistical model being fitted to the data failed to reach a stable or valid solution during the estimation process. We do not remove these results because non-convergence can also happen when analyzing the real data we plan to collect, thus, we want to factor in this possibility to keep our simulation more realistic.
 
 #### Power results
 
-For our exemplary combined hypothesis, power is defined as the (long-run) percentage of simulations in which all four p-values of our component hypotheses are significant at the $\alpha = 0.05$ level. Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% confidence intervals) and visualize the results with the following code.[^3]
+For our exemplary combined hypothesis, power is defined as the (long-run) percentage of simulations in which all four p-values of our individual hypotheses are significant at the $\alpha = 0.05$ level. Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% confidence intervals) and visualize the results with the following code.[^3]
 
 [^3]: This code was inspired by the "Mixed Design Simulation" vignette of the faux package at <https://debruine.github.io/faux/articles/sim_mixed.html>.
 
@@ -1108,7 +1093,7 @@ power %>%
 
 <!-- How many participants/stimuli are needed for concrete example -->
 
-As should be the case, power estimates in Figure \@ref(fig:finalpwr) increase with both the number of subjects and the number of items. The confidence intervals indicate how precisely power was estimated by our simulation. Higher precision (which would be reflected in narrower confidence intervals) could be obtained by increasing the number of repetitions (`rep`) in the simulation. In practice, data simulations are often run multiple times with adjusted combinations of sample sizes. When running for the first time, it might be revealed that power is way too low (or much higher than required) for some combinations of `n_subjects` and `n_items`. When narrowing down the best combination that achieves sufficient power while at the same time striking a good balance of how many subjects and items are practically feasible, later rounds of data simulation will typically include a smaller grid of sample sizes combined with a higher number of repetitions. This will assure high precision for the final power estimates, which are then used for the sample size justification of the future study.
+As should be the case, power estimates in Figure \@ref(fig:finalpwr) increase with both the number of subjects and the number of items. The confidence intervals reported here indicate how precisely power was estimated by our simulation. Higher precision (which would be reflected in narrower confidence intervals) could be obtained by increasing the number of repetitions (`rep`) in the simulation. In practice, data simulations are often run multiple times with adjusted combinations of sample sizes. When running for the first time, it might be revealed that power is way too low (or much higher than required) for some combinations of `n_subjects` and `n_items`. When narrowing down the best combination that achieves sufficient power while at the same time striking a good balance of how many subjects and items are practically feasible, later rounds of data simulation will typically include a smaller grid of sample sizes combined with a higher number of repetitions. This will assure high precision for the final power estimates, which are then used for the sample size justification of the future study.
 
 Much has been written on the optimal amount of power to target in empirical research. The most prominent heuristic is to target a power of 0.8 (when combined with a type I error rate of $\alpha = 0.05$), but depending on the research goals of the study, there are often good reasons to move away from this standard depending on the research goals and resource constraints  [@lakensJustifyYourAlpha2018; @lakensSampleSizeJustification2022]. When target power has been specified, the number of subjects and the number of items in our study design can be traded against each other based on practical considerations. For the sake of the example, let the targeted power be indeed about 0.8, using an $\alpha$ of 0.05 to detect an effect of the expected size implied by our data simulation. This could be achieved by collecting data from 200 subjects (about 25% of which will be experts), each completing the same 50 items (with advice present in about 67% of cases, which is correct in about 80% of cases with present advice). If collecting data from 200 subjects is not feasible, an alternative would be to recruit 150 subjects but increase the length of the experiment to over 70 items. However, 70 items might take too long to complete for the radiologists participating in the study, who have a busy schedule. The simulation suggests that it might also be possible to plan a shorter experiment with only 30 items if it is feasible to recruit an even higher number of subjects (\> 250, to be determined by additional rounds of power analysis). Design parameters that also affect power, and which could be investigated in the simulation to find a more optimal trade-off, are the ratio of experts, the frequency of whether advice is presented and whether it is correct.
 
@@ -1149,6 +1134,7 @@ precision %>%
 ```
 
 As should be the case, precision estimates in Figure \@ref(fig:finalprecision) increase  (i.e., average width of confidence interval decreases) with both the number of subjects and the number of items.
+The confidence intervals reported here indicate how precisely the expected width of the confidence interval for our focal contrast was estimated by our simulation.
 Applying our simple heuristic of targeting an expected width smaller than 0.1, we see the same trade-off between the number of subjects and the number of items as with planning for power.
 We could either choose 100 subjects and 30 items or 200 subjects and 10 items.
 
