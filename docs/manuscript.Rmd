@@ -679,6 +679,7 @@ We will now use the model implied probability of each simulated data point (stor
 (ref:margdist1-caption) Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions.
 
 ```{r margdist1, fig.cap="(ref:margdist1-caption)"}
+library(ggdist)
 dat %>% 
   mutate(condition = fct_cross(
     factor(expert), factor(advice_present), factor(advice_correct))) %>%
@@ -884,7 +885,8 @@ However, this would be very tedious and we can use R to compute this contrast wi
 We could use the `predict` function of the lme4 package to compute the predicted probability for a correct diagnosis based on our model, plug in the two sets of predictor values, and compute the difference between the two estimated probabilities.
 
 ```{r}
-pred_df <- data.frame(advice_present = c(1, 0), advice_correct = c(1, 0), expert = c(1, 1))
+pred_df <- data.frame(advice_present = c(1, 0), advice_correct = c(1, 0), 
+  expert = c(1, 1))
 pred_df
 preds <- predict(fit, newdata = pred_df, type = "response", re.form = NA)
 preds
@@ -902,6 +904,7 @@ First, we specify a grid of all combinations of predictor variable and then comp
 
 ```{r}
 pred_df <- expand_grid(advice_present = 0:1, advice_correct = 0:1, expert = 0:1)
+pred_df
 probs <- predictions(fit, newdata = pred_df, type = "response", re.form = NA)
 probs
 ```
@@ -1005,9 +1008,11 @@ sim_and_analyse <- function(
   # fit model
   model <- glmer(as.formula(formula_chr), data = dat, family = "binomial")
   # compute contrasts
-  contr_df <- expand_grid(advice_present = 0:1, advice_correct = 0:1, expert = 0:1)
+  contr_df <- expand_grid(advice_present = 0:1, advice_correct = 0:1,
+    expert = 0:1)
   predictions(model, newdata = contr_df, type = "response", re.form = NA) %>%
-    hypotheses(hypothesis = contrasts, equivalence = c(0, 0))
+    hypotheses(hypothesis = contrasts, equivalence = c(0, 0)) %>%
+    data.frame()
 }
 ```
 
@@ -1029,7 +1034,7 @@ library(furrr)
 plan("multisession", workers = 6)
 set.seed(2)
 sim_result <- crossing(
-  rep = 1:100,
+  rep = 1:300,
   n_subjects = c(100, 150, 200, 250),
   n_items = c(10, 30, 50, 70)
 ) %>%
@@ -1042,7 +1047,7 @@ saveRDS(sim_result, file = "results.rds")
 ```{r, message=FALSE, eval=FALSE}
 library(furrr)
 sim_result <- crossing(
-  rep = 1:5,
+  rep = 1:300,
   n_subjects = c(100, 150, 200, 250),
   n_items = c(10, 30, 50, 70)
 ) %>%
@@ -1072,10 +1077,12 @@ power <- sim_result %>%
     values_from = estimate:p.value.equiv) %>%
   group_by(n_subjects, n_items) %>% 
   summarise(
-    power = mean(`p.value.noninf_b1=b5` < alpha & `p.value.noninf_b8=b2` < alpha &
-      `p.value.noninf_b2=b6` < alpha & `p.value.noninf_b7=b1` < alpha), 
-    n_sig = sum(`p.value.noninf_b1=b5` < alpha & `p.value.noninf_b8=b2` < alpha &
-      `p.value.noninf_b2=b6` < alpha & `p.value.noninf_b7=b1` < alpha),
+    power = mean(`p.value.noninf_b1=b5` < alpha & 
+        `p.value.noninf_b8=b2` < alpha & `p.value.noninf_b2=b6` < alpha & 
+        `p.value.noninf_b7=b1` < alpha), 
+    n_sig = sum(`p.value.noninf_b1=b5` < alpha & 
+        `p.value.noninf_b8=b2` < alpha & `p.value.noninf_b2=b6` < alpha & 
+        `p.value.noninf_b7=b1` < alpha),
     n = n(),
     ci.lwr = binom.confint(n_sig, n, method = "wilson")$lower,
     ci.upr = binom.confint(n_sig, n, method = "wilson")$upper, 
@@ -1129,8 +1136,9 @@ precision %>%
   geom_tile() +
   geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 
                                 precision, ci.lwr, ci.upr)), 
-    color = "white", size = 6) +
-  scale_fill_viridis_c(limits = c(0, 0.3), direction = -1) + guides(fill = guide_legend(reverse=FALSE))
+    color = "white", size = 4) +
+  scale_fill_viridis_c(limits = c(0, 0.3), direction = -1) +
+  guides(fill = guide_legend(reverse=FALSE))
 ```
 
 As should be the case, precision estimates in Figure \@ref(fig:finalprecision) increase  (i.e., average width of confidence interval decreases) with both the number of subjects and the number of items.
