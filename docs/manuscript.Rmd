@@ -100,6 +100,8 @@ When planning experimental research, it is essential to determine an appropriate
 
 # Prior Knowledge
 
+TODO: fertig ausformulieren
+
 Simulation-based sample size planning for generalized linear models is a complex topic that touches on a variety of statistical concepts and programming skills.
 Although we give some short introduction to clarify our terminology, to profit the most from our tutorial, our readers require prior knowledge in the following topics (or refer to our collection of background literature):
 
@@ -116,10 +118,10 @@ While it is not necessary to understand the technical details of how GLMMs are e
 
 Literature:
 
-- Lakens ebook evtl. Andy Field für die Basics?
-- R for data science, Bruine article, faux documentation für die R skills
-- kumle power tutorial und irgendwelche paper (am besten aus AMPPS) zu GLMMs
-- what is your estimand? paper für das estimand topic
+- Lakens ebook [@lakensImprovingYourStatistical2022] evtl. Andy Field für die Basics?
+- R for data science [@wickhamDataScienceImport2023], Bruine article [@debruineUnderstandingMixedEffectsModels2021], faux documentation [@R-faux] für die R skills
+- kumle power tutorial [@kumleEstimatingPowerGeneralized2021] und irgendwelche paper (am besten aus AMPPS) zu GLMMs
+- what is your estimand? paper [@lundbergWhatYourEstimand2021] für das estimand topic
 
 # General concepts
  
@@ -215,9 +217,13 @@ Thus, it is worth discussing under which circumstances we most profit from or ar
 
 ## Complex study designs
 
+TODO: fertig ausformulieren
+
 Real studies are often more complex than the simplified designs assumed by many user-friendly software packages for sample size planning.
 
 ### Missing data
+
+TODO: fertig ausformulieren
 
 Missing data is a frequent issue in applied data analysis.
 There can be various reasons for why data is missing.
@@ -231,6 +237,8 @@ A better strategy is to explicitly include the (assumed) process of missing data
 
 ### Data generating processes beyond standard GLMMs
 
+TODO: fertig ausformulieren
+
 While GLMMs are a very flexible model class that can handle a large variety of outcome variables, psychological researchers are becoming increasingly aware that many psychological datasets might profit from even more sophisticated models.
 Common examples are zero-inflated outcomes, censoring, and nonlinear predictor effects.
 
@@ -238,16 +246,22 @@ Common examples are zero-inflated outcomes, censoring, and nonlinear predictor e
 
 ## Complex statistical hypotheses
 
+TODO: fertig ausformulieren
+
 The most common hypotheses tested in psychological research are of the type $H_0: \beta = 0$, where $\beta$ is some coefficient in a regression model.
 However, many research questions in psychology actually require testing more complex statistical hypotheses.
 
 ### Directed hypotheses and testing against values other than 0
+
+TODO: fertig ausformulieren
 
 In the new era of preregistration and registered reports, most research questions are tested with directed hypotheses, because good theories should at least postulate whether some psychological effect of interest is positive or negative.
 Even better theories should be able to specify a smallest effect sizes of interest (SESOI) that must be exceeded if the psychological effect has some practical relevance in a specific application.
 In combination, this might require a test like $H_0: \beta \leq 0.1$.
 
 ### Combined hypotheses 
+
+TODO: fertig ausformulieren
 
 Elaborate research questions often require testing hypotheses that consist of a combination of model parameters, for example $H_0: \beta_0 + \beta_1 \leq 0$.
 If the research question consists only of a single hypothesis of this sort, it is often possible to reduce the hypothesis to a single regression coefficient by clever coding and/or centering of predictor variables.
@@ -263,6 +277,8 @@ In contrast, our case study will demonstrate how we can test directed combined h
 
 ## Planning for precision
 
+TODO: fertig ausformulieren
+
 As discussed earlier, the two major frameworks for sample size planning are planning for power and planning for precision.
 Although planning for precision has been increasingly discussed as a more suitable strategy for exploratory research, all available software packages for sample size planning with GLMMs are based on power analysis.
 
@@ -272,6 +288,8 @@ We will show that tailored simulation based sample size planning can easily hand
 The only change in procedure is that instead of computing hypothesis tests for each simulated dataset and estimating statistical power across repetitions, confidence intervals are computed for each simulated dataset and the expected width is estimated. 
     
 ## No prior studies or pilot data
+
+TODO: fertig ausformulieren
 
 All frameworks for sample size planning require the user to make assumptions about the expected effect size.
 Assuming the true effect is of this size (or greater), one can compute the (minimum) power of a hypothesis test or the (maximum) expected width of a confidence interval.
