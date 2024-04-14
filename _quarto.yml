@@ -1,0 +1,22 @@
+project: 
+  type: manuscript
+
+manuscript:
+  article: manuscript.qmd
+  meca-bundle: "bundle.zip"
+  code-links: [binder, repo]
+  
+format:
+  html:
+    toc: true
+    comments:
+      hypothesis: false
+    theme: pulse
+  jats: default
+  apaquarto-pdf:
+    documentmode: man
+  apaquarto-docx: default
+
+execute:
+  echo: true
+  freeze: false
