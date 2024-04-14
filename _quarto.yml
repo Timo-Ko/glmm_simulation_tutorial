@@ -5,7 +5,9 @@ manuscript:
   article: manuscript.qmd
   meca-bundle: "bundle.zip"
   code-links: [binder, repo]
-  
+  notebooks:
+    - notebook: rcode.qmd
+      title: "R code from the practice sessions"
 format:
   html:
     toc: true

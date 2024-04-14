@@ -4,6 +4,7 @@ shorttitle: "Simulation-Based Sample Size Planning for GLMMs"
 author:
   - name: Timo K. Koch
     corresponding: true
+    equal-contributor: true
     orcid: 0000-0001-6728-2063
     email: timo.koch@unisg.ch
     roles:
@@ -22,6 +23,7 @@ author:
         name: LMU Munich
         department: Department of Psychology
   - name: Florian Pargent
+    equal-contributor: true
     orcid: 0000-0002-2388-553X
     roles:
       - formal analysis
@@ -58,7 +60,7 @@ author:
 author-note:
   disclosures:
     data-sharing: "All materials (reproducible manuscript incl. R code, simulation results) are available in the project's repository on the Open Science Framework (OSF) at https://osf.io/dhwf4/"
-    conflict-of-interest: "None."
+    conflict-of-interest: "The authors declare that there were no conflicts of interest with respect to the authorship or the publication of this article."
     financial-support: "This research was funded by a grant from the Volkswagen Foundation (Grant No. 98525)."
     gratitude: ~
     authorship-agreements: "Timo K. Koch and Florian Pargent contributed equally to this work."
@@ -570,7 +572,7 @@ $$
 We can revert this perspective by choosing plausible probability values based on domain knowledge and deriving the parameter values implied by these probabilities for each experimental condition.
 
 ```{r}
-#| label: probtable
+#| label: tab-probtable
 #| echo: false
 probtable <- data.frame(
   col1 = 
@@ -596,7 +598,7 @@ apa_table(
 )
 ```
 
-Table \@ref(tab:probtable) shows our set of assumptions concerning the probability that an average subject solves an average item for each experimental condition, as well as the corresponding equations implied by the model.
+@tab-probtable shows our set of assumptions concerning the probability that an average subject solves an average item for each experimental condition, as well as the corresponding equations implied by the model.
 The table can be used to compute the implied values for the $\beta$ parameters, starting with the first equation and reinserting the computed $\beta$ values in all following equations:
 
 ```{r}
@@ -925,6 +927,8 @@ The marginaleffects package [@R-marginaleffects] is a very flexible, increasingl
 First, we specify a grid of all combinations of predictor variable and then compute estimated probabilities for all experimental conditions in our experiment with the `predictions` function:
 
 ```{r}
+library(tidyverse)
+library(marginaleffects)
 pred_df <- expand_grid(advice_present = 0:1, advice_correct = 0:1, expert = 0:1)
 pred_df
 probs <- predictions(fit, newdata = pred_df, type = "response", re.form = NA)
