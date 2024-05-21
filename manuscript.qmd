@@ -64,8 +64,8 @@ author-note:
     financial-support: "This research was funded by a grant from the Volkswagen Foundation (Grant No. 98525)."
     gratitude: ~
     authorship-agreements: "Timo K. Koch and Florian Pargent contributed equally to this work."
-abstract: "When planning experimental research, determining an appropriate sample size and using suitable statistical models are crucial for robust and informative results. However, the recent replication crisis underlines the need for more rigorous statistical methodology and well-powered designs. Generalized linear mixed models (GLMMs) offer a flexible statistical framework to analyze experimental data with complex (e.g., dependent and hierarchical) data structures. Yet, available methods and software for a priori power analyses for GLMMs are often limited to specific designs, while data simulation approaches offer more flexibility. Based on a practical case study, the current tutorial equips researchers with a step-by-step guide and corresponding code for conducting tailored a priori power analyses to determine appropriate sample sizes with GLMMs. Finally, we give an outlook on the increasing importance of simulation-based power analysis in experimental research."
-keywords: [power analysis, data simulation, sample size, generalized linear mixed model]
+abstract: "When planning experimental research, determining an appropriate sample size and using suitable statistical models are crucial for robust and informative results. The recent replication crisis underlines the need for more rigorous statistical methodology and adequately powered designs. Generalized linear mixed models (GLMMs) offer a flexible statistical framework to analyze experimental data with complex (e.g., dependent and hierarchical) data structures. However, available methods and software for a priori sample size planning for GLMMs are often limited to specific designs. Data simulation approaches as an alternative offer much more flexibility. Based on a practical case study, the current tutorial equips researchers with a step-by-step guide and corresponding code for conducting tailored a priori sample size planning to determine appropriate sample sizes with GLMMs. Finally, we give an outlook on the increasing importance of simulation-based power analysis in experimental research."
+keywords: [power analysis, precision, data simulation, sample size planning, generalized linear mixed model]
 bibliography: [Simulation Tutorial Paper.bib, r-references.bib]
 floatsintext: true
 numbered-lines: false
@@ -89,107 +89,36 @@ r_refs("r-references.bib")
 
 # Introduction
 
-<!-- General short intro paragraph, need for well-powered and analyzed experimental research -->
-When planning experimental research, it is essential to determine an appropriate sample size to ensure that the results obtained are both robust and informative, and to use appropriate statistical models to analyze the data [@lakensSampleSizeJustification2022]. However, the recent replication crisis has illustrated many challenges surrounding the reproducibility and reliability of findings [@yarkoniGeneralizabilityCrisis2022]. As a result, there is a growing need for more rigorous statistical methodology and the adoption of well-powered experimental designs. While easy-to-use software solutions exist for simple statistical models and experimental designs, many researchers lack the skills and tools to conduct "a priori" (i.e., before data collection) sample size planning for more complex research designs using the flexible generalized linear mixed models (GLMM) framework in order to determine the required sample size in their experiments. In the present work, we provide a tutorial on performing tailored simulation based sample size planning for GLMMs. After introducing general concepts, we review existing software solutions in R and discuss under which circumstances tailored data simulations are necessary. Then we describe general steps and decisions that are necessary whenever performing tailored data simulation. Because the details of these steps vary considerably for each specific study, we finish with a case study from the field of human-AI (artificial intelligence) interaction research.
+When planning experimental research, it is essential to determine an appropriate sample size and to use appropriate statistical models to analyze the data to ensure that the results obtained are both robust and informative [@lakensSampleSizeJustification2022]. The recent replication crisis has illustrated many challenges surrounding the reproducibility and reliability of study findings [@yarkoniGeneralizabilityCrisis2022]. As a result, there is a growing need for more rigorous statistical methodology and the adoption of adequately powered experimental designs. Multiple easy-to-use software solutions exist for simple statistical models and experimental designs. However, many researchers lack the skills and tools to conduct "a priori" (i.e., before data collection) sample size planning for more complex research designs such as flexible generalized linear mixed models (GLMM) framework. In the present work, we provide a tutorial on how to determine adequate sample sizes by performing tailored simulation-based sample size planning for GLMMs. After introducing some theoretical background on sample size planning, we review existing software solutions in R and discuss under which circumstances tailored data simulations are necessary. Then we describe general steps and decisions involved in tailored data simulation. To illustrate the details of these steps, we finish with a hypothetical case study from the field of human-AI (artificial intelligence) interaction research.
 
-<!-- <!-- Old Summary / Wrap-Up, pick up main arguments and what the paper provides, keep this short! --> -->
-<!-- Based on the need for well-powered experimental research using GLMMs and the lack of tools to conduct corresponding power analyses, in this tutorial paper, we present a case study that serves as a practical demonstration of how to perform a simulation-based a priori power analysis with GLMMs. Thereby, we aim to equip researchers with the tools needed to simulate data and determine appropriate sample sizes for their own research. -->
+<!-- # Recommended background knowledge -->
 
-# Prior Knowledge
+To benefit most of this tutorial paper, we recommend readers to familiarise themselves with basic statistical concepts like hypothesis tests and their statistical power as well as confidence intervals and their precision [@lakensImprovingYourStatistical2022; @riesthuisSimulationBasedPowerAnalyses2024; @kumleEstimatingPowerGeneralized2021]. Some knowledge of causal inference is useful but not necessary [@lundbergWhatYourEstimand2021]. In addition, readers should have a rough understanding of R [@wickhamDataScienceImport2023] and how to simulate data. For data simulation, we use functions from the tidyverse [@wickhamWelcomeTidyverse2019] and the faux package [@R-faux].
+Finally, readers should be familiar with regression modeling in general and GLMMs in particular. In this tutorial, we simulate data by manually specifying the model equation of a GLMM that represents our assumed data generating process [@debruineUnderstandingMixedEffectsModels2021]. It is not necessary to understand the technical details of how GLMMs are estimated. However it is crucial to understand the structure of a basic GLMM (e.g., logistic regression with random intercepts) and how the model assumes that the values in the dependent variable are determined by the predictor variables and the random effects.
 
-TODO: fertig ausformulieren
-
-Simulation-based sample size planning for generalized linear models is a complex topic that touches on a variety of statistical concepts and programming skills.
-Although we give some short introduction to clarify our terminology, to profit the most from our tutorial, our readers require prior knowledge in the following topics (or refer to our collection of background literature):
-
-Readers should understand basic statistical concepts like hypothesis tests and their statistical power but also confidence intervals and their precision.
-Some background knowledge in empirical estimands, statistical estimates, and causal inference is very useful but not absolutely necessary.
-
-In addition, readers should have basic programming skills in R on how to simulate data and how to repeat these simulations in parallel to speed up computation.
-While there are a myriad of options for data simulation in R beyond the basic functionality in the base and stats packages, in our tutorial we use functions from the tidyverse and the faux package.
-
-Finally, readers should be familiar with regression modeling in general and GLMMs in particular.
-In our tutorial, we simulate data by manually specifying the model equation of a GLMM that represents our assumed data generating process.
-While it is not necessary to understand the technical details of how GLMMs are estimated, it is crucial to understand the structure of a basic GLMM (e.g., logistic regression with random intercepts) and how the model assumes that the values in the dependent variable are determined by the predictor variables and the random effects.
-
-
-Literature:
-
-- Lakens ebook [@lakensImprovingYourStatistical2022] evtl. Andy Field für die Basics?
-- R for data science [@wickhamDataScienceImport2023], Bruine article [@debruineUnderstandingMixedEffectsModels2021], faux documentation [@R-faux] für die R skills
-- kumle power tutorial [@kumleEstimatingPowerGeneralized2021] und irgendwelche paper (am besten aus AMPPS) zu GLMMs
-- what is your estimand? paper [@lundbergWhatYourEstimand2021] für das estimand topic
-
-# General concepts
+# Theoretical background
  
 ## Planning for statistical power or precision
 
-Conducting research with too small sample sizes can have many negative consequences.
-First, experiments may yield inconclusive or misleading results, hindering the accumulation of knowledge.
-Second, studies that are doomed to never finding a postulated effect due to small sample size waste resources by consuming time, effort, and funding without delivering meaningful results.
-For such reasons, many journals and funding agencies now require that a justification of sample size is included in study protocols and grant proposals, recognizing its significance in ensuring robust and meaningful findings.
-Although many pragmatic justifications are possible [@lakensSampleSizeJustification2022], the ideal is often considered to determine a suitable sample size a priori (i.e., before the study is conducted) based on some meaningful computation to assure that the study will be able to fulfill its purpose.
-In this way, adding a solid sample size calculation to the research process can act as a safeguard for ensuring high-quality research.
+Conducting research with insufficiently large sample sizes can have many negative consequences. First, experiments may yield inconclusive or misleading results, hindering the accumulation of knowledge. Second, studies that are doomed to never finding a postulated effect waste resources by consuming time, effort, and funding without delivering meaningful results. For these reasons, many journals and funding bodies now require that a justification of sample size is included in study protocols and grant proposals, recognizing its significance in ensuring robust and meaningful findings. Although many pragmatic justifications are possible [@lakensSampleSizeJustification2022], ideally a suitable sample size should be determined a priori (i.e., before the study is conducted) based on some meaningful computation to ensure that the study will be able to fulfill its purpose. 
 
-<!-- <!-- advantages of an a priori power analysis --> -->
-<!-- Thereby, a priori power analysis offers a valuable contribution to the research process by allowing researchers to estimate the appropriate sample sizes required to achieve sufficient statistical power for results with high evidential value. -->
-<!-- Moreover, conducting a careful a priori power analysis helps researchers decide which experimental design and statistical models are both feasible and appropriate for analyzing the data and answering their research questions. -->
-<!-- Also, when conducting a proper power analysis, researchers have to consider every aspect of the experimental design and will notice statistical or design challenges before starting with data collection.  -->
-<!-- Adding a solid sample size calculation to the research process can act as a safeguard for ensuring high-quality research. -->
-<!-- Finally, many journals and funding agencies now require that a power analysis is included in study protocols and grant proposals, recognizing its significance in ensuring robust and meaningful findings. -->
-
-The majority of empirical studies in psychology applies hypothesis testing.
-As a consequence, the dominant approach for sample size planning is based on power analysis (i.e., planing for power).
-However, sample size planning can also be based on the precision of parameter estimates (i.e., planning for precision).
+The majority of empirical studies in psychology apply hypothesis testing. As a consequence, the dominant approach for sample size planning is based on power analysis (i.e., planning for power). However, sample size planning can also be based on the precision of parameter estimates (i.e., planning for precision). We will now discuss both concepts. 
 
 ### Planning for power
 
-<!-- Some basics on statistical power -->
-In empirical research relying on hypothesis testing, the most common strategy for determining an adequate sample size is based on statistical power [@lakensSampleSizeJustification2022].
-Statistical power is defined as the probability that a hypothesis test has a significant p-value when analyzing repeated samples from a population with a true effect of some pre-specified size.
-Less formally, power is described as the probability that a hypothesis test correctly rejects the null hypothesis when the alternative hypothesis is true.
-If the sample size (i.e., the number of participants and/or stimuli) used for data collection is insufficient to detect the effects or relationships being investigated with high probability, the study would be considered "underpowered".
+In empirical research relying on hypothesis testing, the most common strategy for determining an adequate sample size is based on statistical power [@lakensSampleSizeJustification2022]. Statistical power is defined as the probability that a hypothesis test has a significant p-value when analyzing repeated samples from a population with a true effect of some pre-specified size. Less formally, power is described as the probability that a hypothesis test correctly rejects the null hypothesis when the alternative hypothesis is true. If the sample size (i.e., the number of participants and/or stimuli) used for data collection is insufficient to detect the effects or relationships being investigated with high probability, the study is considered "underpowered".
+When planning for power, a target is set for the statistical power of a hypothesis test of interest (a very common heuristic is 0.8). Assuming some effect size of interest and a desired significance level, a minimum sample size can be determined that,  (on average,) would guarantee reaching this target.
 
-When planning for power, a target is set for the statistical power of a hypothesis test of interest (a very common heuristic is 0.8).
-Assuming some effect size of interest and a desired significance level, a minimum sample size can be determined that (on average) would guarantee reaching this target.
 
 ### Planning for precision
 
-Not all research questions are best answered using hypothesis testing.
-Especially for exploratory studies when little previous research has been conducted, only estimating effects of interest is often more useful.
-When no hypothesis tests are conducted when analysing the planned study, power analysis is not not available for sample size planning.
-Nonetheless, sample size still has a crucial effect on how informative the planned study will be to learn about the effect of interest.
-In this case, the expected width of a confidence interval is used as a target for sample size planning.
-The values inside a confidence interval are commonly interpreted as plausible values for the quantity of interest the confidence interval is supposed to estimate.
-More formally, a 95%-confidence interval provides the smallest interval with the property that upon repeated sampling, 95% of individual confidence intervals would include the true quantity of interest.
-Thus, a narrow confidence interval (assuming the confidence level is kept at a high value) is more informative about the size of the true effect than a wide interval.
-Apart from the desired confidence level, the width of a confidence interval depends strongly on the sample size.
-Because bigger samples carry more information, they lead to smaller confidence intervals (assuming everything else stays the same).
-When planning for precision, a target is set for the expected width of a confidence interval of interest.
-Assuming some effect size of interest and a desired confidence level, a minimum sample size can be determined that (on average) would guarantee reaching this target.
+Not all research questions are best answered using hypothesis testing. Especially for exploratory studies, when little previous research has been conducted, only estimating the effects of interest is often more useful. When no hypothesis tests are conducted for the planned study, power analysis is not available for sample size planning. Nonetheless, the sample size still has a crucial effect on how informative the planned study will be to learn about the effect of interest. In this case, the expected width of a confidence interval is used as a target for sample size planning. The values inside a confidence interval are commonly interpreted as plausible values for the quantity of interest the confidence interval is supposed to estimate. More formally, a 95%-confidence interval provides the smallest interval with the property that upon repeated sampling, 95% of individual confidence intervals would include the true quantity of interest. Thus, a narrow confidence interval is more informative about the size of the true effect than a wide interval. Apart from the desired confidence level, the width of a confidence interval depends strongly on the sample size. Because bigger samples carry more information, they lead to smaller confidence intervals. When planning for precision, a target is set for the expected width of a confidence interval of interest. Assuming some effect size of interest and a desired confidence level, a minimum sample size can be determined that, on average, would guarantee reaching this target.
 
 ## Generalized linear mixed models (GLMMs)
 
-<!-- Advantages of GLMMs over "simpler" models -->
-As study designs become more complex, psychological researchers require more sophisticated statistical models to capture the nuanced relationships and grouping structures introduced by their study designs [@yarkoniGeneralizabilityCrisis2022].
-GLMMs (also called multilevel models) are gaining increasing popularity in analyzing data because they offer a flexible framework for handling data with outcome variables that are not normally distributed (e.g., categorical outcomes) while accounting for both fixed and random effects [@fahrmeirRegressionModelsMethods2021]. 
-
-<!-- intro into GLMMs -->
-GLMMs are an extension of LMMs (Linear Mixed Models), which are, in turn, extensions of linear regression models that account for correlated data including hierarchical structures  [@fahrmeirRegressionModelsMethods2021]. 
-In this context, correlated data means that the value in the outcome variable for one observation may be related (i.e., more similar or less similar) to the value of another observation in a systematic way that is not already accounted for by the usual (fixed) predictor variables (e.g., age of participants).
-This correlation can arise for various reasons: Responses to some stimuli from some participants might be more similar because the same person was measured twice (repeated measurements), both participants come from the same neighborhood (clustering) or both participants responded to the same stimulus (stimulus effects). 
-Thus, modeling such correlations is especially important whenever the data has a clear structure, while the grouping variables can be hierarchically organized (e.g., students nested in schools, schools nested in districts) or not (e.g., students solve math exercises, but neither student sees all exercises).
-LMMs are used when the outcome variable is continuous and follows a normal distribution (when conditioned on all fixed and random effects).
-They allow for the modeling of fixed effects, which capture the relationships between our usual predictors and the outcome, as well as random effects, which account for the different types of correlation structure and grouping effects exemplified above.
-Random effects are typically assumed to follow a normal distribution with a mean of zero and a variance that quantifies the heterogeneity across groups.
-
-As mentioned, GLMMs extend the LMM framework to accommodate non-normally distributed continuous and categorical outcome variables.
-GLMMs incorporate both fixed and random effects, similar to LMMs, but also involve a link function that connects the linear combination of predictor variables to the expected value of the outcome variable.
-The link function allows for modeling the relationship between predictors and the outcome in a non-linear way that is appropriate for the specific distribution family of the outcome variable.
-As an example, think of an experiment with different design factors (e.g., picture, headline) impacting the likelihood of users clicking on an online advertisement.
-Here, participants’ behavior is measured repeatedly (e.g., over several sessions).
-The click patterns of participants in one session are likely to be correlated with their previous sessions.
-Finally, the outcome variable is binary (click/no click) for each session, which follows a binomial distribution. 
+As study designs become more complex, psychological researchers require more sophisticated statistical models to capture the nuanced relationships and grouping structures introduced by them [@yarkoniGeneralizabilityCrisis2022]. GLMMs (also called multilevel models) are gaining increasing popularity because they offer a flexible framework for handling data with outcome variables that are not normally distributed (e.g., categorical outcomes) while accounting for both fixed and random effects [@fahrmeirRegressionModelsMethods2021].
+GLMMs are an extension of LMMs (Linear Mixed Models), which are, in turn, extensions of linear regression models that account for correlated data, including hierarchical structures [@fahrmeirRegressionModelsMethods2021]. In this context, correlated data means that the value in the outcome variable for one observation may be related to the value of another observation in a systematic way that is not already accounted for by the usual (fixed) predictor variables (e.g., age of participants). This correlation can arise for various reasons: For instance, responses to some stimuli from some participants might be more similar because the same person was measured twice (repeated measurements), participants come from the same neighborhood (clustering), or participants responded to the same stimulus (stimulus effects). Thus, modeling such correlations is important whenever the data has a clear structure, while the grouping variables can be hierarchically organized (e.g., students nested in schools, schools nested in districts) or not (e.g., students solve math exercises, but neither student sees all exercises). LMMs are used when the outcome variable is continuous and follows a normal distribution. They allow for the modeling of fixed effects, which capture the relationships between the usual predictors and the outcome, as well as random effects, which account for the different types of correlation structure and grouping effects. Random effects are typically assumed to follow a normal distribution with a mean of zero and a variance that quantifies the heterogeneity across groups.
+As mentioned, GLMMs extend the LMM framework to accommodate non-normally distributed continuous and categorical outcome variables. GLMMs incorporate both fixed and random effects, similar to LMMs, but also involve a link function that connects the linear combination of predictor variables to the expected value of the outcome variable. The link function allows for modeling the relationship between predictors and the outcome in a non-linear way that is appropriate for the specific distribution family of the outcome variable. For example, think of an experiment with different design factors (e.g., picture variations, headline texts) impacting the likelihood of users clicking on an online advertisement. The participants’ behavior is measured repeatedly over several sessions. The click patterns of participants in one session are likely to be correlated with their previous sessions and the outcome variable is binary (click/no click) for each session, which follows a binomial distribution.
 
 # Simulation based sample size planning with GLMMs
 
