@@ -1,4 +1,4 @@
--- Handle frontmatter stuff for .docx and html formats
+-- Handle frontmatter stuff for .docx, html, and typst formats
 if FORMAT:match 'latex' then
   return
 end
@@ -136,7 +136,13 @@ return {
       if meta.apatitledisplay then
         if meta["blank-lines-above-title"] and #meta["blank-lines-above-title"] > 0 then
           local possiblenumber = stringify(meta["blank-lines-above-title"])
-          intabovetitle = math.floor(tonumber(possiblenumber)) or 2
+          if type(possiblenumber) == "number" then
+            local intnumber = tonumber(possiblenumber) * 1
+            intabovetitle = math.floor(intnumber) or 2
+          else
+            intabovetitle = 2
+          end
+          
         end
         for i=1,intabovetitle do 
           body:extend({newline})
@@ -144,7 +150,10 @@ return {
         documenttitle = pandoc.Header(1, meta.apatitledisplay)
         documenttitle.classes = {"title", "unnumbered", "unlisted"}
         documenttitle.identifier="title"
-        body:extend({documenttitle})
+        if not meta["suppress-title"] then
+          body:extend({documenttitle})
+        end 
+        
       end
       
 
@@ -152,7 +161,10 @@ return {
       local byauthor = meta["by-author"]
       local affiliations = meta["affiliations"]
       
-      local authornote = meta["author-note"]
+      local authornote = false
+      if meta["author-note"] and not meta["suppress-author-note"] then
+        authornote = meta["author-note"]
+      end
       
       local mask = false
       
@@ -163,12 +175,21 @@ return {
       
       local affilations_different = meta.affiliationsdifferent
       
+      if meta["suppress-affiliation"] then
+        affilations_different = false
+      end
+      
+      
       local affiliations_str = List()
       
-      local authordiv = pandoc.Div({
-        newline, 
-        get_author_paragraph(byauthor, affilations_different)
-      })
+      local authordiv = pandoc.Div({})    
+      if not meta["suppress-author"] then
+        authordiv = pandoc.Div({
+          newline, 
+          get_author_paragraph(byauthor, affilations_different)
+        })
+      end
+ 
       authordiv.classes:insert("Author")
       
       for i, a in ipairs(affiliations) do
@@ -178,7 +199,7 @@ return {
         mysep = pandoc.Str("")
 
 
-        if affilations_different then
+        if affilations_different and not meta["suppress-author"] then
           affiliations_str:extend({pandoc.Superscript(stringify(a.number))})
         end
         
@@ -214,8 +235,11 @@ return {
               affiliations_str:extend(a.region)
             end
           end
+        if not meta["suppress-affiliation"] then
+          authordiv.content:extend({pandoc.Para(pandoc.Inlines(affiliations_str))})
+        end
 
-        authordiv.content:extend({pandoc.Para(pandoc.Inlines(affiliations_str))})
+        
       end
       
       
@@ -230,6 +254,11 @@ return {
       if meta.language and meta.language["title-block-author-note"] then
         authornoteheadertext = meta.language["title-block-author-note"]
       end 
+
+      local emailword = "Email"
+      if meta.language and meta.language.email then
+        emailword = stringify(meta.language.email)
+      end 
       
       local authornoteheader = pandoc.Header(1, authornoteheadertext)
       authornoteheader.classes = {"unnumbered", "unlisted", "AuthorNote"}
@@ -238,7 +267,7 @@ return {
       local intabovenote = 2
       
       if authornote then
-        if FORMAT:match 'docx' then
+        if FORMAT:match 'docx' or FORMAT:match 'typst' then
           blanklines = authornote["blank-lines-above-author-note"]
           if authornote["blank-lines-above-author-note"] and #authornote["blank-lines-above-author-note"] > 0 then
             local possiblenumber = stringify(authornote["blank-lines-above-author-note"])
@@ -254,7 +283,7 @@ return {
         
         
         
-      if not mask then
+      if not mask and not meta["suppress-author-note"] then
         body:extend({authornoteheader})
       end
       
@@ -268,14 +297,14 @@ return {
             orcidfile = "_extensions/apaquarto/ORCID-iD_icon-vector.svg"
           end 
           img = pandoc.Image("Orcid ID Logo: A green circle with white letters ID", orcidfile)
-          img.attr = pandoc.Attr('orchid', {'img-fluid'},  {width='16px'})
+          img.attr = pandoc.Attr('orchid', {'img-fluid'},  {width='4.23mm'})
           pp = pandoc.Para(pandoc.Str(""))
           pp.content:extend(a.apaauthordisplay)
           pp.content:extend({pandoc.Space(), img})
           pp.content:extend({pandoc.Space(), pandoc.Str("http://orcid.org/")})
           pp.content:extend(a.orcid)
           
-          if not mask then
+          if not mask and not meta["suppress-orcid"] and authornote then
             body:extend({pp})
           end
         end 
@@ -292,7 +321,7 @@ return {
       
 
           if #second_paragraph.content > 1 then
-            if not mask then
+            if not mask and not meta["suppress-status-change-paragraph"] then
               body:extend({second_paragraph})
             end
           end
@@ -310,7 +339,7 @@ return {
           third_paragraph = extend_paragraph(third_paragraph, authornote.disclosures["authorship-agreements"] or authornote["authorship-agreements"] or meta["authorship-agreements"])
           
           if #third_paragraph.content > 1 then
-            if not mask then
+            if not mask and not meta["suppress-disclosures-paragraph"] then
               body:extend({third_paragraph})
             end
           end
@@ -365,7 +394,7 @@ return {
           for i,j in pairs(authorroleintroduction) do
             credit_paragraph.content:insert(i, j)
           end
-          if not mask then
+          if not mask and not meta["suppress-credit-statement"] and authornote then
             body:extend({credit_paragraph})
           end
         end
@@ -373,7 +402,7 @@ return {
   
       local corresponding_paragraph = pandoc.Para(pandoc.Str(""))
       local check_corresponding = false
-      if meta["author-note"]["correspondence-note"] then
+      if meta["author-note"] and meta["author-note"]["correspondence-note"] then
         corresponding_paragraph.content:extend(meta["author-note"]["correspondence-note"])
       else
         
@@ -381,24 +410,53 @@ return {
         if a.attributes then
           if a.attributes.corresponding and stringify(a.attributes.corresponding) == "true" then
             if check_corresponding then
-              error("There can only be one author marked as the corresponding author. " .. stringify(makeauthorname(a.name)) .. " is the second author you have marked as the corresponding author.")
+              error("There can only be one author marked as the corresponding author. " .. stringify(a.apaauthordisplay) .. " is the second author you have marked as the corresponding author.")
             end
             check_corresponding = true
             corresponding_paragraph.content:extend(a.apaauthordisplay)
             
             if a.affiliations then
               local address = a.affiliations[1]
-              corresponding_paragraph = extend_paragraph(corresponding_paragraph, address.group, pandoc.Str(", "))
-              corresponding_paragraph = extend_paragraph(corresponding_paragraph, address.department, pandoc.Str(", ")) 
-              corresponding_paragraph = extend_paragraph(corresponding_paragraph, address.name, pandoc.Str(", ")) 
-              corresponding_paragraph = extend_paragraph(corresponding_paragraph, address.address, pandoc.Str(", ")) 
-              corresponding_paragraph = extend_paragraph(corresponding_paragraph, address.city, pandoc.Str(", ")) 
-              corresponding_paragraph = extend_paragraph(corresponding_paragraph, address.region, pandoc.Str(", ")) 
-              corresponding_paragraph = extend_paragraph(corresponding_paragraph, address["postal-code"]) 
-              if a.email then
-                corresponding_paragraph.content:extend({pandoc.Str(", Email:")})
-                corresponding_paragraph = extend_paragraph(corresponding_paragraph, a.email) 
+              if not meta["suppress-corresponding-group"] then
+                corresponding_paragraph = extend_paragraph(corresponding_paragraph, address.group, pandoc.Str(", "))
               end
+
+              if not meta["suppress-corresponding-department"] then
+                corresponding_paragraph = extend_paragraph(corresponding_paragraph, address.department, pandoc.Str(", ")) 
+              end
+
+              if not meta["suppress-corresponding-affiliation-name"] then
+                corresponding_paragraph = extend_paragraph(corresponding_paragraph, address.name, pandoc.Str(", ")) 
+              end   
+
+              if not meta["suppress-corresponding-address"] then
+                corresponding_paragraph = extend_paragraph(corresponding_paragraph, address.address, pandoc.Str(", "))
+              end
+
+              if not meta["suppress-corresponding-city"] then
+                corresponding_paragraph = extend_paragraph(corresponding_paragraph, address.city, pandoc.Str(", "))
+              end
+
+              if not meta["suppress-corresponding-region"] then
+                corresponding_paragraph = extend_paragraph(corresponding_paragraph, address.region, pandoc.Str(", ")) 
+              end
+
+              if not meta["suppress-corresponding-postal-code"] then
+                corresponding_paragraph = extend_paragraph(corresponding_paragraph, address["postal-code"]) 
+              end
+
+              if not meta["suppress-corresponding-country"] then
+                corresponding_paragraph = extend_paragraph(corresponding_paragraph, address.country, pandoc.Str(", ")) 
+              end
+
+              if not meta["suppress-corresponding-email"] then
+                if a.email then
+                  corresponding_paragraph.content:extend({pandoc.Str(", " .. emailword .. ":")})
+                  corresponding_paragraph = extend_paragraph(corresponding_paragraph, a.email) 
+                end
+              end
+
+
             end
           end
         end
@@ -420,11 +478,11 @@ return {
         end
       end
       
-      if not mask then
+      if (not mask) and (not meta["suppress-corresponding-paragraph"]) and authornote then
         body:extend({corresponding_paragraph})
       end
         
-      if meta.apaabstract and #meta.apaabstract > 0 then
+      if meta.apaabstract and #meta.apaabstract > 0 and not meta["suppress-abstract"] then
         local abstractheadertext = pandoc.Str("Abstract")
         if meta.language and meta.language["section-title-abstract"] then
           abstractheadertext = meta.language["section-title-abstract"]
@@ -436,13 +494,17 @@ return {
           body:extend({pandoc.RawBlock('openxml', '<w:p><w:r><w:br w:type="page"/></w:r></w:p>')})
         end
         
+        if FORMAT:match 'typst' then
+          body:extend({pandoc.RawBlock('typst', '#pagebreak()\n\n')})
+        end
+        
         body:extend({abstractheader})
         local abstract_paragraph = pandoc.Para(pandoc.Str(""))
         
         if pandoc.utils.type(meta.apaabstract) == "Inlines" then
           abstract_paragraph.content:extend(meta.apaabstract or meta.abstract)
           local abstractdiv = pandoc.Div(abstract_paragraph)
-          abstractdiv.classes:insert("Abstract")
+          abstractdiv.classes:insert("AbstractFirstParagraph")
           body:extend({abstractdiv})
         end
         
@@ -450,6 +512,9 @@ return {
           local abstractdiv = pandoc.Div({})
           local abstractfirstparagraphdiv = pandoc.Div({})
           local abstractlinecounter = 1
+          if FORMAT == "typst" then
+            abstractlinecounter = 2
+          end
           meta.apaabstract:walk {
             LineBlock = function(lb)
               lb:walk {
@@ -458,6 +523,7 @@ return {
                     local lbpara = pandoc.Para(el)
                     
                     if abstractlinecounter == 1 then
+                      
                       abstractfirstparagraphdiv.content:extend({lbpara})
                       abstractfirstparagraphdiv.classes:insert("AbstractFirstParagraph")
                       
@@ -487,7 +553,7 @@ return {
 
       end
       
-      if meta.keywords then
+      if meta.keywords and not meta["suppress-keywords"] then
         local keywordsword = pandoc.Str("Keywords")
         if meta.language and meta.language["title-block-keywords"] then
           keywordsword = stringify(meta.language["title-block-keywords"])
@@ -509,12 +575,11 @@ return {
           body:extend({pandoc.RawBlock('openxml', '<w:p><w:r><w:br w:type="page"/></w:r></w:p>')})
         end
         
-      if meta.apatitledisplay then
-        local firstpageheader = documenttitle:clone()
-        firstpageheader.identifier = "firstheader"
-        firstpageheader.classes = {"title", "unnumbered", "unlisted"}
-        body:extend({firstpageheader})
-      end
+        if FORMAT:match 'typst' then
+          body:extend({pandoc.RawBlock('typst', '#pagebreak()\n\n')})
+        end
+        
+
   
 
       
@@ -526,17 +591,24 @@ return {
         
       for i, v in ipairs(myshorttitle) do
         if v.t == "Str" then
-          --if v.text:match("’") then
-            --v.text = v.text:gsub("’","fixcurlyquote")
-          --end
-          -- v.text = string.gsub(string.upper(v.text), string.upper("fixcurlyquote"), "’")
           v.text = pandoc.text.upper(v.text)
         end
       end
-      meta.description = myshorttitle
+      if not meta["suppress-short-title"] then
+        meta.description = myshorttitle
+      else
+        meta.description = " "
+      end
       
       if meta["suppress-title-page"] then
         body = List:new{}
+      end
+
+      if meta.apatitledisplay and not meta["suppress-title-introduction"] then
+        local firstpageheader = documenttitle:clone()
+        firstpageheader.identifier = "firstheader"
+        firstpageheader.classes = {"title", "unnumbered", "unlisted"}
+        body:extend({firstpageheader})
       end
       
       body:extend(doc.blocks)
