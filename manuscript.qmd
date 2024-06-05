@@ -127,57 +127,46 @@ To our knowledge, existing approaches for sample size planning for GLMMs have ex
 
 # When to use tailored data simulation?
 
-Performing tailored simulation-based sample size planning is more complicated and time-consuming than using the existing software tools outlined in TABLE XXX. Thus, it is worth discussing under which circumstances tailored simulation-based sample size planning is needed.
+Performing tailored simulation-based sample size planning is more complicated and time-consuming than using the existing software tools outlined in TABLE XXX. The most important circumstances under which tailored simulation-based sample size planning is necessary are 1) complex study designs, 2) complex statistical hypotheses, 3) planning for precision, 4) no available prior studies or pilot data.
 
-## Complex study designs
-
-<!-- ### Missing data -->
+<!-- ## Complex study designs -->
 
 Requirements of real-world studies are often more complex than the simplified designs assumed by many user-friendly software packages for sample size planning.
-One frequent issue in applied data analysis is missing data, and there can be various reasons for this (REFERENCES).
+One frequent issue in applied data analysis is missing data, and there can be various reasons for this [@littleStatisticalAnalysisMissing2014].
 For example, data can be missing completely at random (e.g., because an electronic measurement device randomly failed for some technical reasons).
 Alternatively, subjects might systematically drop out or produce missing data, but this dropout can be explained by some attributes also measured in the dataset (e.g., older subjects have a higher probability to refuse answering a question on income).
 In a more complicated scenario, missing data in some variable is caused by the measured attribute itself (e.g., wealthy people are more likely to refuse reporting their income).
 Moreover, many experimental designs contain conditions in which values of the predictor variables are missing by design. This can make data analysis more complicated because predictors have to be coded in specific ways that prevent the estimated GLMM from becoming unidentified. Whether missing data has an effect on the sample size planning depends on our theoretical assumptions on how the missingness is caused.
-However, it is difficult to make the decision whether missing data can be safely ignored in the sample size planning based on a merely theoretical approach.
-In case there is missing data, tailored simulation-based approaches offer the possibility to include the assumed process how data become missing in the data simulation and to test whether the intended data analysis provides the expected results.
-
-<!-- ### Data generating processes beyond standard GLMMs -->
-
+However, it is often challenging to decide whether missing data can be safely ignored in the data analysis and sample size planning process based on a merely theoretical approach [@gomilaMissingDataExperiments2022].
+Tailored simulation-based approaches offer the possibility to include the assumed process of how data become missing in the data simulation, thereby determining the required sample based on simulated datasets that contain missing values [for an example, see @lanePowerStrugglesEstimating2018]. As a byproduct, the simulated datasets can also be used to test whether the intended data analysis provides the expected (unbiased) results, despite the missing data.
 Although GLMMs can handle a large variety of outcome variables, researchers are becoming increasingly aware that many datasets might profit from even more sophisticated models. Common examples are zero-inflated outcomes, censoring, and nonlinear predictor effects that can be modeled with the R packages glmmTMB [@brooksGlmmTMBBalancesSpeed2017] or brms [@burknerAdvancedBayesianMultilevel2018]. 
 Tailored simulation-based approaches do not share the same limitation than the existing software solutions for power analysis that focus exclusively on GLMMs.
-As long as there is a software package available to estimate the model of interest, it is possible to perform tailored simulation-based sample size planning.
+As long as there is a software package available to estimate the model of interest, it is always possible to perform tailored simulation-based sample size planning.
 
-## Complex statistical hypotheses
+<!-- ## Complex statistical hypotheses -->
 
-The most common hypotheses tested in psychological research are of the type $H_0: \beta = 0$, where $\beta$ is some coefficient in a regression model.
+The most common hypotheses tested in psychological research are of the type $H_0: \beta = 0$, where $\beta$ is a slope or intercept of a regression model.
 However, many research questions in psychology actually require testing more complex statistical hypotheses.
-
-<!-- ### Directed hypotheses and testing against values other than 0 -->
-
-In the new era of preregistration and registered reports, most research questions are tested with directed hypotheses because good theories should postulate whether some psychological effect of interest is positive or negative. Even better theories should be able to specify the smallest effect sizes of interest (SESOI) that must be exceeded if the effect has any practical relevance. In combination, this might require a test like $H_0: \beta \leq 0.1$.
-
-<!-- ### Combined hypotheses  -->
-
-Elaborate research questions often require testing hypotheses that consist of a combination of model parameters, for example, $H_0: \beta_0 + \beta_1 \leq 0$.
-If the research question consists only of a single hypothesis of this sort, it might be possible to reduce the hypothesis to a single regression coefficient by clever coding and/or centering of predictor variables. However, interesting research questions often consist of combined hypotheses that consist of more than one separate statistical hypothesis. For example, a combined null hypothesis $H_0$ might consist of two single null hypotheses $H_{01}: \beta_1 \leq 0$ and $H_{02}: \beta_0 + \beta_1 \leq 0$.
+In the new era of preregistration and registered reports [@chambersPresentFutureRegistered2022], most research questions should be tested with directed hypotheses because good theories at least postulate whether some psychological effect of interest is positive or negative. Even better theories should be able to specify the smallest effect sizes of interest (SESOI) that must be exceeded if the effect has any practical relevance [@lakensEquivalenceTestingPsychological2018]. In combination, this might require a test such as $H_0: \beta \leq 0.1$.
+More elaborate research questions often require testing hypotheses that consist of a combination of model parameters, for example testing simple slopes [@preacherComputationalToolsProbing2006] with a hypothesis such as $H_0: \beta_0 + \beta_1 \leq 0$.
+If the research question consists only of a single hypothesis of this sort, it might be possible to reduce the hypothesis to a single regression coefficient by clever coding and/or centering of predictor variables. However, interesting research questions often consist of combined hypotheses that consist of more than one separate statistical hypothesis [for a tutorial on contrast analysis in GLMMs, see @schadHowCapitalizePriori2020]. For example, a combined null hypothesis $H_0$ might consist of two single null hypotheses $H_{01}: \beta_1 \leq 0$ and $H_{02}: \beta_0 + \beta_1 \leq 0$.
 For some research questions, the combined null hypothesis $H_0$ would be rejected if both $H_{01}$ *AND* $H_{02}$ are rejected.
 For other research questions, the combined null hypothesis $H_0$ would be rejected if $H_{01}$ *OR* $H_{02}$ *OR* both are rejected.
-If the global hypothesis $H_0$ is combined with *OR*, the p-values of the single hypotheses must be corrected for multiple testing to avoid $\alpha$-inflation for the global hypothesis.
+If the global hypothesis $H_0$ is combined with *OR*, the p-values of the single hypotheses must be corrected for multiple testing to avoid $\alpha$-inflation for the global hypothesis [@dmitrienkoTraditionalMultiplicityAdjustment2013].
 However, if the global hypothesis $H_0$ is combined with *AND*, a correction for multiple testing is not necessary but rather a mistake that unnecessarily reduces the power of the global HT.
-
 None of the software packages for sample size planning in table X can handle combined hypotheses as discussed here and only some can handle directed hypotheses. In contrast, our case study will demonstrate how we can test directed combined hypotheses with tailored simulation-based sample size planning. 
 
-## Planning for precision
+<!-- ## Planning for precision -->
 
-Although planning for precision has been increasingly discussed as a more suitable strategy for exploratory research, all available software packages for sample size planning with GLMMs are based on power analysis.
+Although planning for precision [@lakensSampleSizeJustification2022; @maxwellSampleSizePlanning2008; @cummingNewStatisticsWhy2014] has been increasingly discussed as a useful strategy for empirical research, all available software packages for sample size planning with GLMMs are based on power analysis.
 Therefore, researchers that want to want to apply an estimation strategy in their studies, without testing any statistical hypotheses, currently cannot use the software packages outlined in TABLE XXX.
 <!-- As long as one is interested only in confidence intervals of a single model parameter, it might be possible to adapt existing software packages to plan for precision. However, we demonstrate in our case study that in realistic research projects with GLMMs, the contrasts of interests and their respective confidence intervals are usually situated on the scale of the (expected) outcome in contrast to the scale of the model parameters.  -->
-However, tailored simulation-based sample size planning can easily handle the planning for precision strategy. The only change in procedure is that instead of computing HTs for each simulated dataset and estimating statistical power across repetitions, CIs are computed for each simulated dataset, and the expected width is estimated.
+However, tailored simulation-based sample size planning can easily handle the planning for precision approach [@maxwellSampleSizePlanning2008]. The only change in procedure is that instead of computing HTs for each simulated dataset and estimating statistical power across repetitions, CIs are computed for each simulated dataset, and the expected width is estimated.
     
-## No prior studies or pilot data
+<!-- ## No prior studies or pilot data -->
 
-All frameworks for sample size planning require the user to make assumptions about the expected effect size. Assuming the true effect is of this size (or greater), one can compute the (minimum) power of a HT or the (maximum) expected width of a CI. Existing software packages for sample size planning for GLMMs usually require to provide the assumed effect in the unit of some standardized measure of effect size. When the researcher has access to similar studies or pilot data, providing such standardized effect sizes is feasible. However, this requirement can be an almost impossible challenge when no prior studies of pilot data are available. This problem is further exacerbated by the fact that GLMMs are so flexible, that general heuristics of what should be considered a small effect do not exist or are difficult to defend. In our experience, using domain knowledge to construct a tailored data simulation is the only solution to determine plausible effect sizes in the absence of prior evidence. It would be possible to use these tailored simulations to extract plausible values for standardized effect sizes that could then be inserted in existing software packages for sample size planning. However, we would argue that when tailored data simulations are necessary anyways, performing the whole design analysis in a customized way is preferred over using the existing software packages.
+All frameworks for sample size planning require the user to make assumptions about the expected effect size. Assuming the true effect is of this size (or greater), one can compute the (minimum) power of a HT or the (maximum) expected width of a CI. Existing software packages for sample size planning for GLMMs usually require to provide the assumed effect in the unit of some standardized measure of effect size. When the researcher has access to similar studies or pilot data, providing such standardized effect sizes is feasible. However, note that choosing effect sizes based on small pilot studies is generally not recommended, as those estimates can be heavily biased [@albersWhenPowerAnalyses2018a; @lakensSampleSizeJustification2022].
+Providing an informed standardized effect size can be an almost impossible challenge when no prior studies of pilot data are available. This problem is further exacerbated by the fact that GLMMs are so flexible, that general heuristics of what should be considered a small effect do not exist or are difficult to defend. In our experience, using domain knowledge to construct a tailored data simulation is the only solution to determine plausible effect sizes in the absence of prior evidence. It would be possible to use these tailored simulations to extract plausible values for standardized effect sizes that could then be inserted in existing software packages for sample size planning. However, we would argue that when tailored data simulations are necessary anyways, performing the whole sample size planning in a customized way is preferred over using the existing software packages.
 
 # General steps in tailored simulation-based sample size planning
 
