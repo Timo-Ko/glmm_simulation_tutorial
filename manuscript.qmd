@@ -93,7 +93,7 @@ When planning experimental research, it is essential to determine an appropriate
 
 <!-- # Recommended background knowledge -->
 
-To benefit most of this tutorial paper, we recommend readers to familiarise themselves with basic statistical concepts like hypothesis tests (HTs) and their statistical power as well as confidence intervals (CIs) and their precision [@lakensImprovingYourStatistical2022; @riesthuisSimulationBasedPowerAnalyses2024; @kumleEstimatingPowerGeneralized2021]. Some knowledge of causal inference is useful but not necessary [@lundbergWhatYourEstimand2021]. In addition, readers should have a rough understanding of R [@wickhamDataScienceImport2023] and how to simulate data. For data simulation, we use functions from the tidyverse [@wickhamWelcomeTidyverse2019] and the faux package [@R-faux].
+To benefit most of this tutorial paper, we recommend readers to familiarise themselves with basic statistical concepts like hypothesis tests (HTs) and their statistical power as well as confidence intervals (CIs) and their precision [@lakensImprovingYourStatistical2022; @riesthuisSimulationBasedPowerAnalyses2024; @kumleEstimatingPowerGeneralized2021]. Some knowledge of causal inference is useful but not necessary [@lundbergWhatYourEstimand2021; @deffnerCausalFrameworkCrossCultural2022]. In addition, readers should have a rough understanding of R [@wickhamDataScienceImport2023] and how to simulate data. For data simulation, we use functions from the tidyverse [@wickhamWelcomeTidyverse2019] and the faux package [@R-faux].
 Finally, readers should be familiar with regression modeling in general and GLMMs in particular. In this tutorial, we simulate data by manually specifying the model equation of a GLMM that represents our assumed data generating process [@debruineUnderstandingMixedEffectsModels2021]. It is not necessary to understand the technical details of how GLMMs are estimated. However it is crucial to understand the structure of a basic GLMM (e.g., logistic regression with random intercepts) and how the model assumes that the values in the dependent variable are determined by the predictor variables and the random effects.
 
 # Theoretical background
@@ -166,7 +166,7 @@ However, tailored simulation-based sample size planning can easily handle the pl
 <!-- ## No prior studies or pilot data -->
 
 All frameworks for sample size planning require the user to make assumptions about the expected effect size. Assuming the true effect is of this size (or greater), one can compute the (minimum) power of a HT or the (maximum) expected width of a CI. Existing software packages for sample size planning for GLMMs usually require to provide the assumed effect in the unit of some standardized measure of effect size. When the researcher has access to similar studies or pilot data, providing such standardized effect sizes is feasible. However, note that choosing effect sizes based on small pilot studies is generally not recommended, as those estimates can be heavily biased [@albersWhenPowerAnalyses2018a; @lakensSampleSizeJustification2022].
-Providing an informed standardized effect size can be an almost impossible challenge when no prior studies of pilot data are available. This problem is further exacerbated by the fact that GLMMs are so flexible, that general heuristics of what should be considered a small effect do not exist or are difficult to defend. In our experience, using domain knowledge to construct a tailored data simulation is the only solution to determine plausible effect sizes in the absence of prior evidence. It would be possible to use these tailored simulations to extract plausible values for standardized effect sizes that could then be inserted in existing software packages for sample size planning. However, we would argue that when tailored data simulations are necessary anyways, performing the whole sample size planning in a customized way is preferred over using the existing software packages.
+Providing an informed standardized effect size can be an almost impossible challenge when no prior studies of pilot data are available. This problem is further exacerbated by the fact that GLMMs are so flexible that general heuristics of what should be considered a small effect do not exist or are difficult to defend. In our experience, using domain knowledge to construct a tailored data simulation is the only solution to determine plausible effect sizes in the absence of prior evidence. It would be possible to use these tailored simulations to extract plausible values for standardized effect sizes that could then be inserted in existing software packages for sample size planning. However, we would argue that when tailored data simulations necessary to determine effect sizes anyway, performing the whole sample size planning in a customized way is preferred over using the existing software packages.
 
 # General steps in tailored simulation-based sample size planning
 
@@ -176,10 +176,14 @@ Although the details differ depending on the specific study characteristics, eac
 
 ### THEORY
 
-The first step in every research process should be a clear definition of the *estimand* [@lundbergWhatYourEstimand2021], i.e. the theoretical quantity which is necessary to answer the specific research question. The estimand consists of a quantity, that can be described for each unit under investigation and a clear definition of the target population, for which the quantity is of interest. 
+The first step in every research process should be a clear definition of the theoretical *estimand* [@lundbergWhatYourEstimand2021], i.e. the theoretical quantity which is necessary to answer a specific research question. The estimand consists of a quantity, that can be described for each unit under investigation and a clear definition of the target population, for which the quantity is of interest. 
+For example, an estimand might be the probability that a clinical psychologists makes the correct diagnosis for a psychiatric patient with major depression, averaged across all clinical psychologists and depressed patients in psychiatric institutions in Germany.  
 
-The estimand should always be defined outside of any statistical model, because there are usually a range of statistical methods that can be used to estimate the same estimand based on the observed data that will be collected in the planned study.
-For many common research questions in psychology, the estimand can be expressed as a statistical quantity that can be estimated with a regression model. However, this is not always possible all causal estimands, which is why the literature discusses many estimation strategies beyond regression [@lundbergWhatYourEstimand2021].
+
+A theoretical estimand is a quantifiable measure in statistical analysis that is designed to estimate the underlying parameter of interest within a theoretical model or framework. Essentially, it represents a defined characteristic or feature of the theoretical model. This estimand serves as a target for estimation and provides insight into the behavior and properties of the phenomena being studied within the theoretical construct.
+
+The estimand should always be defined outside of any statistical model, because there are usually a range of statistical methods that can be used to estimate the same estimand, depending on the study design (e.g., a randomized experiment) that will produce the observed data in the planned study.
+For many common research questions in psychology, the estimand can be expressed as a statistical quantity that can be estimated with a regression model, for example a single $\beta$ coefficient. However, this is not possible for all estimands, which is why the literature discusses many estimation strategies beyond regression [@lundbergWhatYourEstimand2021; @deffnerCausalFrameworkCrossCultural2022].
 
 <!-- When the empirical estimand has been specified, the last step is to define how a concrete estimate of the empirical estimand shall be computed based on the observed study data. When a regression model is used for estimation, this includes decisions like which statistical framework estimation technique and software package are used to fit the model and how to compute HTs or CIs. -->
 
@@ -191,7 +195,7 @@ In the present hypothetical case study, we consider the effectiveness of feedbac
 *We expect that for BOTH expert radiologists and medical students, correct AI-advice leads to a higher probability of accurately diagnosing a CT scan compared to no AI-advice presented, AND, we expect that for BOTH experts and non-experts, incorrect advice leads to a lower probability of accurately diagnosing a CT scan compared to no advice presented.*
 
 It becomes clear that our estimand consists of four comparisons between experimental conditions [@lundbergWhatYourEstimand2021].
-However, the verbal descriptions is not precise enough yet, which is why we try to give a unique mathematical expression:
+However, the verbal description is still somewhat vague, which is why we try to give a more precise expression for each comparison:
 
 $$
 \begin{aligned}
@@ -219,52 +223,10 @@ $$
 & \quad - P(\text{correct diagnosis} | \text{wrong advice, average student, average scan})
 \end{aligned}
 $$
-For example, the first expression is concerned with the difference between the probability that a correct diagnosis is made if correct AI-advice is presented and the probability that a correct diagnosis is made if no AI-advice is presented. This contrast is quantified for a hypothetical *typical* expert and a *typical* scan, where *typical* is usually defined as an average score on all attributes of the expert or scan.^[Note that a different estimand would be the so-called average treatment effect (ATE). For the ATE, the probability contrast would be computed for each expert and scan, and then these contrasts are averaged across all experts and scan in the target population [@lundbergWhatYourEstimand2021]].
-To complete our definition of the estimand, we have to define our target population that consists of both persons and scans: With respect to persons, we are only interested in expert radiologists and medical students at German universities. With respect to stimuli, we are only interested in the head CT scans made from subjects that do or do not suffer from intracerebral hemorrhage. Similarly, we are only interested in AI-advice given by the specific AI-enabled diagnostic decision support system.
+For example, the first expression is concerned with the difference between the probability that a correct diagnosis is made if correct AI-advice is presented and the probability that a correct diagnosis is made if no AI-advice is presented. This contrast is quantified for a hypothetical *typical* expert and a *typical* scan, where *typical* is usually defined as an average score on all attributes of the expert or scan.^[Note that a different estimand would be the so-called average treatment effect (ATE). For the ATE, the probability contrast is defined for each combination of expert and scan, and then these contrasts are averaged across all experts and scans from the target population [@lundbergWhatYourEstimand2021]].
+To complete our definition of the estimand, we have to define our target population that consists of persons, stimuli, and AI-advice: With respect to persons, we are only interested in expert radiologists and medical students at German universities. With respect to stimuli, we are only interested in the head CT scans made from subjects that do or do not suffer from intracerebral hemorrhage. Lastly, we are only interested in AI-advice given by a specific AI-enabled diagnostic decision support system.
 
-Although the estimand is initially defined outside of any statistical model, it is only useful if we find a way to estimate it based on observed data. For our exemplary research question, it is possible to construct an experimental study, where all participants are confronted with the same set of head CT scans, but the kind of AI-advice given for each scan is randomly assigned within participants. This random intervention allows us to produce an empirical estimate of our estimand, although, in reality, each person receives only one kind of AI-advice (correct advice, wrong advice, no advice) for each scan. We will see soon that each of the probability expressions in our estimand can be modeled with the same GLMM. Estimating this GLMM based on the data observed in our planned study will produce an estimate for each probability, and these estimates can then be combined to compute an estimate for each of the four probability contrasts. For pedagogical reasons, we will skip the concrete definition of our estimate until we have discussed how to simulate data based on a concrete GLMM in the next section. 
-
-
-<!-- It becomes clear that our estimand consists of four comparisons between experimental conditions [@lundbergWhatYourEstimand2021]. To elaborate further, we focus on one part of the research question concerning the comparison between correct AI-advice and no AI-advice for expert radiologists first. For a specific expert radiologist and a specific CT scan, our question is concerned with the difference between the probability that a correct diagnosis is made if correct AI-advice is presented and the probability that a correct diagnosis is made if no AI-advice is presented. Mathematically, we could describe this unit-specific quantity with some pseudo-equation like this (where $s$ stands for a specific expert radiologist and $i$ stands for a specific CT scan): -->
-
-<!-- $$ -->
-<!-- \begin{aligned} -->
-<!-- & P(\text{correct diagnosis} | \text{correct advice, specific expert, specific scan}) \\ -->
-<!-- & \quad - P(\text{correct diagnosis} | \text{no advice, specific expert, specific scan}) -->
-<!-- \end{aligned} -->
-<!-- $$ -->
-<!-- However, our verbal description is not precise enough yet, because the above quantity may differ for each combination of expert and scan. We must specify how we want to aggregate the quantity across different experts and scans. If we computed the average of our individual quantity across all experts and scans in the target population, the result would be called the average treatment effect (ATE) in the population of experts (CITATION). Although often debated whether this is a good idea, psychological research often focuses on a different quantity: Instead of averaging over experts and scans, we focus on a hypothetical *typical* expert and a *typical* scan, where *typical* is usually defined as an average score on all attributes of the expert or scan. With this definition, the theoretical estimand in our above example can be expressed as: -->
-
-<!-- $$ -->
-<!-- \begin{aligned} -->
-<!-- & P(\text{correct diagnosis} | \text{correct advice, average expert, average scan}) \\ -->
-<!-- & \quad - P(\text{correct diagnosis} | \text{no advice, average expert, average scan}) -->
-<!-- \end{aligned} -->
-<!-- $$ -->
-<!-- In total, our theoretical estimand consists of four such expressions, the remaining three are: -->
-
-<!-- $$ -->
-<!-- \begin{aligned} -->
-<!-- & P(\text{correct diagnosis} | \text{no advice, average expert, average scan}) \\ -->
-<!-- & \quad - P(\text{correct diagnosis} | \text{wrong advice, average expert, average scan}) -->
-<!-- \end{aligned} -->
-<!-- $$ -->
-<!-- $$ -->
-<!-- \begin{aligned} -->
-<!-- & P(\text{correct diagnosis} | \text{correct advice, average student, average scan}) \\ -->
-<!-- & \quad - P(\text{correct diagnosis} | \text{no advice, average student, average scan}) -->
-<!-- \end{aligned} -->
-<!-- $$ -->
-
-<!-- $$ -->
-<!-- \begin{aligned} -->
-<!-- & P(\text{correct diagnosis} | \text{no advice, average student, average scan}) \\ -->
-<!-- & \quad - P(\text{correct diagnosis} | \text{wrong advice, average student, average scan}) -->
-<!-- \end{aligned} -->
-<!-- $$ -->
-<!-- To complete our definition of the theoretical estimand, we have to define our target population that consists of both persons and scans: With respect to persons, we are only interested in expert radiologists and medical students at German universities. With respect to stimuli, we are only interested in the head CT scans made from subjects that do or do not suffer from intracerebral hemorrhage. Similarly, we are only interested in AI-advice given by the specific AI-enabled diagnostic decision support system. -->
-
-<!-- While a theoretical estimand is defined outside of any statistical model, an empirical estimand is a quantity that can be estimated based on observed data. For our exemplary research question, it is possible to construct an experimental study, where all participants are confronted with the same set of head CT scans, but the kind of AI-advice given for each scan is randomly assigned within participants. This random intervention allows us to estimate our theoretical estimand, although, in reality, each person receives only one kind of AI-advice (correct advice, wrong advice, no advice) for each scan. For our example, each probability expression in our theoretical estimand can be modeled with the same GLMM. Estimating the GLMM based on the data observed in our planned study produces an estimate for each probability, and these estimates can be used to compute an estimate for each of the four probability contrasts. For pedagogical reasons, we will skip the concrete definition of our empirical estimand until we have discussed how to simulate data based on a concrete GLMM in the next section.  -->
+Although the estimand is initially defined outside of any statistical model, it is only useful if we find a way to estimate it based on observed data. For our exemplary research question, it is possible to construct an experimental study, where all participants are confronted with the same set of head CT scans, but the kind of AI-advice given for each scan is randomly assigned within participants. This random intervention allows us to produce an empirical estimate of our estimand, although, in reality, each person receives only one kind of AI-advice (correct advice, wrong advice, no advice) for each scan. We will see later how each of the probability expressions in our estimand can be modeled with the same GLMM. Estimating this GLMM based on the data observed in our planned study will produce an estimate for each probability, and these estimates can then be combined to compute an estimate for each of the four probability contrasts. For pedagogical reasons, we will skip the concrete definition of our estimate until we have discussed how to simulate data based on a concrete GLMM in the next section. 
 
 ## Step 2: Simulate the data generating process
 
@@ -483,7 +445,7 @@ For this, we introduce two more strategies.
 
 #### THEORY
 
-The mathematical structure of GLMMs determines which patterns in data would be produced by the model, if a specific set of values for the population parameters would be specified. The knowledge of how to simulate from a GLMM enables us to compute insightful descriptive statistics that can be compared to available domain knowledge much more easily than the opaque values of model parameters. For example, domain experts might not be able to directly choose plausible values for the  coefficients in a logistic regression model (which are measured on the log-odds scale). However, they should be able to reason about the expected ratio of the binary dependent variable in different experimental conditions, i.e. which descriptive statistics they expect to observe (on average). The job of the analyst who is familiar with the mathematical structure of the GLMM is to produce the model implied value of the insightful descriptive statistic expected by the domain expert. Although insightful descriptive statistics often depend on the model parameters in a non-linear way, it is usually possible to manually adjust the population parameters (if only with the help of trial and error) until the model implied quantities produce the desired result.
+The mathematical structure of GLMMs determines which patterns in data would be produced by the model, if a specific set of values for the population parameters would be specified. The knowledge of how to simulate from a GLMM enables us to compute insightful descriptive statistics that can be compared to available domain knowledge much more easily than the opaque values of model parameters. For example, domain experts might not be able to directly choose plausible values for the  coefficients in a logistic regression model (which are measured on the log-odds scale). However, they should be able to reason about the expected ratio of the binary dependent variable in different experimental conditions, i.e. which descriptive statistics they expect to observe (on average). The job of the analyst who is familiar with the mathematical structure of the GLMM is to produce the model implied value of the insightful descriptive statistic expected by the domain expert. Although insightful descriptive statistics often depend on the model parameters in a non-linear way, it is not necessary to solve the exact relationship mathematically. Instead, one can simply adjust the population parameters by trial and error until the model implied quantities produce the desired result.
 
 #### PRACTICE
 
