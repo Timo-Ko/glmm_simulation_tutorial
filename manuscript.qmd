@@ -608,22 +608,21 @@ The next step is to specify how the statistical model shall be estimated in the 
 This usually includes the selection of 1) a statistical framework (e.g., frequentist statistics), 2) a software package that is capable of estimating the model class of interest (e.g., the lme4 R package), 3) an estimation algorithm (e.g., the default optimizer "bobyqa"), and 4) the specific model structure including all fixed effects, random effects, and the model family of the dependent variable.   
 Note that this does not always mean that one will specify the same GLMM that was used when specifying the data generating process.
 On the one hand, using a simpler model for data simulation than for model estimation can be a useful strategy in scenarios where making plausible assumptions for complicated random effect structures and interactions is not feasible.
-On the other hand, using a more complex model (that perhaps even goes beyond a standard GLMM) for data simulation than for model estimation can be a useful strategy in scenarios where one has specific domain knowledge about aspects of the data generating process that are still difficult to estimate with the current state-of-the-art in multilevel modeling.
+On the other hand, using a more complex model for data simulation than for model estimation can be a useful strategy in scenarios where one has specific domain knowledge about aspects of the data generating process that are still difficult to estimate with the current state-of-the-art in multilevel modeling.
 
 ### PRACTICE
 
+<!-- The lme4 package includes a function called `simulate` that allows researchers to simulate the dependent variable based on the same model formula used for model fitting, enabling simulation-based power analyses and other related analyses.  -->
+
+<!-- [^1]: For Bayesian GLMMs, the brms R package is currently the most prominent option [@burknerBrmsPackageBayesian2017]. -->
+
+<!-- However, the model parameterization used by the lme4 package is quite technical, making it difficult for applied researchers to determine whether their specified population model (i.e., the theoretical model that describes the underlying data generation process for a specific population of interest) implies plausible associations in their simulated data. Therefore, for our case study, we have written our own function to simulate data for GLMMs from first principles (i.e., creating synthetic data step by step instead of using black box functions). -->
+<!-- We think this choice assists applied researchers in better understanding all model assumptions before using lme4 to analyze the simulated datasets.[^2] -->
+
+<!-- [^2]: A less flexible alternative would be to use the simr package [@greenSIMRPackagePower2016], which can be used to both simulate data and perform power analysis for models supported by the lme4 package. -->
+
 In our case study, we use the lme4 R package [@batesFittingLinearMixedEffects2015], which is a state-of-the-art tool for fitting frequentist GLMMs.[^1]
-The lme4 package includes a function called `simulate` that allows researchers to simulate the dependent variable based on the same model formula used for model fitting, enabling simulation-based power analyses and other related analyses. 
-
-[^1]: For Bayesian GLMMs, the brms R package is currently the most prominent option [@burknerBrmsPackageBayesian2017].
-
-However, the model parameterization used by the lme4 package is quite technical, making it difficult for applied researchers to determine whether their specified population model (i.e., the theoretical model that describes the underlying data generation process for a specific population of interest) implies plausible associations in their simulated data. Therefore, for our case study, we have written our own function to simulate data for GLMMs from first principles (i.e., creating synthetic data step by step instead of using black box functions).
-We think this choice assists applied researchers in better understanding all model assumptions before using lme4 to analyze the simulated datasets.[^2]
-
-[^2]: A less flexible alternative would be to use the simr package [@greenSIMRPackagePower2016], which can be used to both simulate data and perform power analysis for models supported by the lme4 package.
-
-In this section, we show how to fit a GLMM with lme4.
-We simulate data according to our model, in which 100 subjects respond to 50 items (we use `set.seed` to make the simulation reproducible). However, for the sake of the exercise, we can imagine that this would be real data resulting from our future experiment and think about how we would analyze this data.
+For the current example, we simulate data according to our model, in which 100 subjects respond to 50 items (we use `set.seed` to make the simulation reproducible). However, for the sake of the exercise, we can imagine that this would be real data resulting from our future experiment and think about how we would analyze this data.
 
 ```{r}
 #| message: false
@@ -662,27 +661,16 @@ In the lme4 output, the `Estimate` column in the `Fixed effects` table contains 
 
 ### THEORY
 
-When the theoretical and empirical estimands have been identified in the modeling framework used to estimate the GLMM, one has to decide on whether hypothesis testing or interval estimation should be used to answer the research question.
-While the majority of psychological research uses hypothesis testing, there are repeated claims that a focus on estimation can also be a good choice in many circumstances (CITATION).
-This decision on testing or estimating is then followed by selecting the specific statistical method that shall be applied to compute the HT(s) or CI(s) (e.g., compute HTs and CIs with the marginaleffects R package using the delta method).
+In previous steps, we have defined the theoretical estimand, written a data simulation function and specified how to estimate a GLMM using simulated data.
+The next step is to specify how to compute a concrete point estimate of the theoretical estimand within the framework of the fitted GLMM.
+For some research question, the estimate corresponds with a single regression coefficient. In more complicated scenarios, the estimate is computed from a combination of coefficients.
+Beyond computing the point estimate, we have already discussed that both hypothesis testing and interval estimation can be used to answer the research question.
+The decision on testing or estimating is then followed by selecting the specific statistical method that shall be applied to compute the HT(s) or CI(s) (e.g., compute HTs and CIs with the marginaleffects R package using the delta method).
 
 ### PRACTICE
 
-For our case study, we investigate the following research question:
-*We expect that for both experts and non-experts, correct advice leads to a higher probability of accurately diagnosing a CT scan compared to no advice presented, AND, we expect that for both experts and non-experts, incorrect advice leads to a lower probability of accurately diagnosing a CT scan compared to no advice presented.*
-
-In the earlier section on our theoretical estimand we translated this verbal description into four probability statements that are specified outside of any specific statistical model.
-The next translation step is to specify the empirical estimand, that is how these probabilities can be estimated within the scope of our concrete GLMM.
-
-The first of the four statements of the theoretical estimand was: 
-
-$$
-\begin{aligned}
-& P(\text{correct diagnosis} | \text{correct advice, average expert, average scan}) \\
-& \quad - P(\text{correct diagnosis} | \text{no advice, average expert, average scan})
-\end{aligned}
-$$
-In the context of our GLMM, the corresponding probability statement is:
+In the estimand section, we have translated a verbal description of our research question into four probability statements that are specified outside of any specific statistical model.
+For a concrete estimate within the context of our specified GLMM, we must compute the following probability contrasts:
 
 $$
 \begin{aligned}
@@ -690,9 +678,29 @@ $$
 & \quad - P(Y=1|advice\_present = 0, advice\_correct = 0, expert = 1, u_{0s} = 0, u_{0i} = 0)
 \end{aligned}
 $$
-Plugging in the model equation of the GLMM produces an equation on how to compute this contrast when all model parameters are known.
-We have already discussed how to compute the individual probabilities in the section on specifying population parameters.
-When we want to estimate the above contrast based on observed data, the only difference is that model parameters are not known and we instead plug the corresponding parameter estimates into the equation.
+$$
+\begin{aligned}
+& P(Y=1|advice\_present = 0, advice\_correct = 0, expert = 1, u_{0s} = 0, u_{0i} = 0) \\
+& \quad - P(Y=1|advice\_present = 1, advice\_correct = 0, expert = 1, u_{0s} = 0, u_{0i} = 0)
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+& P(Y=1|advice\_present = 1, advice\_correct = 1, expert = 0, u_{0s} = 0, u_{0i} = 0) \\
+& \quad - P(Y=1|advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0)
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+& P(Y=1|advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0) \\
+& \quad - P(Y=1|advice\_present = 1, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0)
+\end{aligned}
+$$
+We have already discussed how to compute the involved probabilities in the section on specifying population parameters.
+Plugging in the model equation of the GLMM produces an equation on how to compute each contrast if all model parameters were known.
+When we want to estimate the above contrasts based on *observed* data, the only difference is that model parameters are not known and we instead use the corresponding parameter *estimates*.
 
 <!-- $$ -->
 <!-- \begin{aligned} -->
@@ -703,12 +711,13 @@ When we want to estimate the above contrast based on observed data, the only dif
 <!-- \end{aligned} -->
 <!-- $$ -->
 
-We could use our knowledge of the structure of our GLMM to determine the exact formula needed to compute our contrast of interest and then plug in the parameter estimates manually from the `summary(fit)` output.
-However, this would be very tedious and we can use R to compute this contrast without doing the math.
+We could use our knowledge of the structure of the GLMM to determine the exact formula needed to compute the contrasts of interest and then plug in the parameter estimates manually from the `summary(fit)` output.
+However, this would be tedious and we can use R to compute this contrast without doing the math.
 
-We could use the `predict` function of the lme4 package to compute the predicted probability for a correct diagnosis based on our model, plug in the two sets of predictor values, and compute the difference between the two estimated probabilities.
+Using the first contrast as our example, we could apply the `predict` function of the lme4 package to compute the predicted probability for a correct diagnosis based on our fitted model, plug in the two sets of predictor values, and compute the difference between the two estimated probabilities.
 
 ```{r}
+#| echo: true
 pred_df <- data.frame(advice_present = c(1, 0), advice_correct = c(1, 0), 
   expert = c(1, 1))
 pred_df
@@ -718,15 +727,14 @@ preds[1] - preds[2]
 ```
 
 The argument `type = "response"` specifies that predictions are made on the probability scale (instead of the log-odds scale of the $\beta$ parameters), while `re.form = NA` sets all random effects to 0.
-
-We could use this method to compute point estimates for all four contrast that are part of our empirical estimand.
-However, depending on whether we are interested in hypothesis testing or parameter estimation, we also need a method to compute HTs or CI for our point estimates.
+We could use this method to compute point estimates for all four contrasts that are part of our estimand.
+However, depending on whether we are interested in hypothesis testing or parameter estimation, we also need a method to compute HTs or CI.
 
 The marginaleffects package [@R-marginaleffects] is a very flexible, increasingly popular package to compute HTs and CIs for contrasts with a variety of statistical models, including GLMMs estimated with lme4.
-
 First, we specify a grid of all combinations of predictor variable and then compute estimated probabilities for all experimental conditions in our experiment with the `predictions` function:
 
 ```{r}
+#| echo: true
 library(tidyverse)
 library(marginaleffects)
 pred_df <- expand_grid(advice_present = 0:1, advice_correct = 0:1, expert = 0:1)
@@ -738,8 +746,7 @@ probs
 The point estimates for all experimental conditions are reported in the `Estimate` column.
 Note that the output also contains the two missing by design conditions that will never be observed in the actual study ($advice\_present = 0, advice\_correct = 1, expert = 1$ and $advice\_present = 0, advice\_correct = 1, expert = 0$).
 This is no problem as long as we never interpret those estimates.
-
-Next, we use the estimated probabilities to compute the four specific contrasts that are part of our empirical estimand.
+Next, we use the estimated probabilities to compute the four specific contrasts that are part of our estimand.
 For this we must specify which rows in `probs` have to be subtracted from each other.
 We will use the `hypotheses` function to compute our four contrasts of interest together with HTs and CIs.
 We use the default inference options of the marginaleffects package that compute HTs and CIs based on the approximate delta method.
@@ -754,7 +761,7 @@ probs %>%
     equivalence = c(0, 0))
 ```
 
-The expression `"b8 = b2"` is special syntax to subtract the estimate in row number 8 from the estimate in row number 2.
+The expression `"b8 = b2"` is special syntax to subtract the estimate in row number 8 from the estimate in row number 2 in the `probs`-output.
 The argument `equivalence = c(0, 0)` can be used to compute one-sided p-values, testing whether the contrast in the population is smaller than 0 (`p (NonSub)` column) or greater than 0 (`p (NonInf)` column).
 The point estimates for four contrasts are reported in the `Estimate` column.
 Note that to facilitate interpretation, we arranged the contrasts in a way that we theoretically expect positive values for all four of them.
@@ -813,7 +820,7 @@ When planning for precision, the function should return the width of the CI(s) o
 Secondly, we must run this function repeatedly with the same sample size and population parameters.
 Because even fitting GLMMs with frequentist methods can quickly become time-consuming, it is recommended to use parallel computing, that is running simulations on multiple cores of the computer at the same time to reduce total run time.
 Thirdly, the results of the repeated simulation must be collected and aggregated.
-When planning for power, we compute the relative frequency of a significant p-value(s) across repeated simulations.
+When planning for power, we compute the relative frequency of (a) significant p-value(s) across repeated simulations.
 When planning for precision, we compute the average width of the CI(s).
 Lastly, we have to repeat the complete simulation for different sample sizes, to determine how big the sample must be in order to achieve the targeted power or precision.
 
