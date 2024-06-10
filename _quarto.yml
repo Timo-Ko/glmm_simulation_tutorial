@@ -20,5 +20,4 @@ format:
   apaquarto-docx: default
 
 execute:
-  echo: true
   freeze: false

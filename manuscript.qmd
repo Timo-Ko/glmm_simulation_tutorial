@@ -2,6 +2,20 @@
 title: "A Tutorial on Tailored Simulation-Based Sample Size Planning for Experimental Designs with Generalized Linear Mixed Models"
 shorttitle: "Simulation-Based Sample Size Planning for GLMMs"
 author:
+  - name: Florian Pargent
+    corresponding: true
+    equal-contributor: true
+    orcid: 0000-0002-2388-553X
+    roles:
+      - formal analysis
+      - methodology
+      - visualization
+      - writing
+      - editing
+    affiliations:
+      - id: "lmu"
+        name: LMU Munich
+        department: Department of Psychology
   - name: Timo K. Koch
     corresponding: true
     equal-contributor: true
@@ -19,19 +33,6 @@ author:
         city: St. Gallen
         country: Switzerland
         postal-code: 9000
-      - id: "lmu"
-        name: LMU Munich
-        department: Department of Psychology
-  - name: Florian Pargent
-    equal-contributor: true
-    orcid: 0000-0002-2388-553X
-    roles:
-      - formal analysis
-      - methodology
-      - visualization
-      - writing
-      - editing
-    affiliations:
       - ref: lmu
   - name: Anne-Kathrin Kleine
     roles:
@@ -63,8 +64,8 @@ author-note:
     conflict-of-interest: "The authors declare that there were no conflicts of interest with respect to the authorship or the publication of this article."
     financial-support: "This research was funded by a grant from the Volkswagen Foundation (Grant No. 98525)."
     gratitude: ~
-    authorship-agreements: "Timo K. Koch and Florian Pargent contributed equally to this work."
-abstract: "When planning experimental research, determining an appropriate sample size and using suitable statistical models are crucial for robust and informative results. The recent replication crisis underlines the need for more rigorous statistical methodology and adequately powered designs. Generalized linear mixed models (GLMMs) offer a flexible statistical framework to analyze experimental data with complex (e.g., dependent and hierarchical) data structures. However, available methods and software for a priori sample size planning for GLMMs are often limited to specific designs. Data simulation approaches as an alternative offer much more flexibility. Based on a practical case study, the current tutorial equips researchers with a step-by-step guide and corresponding code for conducting tailored a priori sample size planning to determine appropriate sample sizes with GLMMs. Finally, we give an outlook on the increasing importance of simulation-based power analysis in experimental research."
+    authorship-agreements: "Florian Pargent and Timo K. Koch contributed equally to this work."
+abstract: "When planning experimental research, determining an appropriate sample size and using suitable statistical models are crucial for robust and informative results. The recent replication crisis underlines the need for more rigorous statistical methodology and adequately powered designs. Generalized linear mixed models (GLMMs) offer a flexible statistical framework to analyze experimental data with complex (e.g., dependent and hierarchical) data structures. However, available methods and software for a priori sample size planning for GLMMs are often limited to specific designs. Tailored data simulation approaches are a more flexible alternative. Based on a practical case study, the current tutorial equips researchers with a step-by-step guide and corresponding code for conducting tailored a priori sample size planning with GLMMs. We not only focus on power analysis but also explain how to use the precision of parameter estimates to determine appropriate sample sizes. We conclude with an outlook on the increasing importance of simulation-based sample size planning."
 keywords: [power analysis, precision, data simulation, sample size planning, generalized linear mixed model]
 bibliography: [Simulation Tutorial Paper.bib, r-references.bib]
 floatsintext: true
@@ -308,6 +309,7 @@ b_ec = -1.393
 ```
 
 ```{r}
+#| echo: true
 simulate <- function(n_subjects = 100, n_items = 50,
   b_0 = 0.847, b_e = 1.350, b_a = -1.253, b_c = 2.603,
   b_ea = 0.790, b_ec = -1.393,
@@ -315,19 +317,19 @@ simulate <- function(n_subjects = 100, n_items = 50,
   require(dplyr)
   require(faux)
   # simulate design
-  dat <- add_random(subject = n_subjects, item = n_items) %>%
-    add_between("subject", expert = c(1, 0), .prob = c(0.25, 0.75)) %>%
-    mutate(advice_present = rbinom(n(), 1, prob = 2/3)) %>%
+  dat <- add_random(subject = n_subjects, item = n_items) |>
+    add_between("subject", expert = c(1, 0), .prob = c(0.25, 0.75)) |>
+    mutate(advice_present = rbinom(n(), 1, prob = 2/3)) |>
     mutate(advice_correct = if_else(advice_present == 1L, 
-                                    rbinom(n(), 1L, prob = 0.8), 0L)) %>%
+                                    rbinom(n(), 1L, prob = 0.8), 0L)) |>
     # add random effects
-    add_ranef("subject", u0s = sd_u0s) %>%
-    add_ranef("item", u0i = sd_u0i) %>%
+    add_ranef("subject", u0s = sd_u0s) |>
+    add_ranef("item", u0i = sd_u0i) |>
     # compute dependent variable
     mutate(linpred = b_0 + u0i + u0s +
         b_e * expert + b_a * advice_present + b_c * advice_correct +
-        b_ea * expert * advice_present + b_ec * expert * advice_correct) %>%
-    mutate(y_prob = plogis(linpred)) %>%
+        b_ea * expert * advice_present + b_ec * expert * advice_correct) |>
+    mutate(y_prob = plogis(linpred)) |>
     mutate(y_bin = rbinom(n = n(), size = 1, prob = y_prob))
   dat
 }
@@ -411,6 +413,7 @@ apa_table(
 The table can be used to compute the implied values for the $\beta$ parameters, starting with the first equation and reinserting the computed $\beta$ values in all following equations (`b_0` stands for the intercept $\beta_0$, `b_e` for the slope $\beta_e$, and so on):
 
 ```{r}
+#| echo: true
 b_0 <- qlogis(0.7)
 b_e <- qlogis(0.9) - b_0
 b_a <- qlogis(0.4) - b_0
@@ -431,6 +434,7 @@ $$
 which we compute in R as:
 
 ```{r}
+#| echo: true
 plogis(b_0 + b_e + b_a + b_c + b_ea + b_ec)
 ```
 
@@ -455,18 +459,19 @@ We want to use the model implied observed proportion of correct diagnoses in eac
 We will simulate a large dataset (for which the observed values of the descriptive statistic will be close to their model implied true values) and simply compute the relative frequency of correct diagnoses for each experimental condition.
 
 ```{r}
+#| echo: true
 library(tidyverse)
 set.seed(1)
 dat <- simulate(n_subjects = 3000, n_items = 3000,
   sd_u0s = 0.5, sd_u0i = 0.5)
-dat %>% 
+dat |> 
   mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+    factor(expert), factor(advice_present), factor(advice_correct))) |>
   mutate(condition = fct_recode(condition,
     "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
     "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
-    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
-  group_by(condition) %>%
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
+  group_by(condition) |>
   summarize(relative_frequency = sum(y_bin) / n())
 ```
 
@@ -498,15 +503,15 @@ We will now use the model implied probability of each simulated data point (stor
 ```{r}
 #| label: fig-margdist1
 #| fig-cap: "Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions."
-
+#| echo: true
 library(ggdist)
-dat %>% 
+dat |> 
   mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+    factor(expert), factor(advice_present), factor(advice_correct))) |>
   mutate(condition = fct_recode(condition,
     "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
     "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
-    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
@@ -524,13 +529,13 @@ In the next plot, we have set the item standard deviation to almost zero ($\sigm
 #| fig-cap: "Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions while setting the standard deviation of item random intercepts to 0.01."
 set.seed(1)
 dat <- simulate(n_subjects = 3000, n_items = 3000, sd_u0i = 0.01)
-dat %>% 
+dat |> 
   mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+    factor(expert), factor(advice_present), factor(advice_correct))) |>
   mutate(condition = fct_recode(condition,
     "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
     "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
-    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
@@ -543,13 +548,13 @@ We could also have a closer look at variability between items by setting the sub
 #| include: false
 set.seed(1)
 dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0s = 0.01)
-dat %>% 
+dat |> 
   mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+    factor(expert), factor(advice_present), factor(advice_correct))) |>
   mutate(condition = fct_recode(condition,
     "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
     "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
-    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
@@ -563,13 +568,13 @@ The final plot demonstrates that these plots are also useful for spotting standa
 #| fig-cap: "Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions while setting the standard deviation of subject and item random intercepts to 3."
 set.seed(1)
 dat <- simulate(n_subjects = 3000, n_items = 3000, sd_u0s = 3, sd_u0i = 3)
-dat %>% 
+dat |> 
   mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) %>%
+    factor(expert), factor(advice_present), factor(advice_correct))) |>
   mutate(condition = fct_recode(condition,
     "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
     "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
-    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
+    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
@@ -626,6 +631,7 @@ For the current example, we simulate data according to our model, in which 100 s
 
 ```{r}
 #| message: false
+#| echo: true
 library(tidyverse)
 set.seed(1)
 dat <- simulate(n_subjects = 100, n_items = 50)
@@ -635,6 +641,7 @@ The lme4 package uses a special syntax for model specification. Our specific GLM
 
 ```{r}
 #| message: false
+#| echo: true
 library(lme4)
 f <- y_bin ~ 1 + expert + advice_present + advice_correct + 
   expert:advice_present + expert:advice_correct +
@@ -646,12 +653,14 @@ The first two lines look similar to any linear model in R (general intercept ind
 In lme4, a GLMM is fitted with the `glmer` function. By setting `family =  "binomial"`, we request a binomial GLMM appropriate for our binary dependent variable `y_bin` (the binomial GLMM uses the canonical logit link by default), which is defined as an accurate (1) vs. inaccurate (0) diagnosis.
 
 ```{r}
+#| echo: true
 fit <- glmer(f, data = dat, family = "binomial")
 ```
 
 We can inspect the estimates for all model parameters with the `summary` command:
 
 ```{r}
+#| echo: true
 summary(fit)
 ```
 
@@ -752,7 +761,8 @@ We will use the `hypotheses` function to compute our four contrasts of interest 
 We use the default inference options of the marginaleffects package that compute HTs and CIs based on the approximate delta method.
 
 ```{r}
-probs %>% 
+#| echo: true
+probs |> 
   hypotheses(hypothesis = c(
     "b8 = b2",
     "b2 = b6",
@@ -829,6 +839,7 @@ Lastly, we have to repeat the complete simulation for different sample sizes, to
 We are finally ready to run our simulation-based sample size planning analyses to plan for power and for precision. Wrapping the `simulate` function already constructed earlier, the helper function `sim_and_analyse` performs all previous steps (simulate a dataset, fit a GLMM, compute p-values and CIs) in a single command.
 
 ```{r}
+#| echo: true
 sim_and_analyse <- function(
   formula_chr = "y_bin ~ 1 + expert + advice_present + advice_correct + 
     expert:advice_present + expert:advice_correct + (1|subject) + (1|item)",
@@ -843,8 +854,8 @@ sim_and_analyse <- function(
   # compute contrasts
   contr_df <- expand_grid(advice_present = 0:1, advice_correct = 0:1,
     expert = 0:1)
-  predictions(model, newdata = contr_df, type = "response", re.form = NA) %>%
-    hypotheses(hypothesis = contrasts, equivalence = c(0, 0)) %>%
+  predictions(model, newdata = contr_df, type = "response", re.form = NA) |>
+    hypotheses(hypothesis = contrasts, equivalence = c(0, 0)) |>
     data.frame()
 }
 ```
@@ -854,6 +865,7 @@ Simulation-based sample size planning can quickly become computationally intensi
 ```{r}
 #| message: false
 #| eval: false
+#| echo: true
 library(future)
 plan("multisession", workers = 6)
 set.seed(2)
@@ -874,9 +886,9 @@ sim_result <- crossing(
   rep = 1:300,
   n_subjects = c(100, 150, 200, 250),
   n_items = c(10, 30, 50, 70)
-) %>%
+) |>
   mutate(res = future_pmap(., sim_and_analyse, 
-    .options = furrr_options(seed = TRUE))) %>%
+    .options = furrr_options(seed = TRUE))) |>
   unnest(col = res)
 saveRDS(sim_result, file = "results.rds")
 ```
@@ -884,14 +896,15 @@ saveRDS(sim_result, file = "results.rds")
 ```{r}
 #| message: false
 #| eval: false
+#| echo: true
 library(furrr)
 sim_result <- crossing(
   rep = 1:300,
   n_subjects = c(100, 150, 200, 250),
   n_items = c(10, 30, 50, 70)
-) %>%
+) |>
   mutate(res = future_pmap(., sim_and_analyse, 
-    .options = furrr_options(seed = TRUE))) %>%
+    .options = furrr_options(seed = TRUE))) |>
   unnest(col = res)
 ```
 
@@ -912,12 +925,13 @@ sim_result <- readRDS(file = "results.rds")
 ```{r}
 #| label: fig-finalpwr
 #| fig-cap: "Simulation-based power estimates including 95% confidence interval of the case study for different numbers of subjects and items, based on a significance level of 0.05."
+#| echo: true
 library(binom)
 alpha <- 0.05
-power <- sim_result %>%
+power <- sim_result |>
   pivot_wider(names_from = term, names_sep = "_", 
-    values_from = estimate:p.value.equiv) %>%
-  group_by(n_subjects, n_items) %>% 
+    values_from = estimate:p.value.equiv) |>
+  group_by(n_subjects, n_items) |> 
   summarise(
     power = mean(`p.value.noninf_b1=b5` < alpha & 
         `p.value.noninf_b8=b2` < alpha & `p.value.noninf_b2=b6` < alpha & 
@@ -929,8 +943,8 @@ power <- sim_result %>%
     ci.lwr = binom.confint(n_sig, n, method = "wilson")$lower,
     ci.upr = binom.confint(n_sig, n, method = "wilson")$upper, 
     .groups = "drop")
-power %>%
-  mutate(across(c(n_subjects, n_items), factor)) %>%
+power |>
+  mutate(across(c(n_subjects, n_items), factor)) |>
   ggplot(aes(n_subjects, n_items, fill = power)) +
   geom_tile() +
   geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 
@@ -965,17 +979,18 @@ Based on our simulation outcomes, we compute the precision estimate for each com
 ```{r}
 #| label: fig-finalprecision
 #| fig-cap: "Simulation-based precision estimates (expected width of confidence intervals) including 95% confidence interval of the case study for different numbers of subjects and items, based on a confidence level of 0.95."
-precision <- sim_result %>%
+#| echo: true
+precision <- sim_result |>
   pivot_wider(names_from = term, names_sep = "_", 
-    values_from = estimate:p.value.equiv) %>%
-  group_by(n_subjects, n_items) %>%
-  mutate(width = `conf.high_b8=b2` - `conf.low_b8=b2`) %>%
+    values_from = estimate:p.value.equiv) |>
+  group_by(n_subjects, n_items) |>
+  mutate(width = `conf.high_b8=b2` - `conf.low_b8=b2`) |>
   summarise(precision = mean(width),
     ci.lwr = t.test(width)$conf.int[1],
     ci.upr = t.test(width)$conf.int[2], 
     .groups = "drop")
-precision %>%
-  mutate(across(c(n_subjects, n_items), factor)) %>%
+precision |>
+  mutate(across(c(n_subjects, n_items), factor)) |>
   ggplot(aes(n_subjects, n_items, fill = precision)) +
   geom_tile() +
   geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 
@@ -1007,20 +1022,20 @@ In our case study, we have performed simulation-based sample size planning from 
 The goal of this tutorial was to teach researchers how to perform tailored simulation-based sample size planning for GLMMs.
 Beyond the specifics of our concrete case study, we want to outline six developments regarding the future role of simulation-based sample size planning in experimental research:
 
-1.  In light of the ongoing replication crisis and an existing literature full of underpowered studies, there is a growing need for simulation-based sample size planning in experimental research: In order to conduct informative research, GLMMs offer a flexible statistical framework to analyze complex experimental study designs. However, existing formula-based heuristics and user-friendly software tools for a priori power analysis are often not sufficient. Therefore, simulation-based power analysis is becoming increasingly needed since it provides experimental researchers with a tailored approach to estimating required sample sizes before data collection. 
+In light of the ongoing replication crisis and an existing literature full of underpowered studies, there is a growing need for simulation-based sample size planning in experimental research: In order to conduct informative research, GLMMs offer a flexible statistical framework to analyze complex experimental study designs. However, existing formula-based heuristics and user-friendly software tools for a priori power analysis are often not sufficient. Therefore, simulation-based power analysis is becoming increasingly needed since it provides experimental researchers with a tailored approach to estimating required sample sizes before data collection. 
 
-2.  Managing data simulations more easily with discrete predictor variables: Simulation-based sample size planning becomes more manageable when all predictor variables are discrete (like in the presented case study) and fixed by the study design. 
+Managing data simulations more easily with discrete predictor variables: Simulation-based sample size planning becomes more manageable when all predictor variables are discrete (like in the presented case study) and fixed by the study design. 
 This allows researchers to focus on simulating outcome variables while avoiding the need for complex simulations of predictor values, which would introduce additional assumptions. By simplifying the simulation process, researchers can obtain reliable estimates for power or precision without compromising realistic assumptions about the data-generating process implied by the study design. 
 
-3.  Teaching data simulation skills: The ability to conduct simulation-based sample size planning is a valuable skill that should be taught to experimental researchers. By incorporating such training into research methods courses and workshops, researchers can gain a deeper understanding of statistical power or precision, and improve the quality of their experimental designs. 
+Teaching data simulation skills: The ability to conduct simulation-based sample size planning is a valuable skill that should be taught to experimental researchers. By incorporating such training into research methods courses and workshops, researchers can gain a deeper understanding of statistical power or precision, and improve the quality of their experimental designs. 
 Equipping researchers with the knowledge and tools to perform simulation-based sample size planning enables them to make informed decisions and enhance the rigor of their studies. 
 The need to reason about how to simulate plausible data that is in line with the research hypothesis, while not violating domain expertise on how plausible data should look, might also contribute to planning more insightful studies that can answer more precise research questions [@yarkoniGeneralizabilityCrisis2022].
 
-4.  Addressing the mismatch in effort perception: There is often a significant disconnect between the amount of effort required to perform tailored simulation-based sample size planning and the perceived effort estimated by researchers and collaborators in experimental research. Many researchers request simulation-based power analyses from statisticians or methodological experts without fully comprehending the complexity and time-consuming nature of these tailored simulations. It is crucial to raise awareness about the effort involved to ensure realistic expectations and effective collaboration between researchers and methodological experts.
+Addressing the mismatch in effort perception: There is often a significant disconnect between the amount of effort required to perform tailored simulation-based sample size planning and the perceived effort estimated by researchers and collaborators in experimental research. Many researchers request simulation-based power analyses from statisticians or methodological experts without fully comprehending the complexity and time-consuming nature of these tailored simulations. It is crucial to raise awareness about the effort involved to ensure realistic expectations and effective collaboration between researchers and methodological experts.
 
-5.  Recognizing the value of simulation-based design analysis: Tailored data simulations and power analyses are not mere technicalities; they are valuable research contributions that deserve recognition in experimental research. They offer insights into the robustness and sensitivity of experimental designs, helping researchers make informed decisions about sample sizes, effect sizes, and statistical power or precision. Their importance can be reflected by allocating them a separate publication or incorporating them as a significant component of stage 1 preregistered reports [@chambersPresentFutureRegistered2022].
+Recognizing the value of simulation-based design analysis: Tailored data simulations and power analyses are not mere technicalities; they are valuable research contributions that deserve recognition in experimental research. They offer insights into the robustness and sensitivity of experimental designs, helping researchers make informed decisions about sample sizes, effect sizes, and statistical power or precision. Their importance can be reflected by allocating them a separate publication or incorporating them as a significant component of stage 1 preregistered reports [@chambersPresentFutureRegistered2022].
 
-6.  Integration with Open Science and preregistration practices: Simulation-based sample size planning aligns well with the principles of Open Science and preregistration in experimental research. When researchers have access to simulated data based on their pre-specified model, analyzing the collected dataset becomes straightforward and unambiguous. By preregistering their simulation-based sample size plan, researchers enhance the transparency and accountability of their experimental procedures, contributing to the credibility and reproducibility of research.
+Integration with Open Science and preregistration practices: Simulation-based sample size planning aligns well with the principles of Open Science and preregistration in experimental research. When researchers have access to simulated data based on their pre-specified model, analyzing the collected dataset becomes straightforward and unambiguous. By preregistering their simulation-based sample size plan, researchers enhance the transparency and accountability of their experimental procedures, contributing to the credibility and reproducibility of research.
 
 
 # References
