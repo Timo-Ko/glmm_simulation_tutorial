@@ -3,7 +3,6 @@ title: "A Tutorial on Tailored Simulation-Based Sample Size Planning for Experim
 shorttitle: "Simulation-Based Sample Size Planning for GLMMs"
 author:
   - name: Florian Pargent
-    corresponding: true
     equal-contributor: true
     orcid: 0000-0002-2388-553X
     roles:
@@ -124,7 +123,9 @@ GLMMs extend the LMM framework to accommodate non-normally distributed continuou
 
 To our knowledge, existing approaches for sample size planning for GLMMs have exclusively focused on planning for power. Power analysis methods for multilevel models can be categorized into formula-based methods and simulation-based methods [@murayamaSummarystatisticsbasedPowerAnalysis2022]. Formula-based methods rely on formulas to calculate power directly while simulation-based methods rely on repeatedly simulating data with a known true effect size and estimating power empirically (i.e., what percentage of simulated datasets produces a significant p-value). Available formula-based software packages for multilevel models often do not include GLMMs or are limited to very simple designs [@westfallStatisticalPowerOptimal2014; @murayamaSummarystatisticsbasedPowerAnalysis2022], making it necessary to build data simulations tailored specifically to the study design. A number of tutorials have been published describing how to perform such simulation-based power analysis for multilevel models [@arendStatisticalPowerTwolevel2019; @lafitSelectionNumberParticipants2021; @zimmerSampleSizePlanning2022; @brysbaertPowerAnalysisEffect2018; @kumleEstimatingPowerGeneralized2021; @debruineUnderstandingMixedEffectsModels2021; @kainPracticalGuidePower2015; @greenSIMRPackagePower2016a]. However, many of these tutorials focus on linear mixed models (LMMs) and the common study designs [but see @kumleEstimatingPowerGeneralized2021, for a tutorial that also covers more advanced settings]. This narrow focus provides limited guidance for researchers faced with more complex study designs, especially when little prior knowledge about plausible effect sizes is available [see the discussion in @kumleEstimatingPowerGeneralized2021]. Simulation-based power analysis with GLMMs requires making a range of assumptions: The (conditional) distribution assumption specifies the distributional family for the outcome variable. Assumptions about the random effects include the assumption of normality (i.e., that the random effects follow a normal distribution) and the covariance structure among the random effects (i.e., if and how they are correlated). Making these decisions requires understanding the underlying assumptions of the model and ensuring they align with the characteristics of the data being analyzed. Existing tutorials often rely on heuristics for specifying variance components (e.g., the standard deviation of random intercepts) or assume that results from meta-analyses or data from pilot studies are available to determine plausible values for all model parameters. However, in practice, knowledge about those parameters from prior studies is often limited, which makes specifying assumptions a practical challenge (see the discussion in [@maxwellSampleSizePlanning2008] and [@kumleEstimatingPowerGeneralized2021]).
 
-In Table XXX, we give a short review of existing R packages that can be used for power analysis for GLMMs. 
+INSERT TABLE 1 HERE!
+
+In Table 1, we give a short review of existing R packages that can be used for power analysis for GLMMs. 
 
 # When to use tailored data simulation?
 
@@ -383,7 +384,9 @@ $$
 We can revert this perspective by choosing plausible probability values based on domain knowledge and deriving the parameter values implied by these probabilities for each experimental condition.
 
 ```{r}
-#| label: tab-probtable
+#| label: tbl-probtable
+#| tbl-cap: Assumed probabilities that an average subject solves an average item in each experimental condition.
+#| apa-note: Implied equations are derived based on the model equations and setting all random intercept terms to 0.
 #| echo: false
 probtable <- data.frame(
   col1 = 
@@ -398,18 +401,12 @@ probtable <- data.frame(
       "$logit(0.85) = \\beta_0 + \\beta_e + \\beta_{a} + \\beta_{ea}$",
       "$logit(0.90) = \\beta_0 + \\beta_a + \\beta_c$",
       "$logit(0.95) = \\beta_0 + \\beta_e + \\beta_a + \\beta_c + \\beta_{ea} + \\beta_{ec}$"))
-apa_table(
-  probtable
-  , col.names = c("Experimental condition",
-    "$P(Y=1|\\mathbf{X=x}, \\mathbf{U} = \\mathbf{0})$",
-    "Implied equation")
-  , caption = "Assumed probabilities that an average subject solves an average item in each experimental condition."
-  , note = "Implied equations are derived based on the model equations and setting all random intercept terms to 0."
-  , escape = FALSE
-)
+knitr::kable(probtable, col.names = c("Experimental condition",
+    "$P(Y=1 \\mid \\mathbf{X=x}, \\mathbf{U} = \\mathbf{0})$",
+    "Implied equation"), escape = FALSE)
 ```
 
-@tab-probtable shows our set of assumptions concerning the probability that an average subject solves an average item for each experimental condition, as well as the corresponding equations implied by the model.
+@tbl-probtable shows our set of assumptions concerning the probability that an average subject solves an average item for each experimental condition, as well as the corresponding equations implied by the model.
 The table can be used to compute the implied values for the $\beta$ parameters, starting with the first equation and reinserting the computed $\beta$ values in all following equations (`b_0` stands for the intercept $\beta_0$, `b_e` for the slope $\beta_e$, and so on):
 
 ```{r}
@@ -513,7 +510,8 @@ dat |>
     "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
     "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
   ggplot(aes(x = y_prob, y = condition)) +
-  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
+  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
+    breaks = "Sturges") +
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
 ```
 
@@ -537,7 +535,8 @@ dat |>
     "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
     "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
   ggplot(aes(x = y_prob, y = condition)) +
-  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
+  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
+    breaks = "Sturges") +
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
 ```
 
@@ -547,7 +546,7 @@ We could also have a closer look at variability between items by setting the sub
 ```{r}
 #| include: false
 set.seed(1)
-dat <- simulate(n_subjects = 2000, n_items = 2000, sd_u0s = 0.01)
+dat <- simulate(n_subjects = 3000, n_items = 3000, sd_u0s = 0.01)
 dat |> 
   mutate(condition = fct_cross(
     factor(expert), factor(advice_present), factor(advice_correct))) |>
@@ -556,7 +555,8 @@ dat |>
     "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
     "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
   ggplot(aes(x = y_prob, y = condition)) +
-  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
+  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
+    breaks = "Sturges") +
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
 ```
 
@@ -576,7 +576,8 @@ dat |>
     "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
     "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
   ggplot(aes(x = y_prob, y = condition)) +
-  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45") +
+  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
+    breaks = "Sturges") +
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
 ```
 
@@ -894,7 +895,6 @@ saveRDS(sim_result, file = "results.rds")
 ```
 
 ```{r}
-#| message: false
 #| eval: false
 #| echo: true
 library(furrr)
