@@ -7,9 +7,9 @@ manuscript:
   code-links: [binder, repo]
   notebooks:
     - notebook: rcode.qmd
-      title: "R code from the practice sessions"
+      title: "R code from PRACTICE sections"
     - notebook: full_simulation.qmd
-      title: "Notebook containing the full simulation"
+      title: "Run simulation for case study"
       
 format:
   html:

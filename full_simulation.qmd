@@ -1,9 +1,11 @@
 ---
-title: "Full simulation"
+title: "Run the full simulation for the case study example"
+execute: 
+  eval: false
 ---
 
 ::: {.callout-note}
-This Notebook is used to run the full simulation for the case study discussed in the manuscript. The simulation takes several hours to run on a Mac Book Pro (13-inch, M1, 2020) with 16 GB memory.
+This Notebook was used to run the full simulation for the case study discussed in the manuscript. The simulation takes more than 1 hour to run on a Mac Book Pro (13-inch, M1, 2020) with 16 GB memory.
 :::
 
 ## Simulation functions
