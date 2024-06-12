@@ -36,6 +36,8 @@ simulate <- function(n_subjects = 100, n_items = 50,
 }
 ```
 
+## Specify the population parameters
+
 ```{r}
 b_0 <- qlogis(0.7)
 b_e <- qlogis(0.9) - b_0
