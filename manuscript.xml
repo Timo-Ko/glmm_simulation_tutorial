@@ -5072,7 +5072,7 @@ precision |&gt;
       </fn>
     </fn-group>
   </back>
-  <sub-article article-type="notebook" id="nb-12-nb-article">
+  <sub-article article-type="notebook" id="nb-6-nb-article">
     <front-stub>
       <title-group>
         <article-title>A Tutorial on Tailored Simulation-Based Sample Size
@@ -10331,7 +10331,7 @@ precision |&gt;
       </fn-group>
     </back>
   </sub-article>
-  <sub-article article-type="notebook" id="nb-4-nb-1">
+  <sub-article article-type="notebook" id="nb-2-nb-1">
     <front-stub>
       <title-group>
         <article-title>R code from PRACTICE sections</article-title>
@@ -10630,7 +10630,7 @@ precision |&gt;
     <back>
 </back>
   </sub-article>
-  <sub-article article-type="notebook" id="nb-8-nb-2">
+  <sub-article article-type="notebook" id="nb-4-nb-2">
     <front-stub>
       <title-group>
         <article-title>Run the full simulation for the case study
