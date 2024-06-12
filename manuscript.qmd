@@ -1,6 +1,8 @@
 ---
 title: "A Tutorial on Tailored Simulation-Based Sample Size Planning for Experimental Designs with Generalized Linear Mixed Models"
 shorttitle: "Simulation-Based Sample Size Planning for GLMMs"
+date: 2024-06-12
+date-format: iso
 author:
   - name: Florian Pargent
     equal-contributor: true
@@ -63,9 +65,9 @@ author-note:
     conflict-of-interest: The authors declare that there were no conflicts of interest with respect to the authorship or the publication of this article.
     financial-support: This research was funded by a grant from the Volkswagen Foundation (Grant No. 98525).
     gratitude: ~
-    authorship-agreements: Florian Pargent and Timo K. Koch contributed equally to this work.
+    authorship-agreements: ~
 abstract: When planning experimental research, determining an appropriate sample size and using suitable statistical models are crucial for robust and informative results. The recent replication crisis underlines the need for more rigorous statistical methodology and adequately powered designs. Generalized linear mixed models (GLMMs) offer a flexible statistical framework to analyze experimental data with complex (e.g., dependent and hierarchical) data structures. However, available methods and software for a priori sample size planning for GLMMs are often limited to specific designs. Tailored data simulation approaches are a more flexible alternative. Based on a practical case study, the current tutorial equips researchers with a step-by-step guide and corresponding code for conducting tailored a priori sample size planning with GLMMs. We not only focus on power analysis but also explain how to use the precision of parameter estimates to determine appropriate sample sizes. We conclude with an outlook on the increasing importance of simulation-based sample size planning.
-keywords: [power analysis, precision, data simulation, sample size planning, generalized linear mixed model]
+keywords: [tutorial, sample size planning, generalized linear mixed model, power analysis, precision, data simulation]
 bibliography: [Simulation Tutorial Paper.bib, r-references.bib]
 floatsintext: true
 numbered-lines: false
@@ -85,7 +87,7 @@ library("future")
 library("furrr")
 library("binom")
 library("papaja")
-r_refs("r-references.bib")
+r_refs("r-references.bib", append = FALSE)
 ```
 
 # Introduction
@@ -772,7 +774,7 @@ $$
 The combined null hypothesis $H_0$ should only be rejected if **all** individual null hypotheses are rejected [i.e., intersection-union setting\; @dmitrienkoTraditionalMultiplicityAdjustment2013].
 In such cases, the error probabilities do not accumulate, and we would waste power when correcting for multiple tests.
 
-With a standard significance level of $\alpha = 0.05$, we would not reject all four null hypotheses (the p-value in the `p (NonInf)` column for the third hypothesis is not significant) and therefore also not reject the combined null hypothesis for this particular (simulated) dataset.
+With a standard significance level of $\alpha = 0.05$, we would not reject all four null hypotheses (the p-value in the `p (NonInf)` column for the second hypothesis is not significant) and therefore also not reject the combined null hypothesis for this particular (simulated) dataset.
 Note that this decision would be wrong because we have simulated the data such that the combined alternative hypothesis $H_1$ is actually true in the population.
 
 #### Interval estimation

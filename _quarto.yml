@@ -17,6 +17,10 @@ format:
     comments:
       hypothesis: false
     theme: pulse
+    citation:
+      type: article-journal
+      container-title: "PsyArXiv"
+      doi: "10.31234/osf.io/rpjem"
   jats: default
   apaquarto-pdf:
     documentmode: man
