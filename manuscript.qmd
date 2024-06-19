@@ -36,21 +36,24 @@ author:
         postal-code: 9000
       - ref: lmu
   - name: Anne-Kathrin Kleine
+    orcid: 0000-0003-1919-2834
     roles:
       - formal analysis
       - editing
     affiliations:
       - ref: lmu
   - name: Eva Lermer
+    orcid: 0000-0002-6600-9580
     roles:
       - conceptualization
-      - funding aquisition
+      - funding acquisition
       - editing
     affiliations:
       - ref: lmu
       - name: Technical University of Applied Sciences Augsburg
         department: Department of Business Psychology
   - name: Susanne Gaube
+    orcid: 0000-0002-1633-4772
     roles:
       - conceptualization
       - supervision
@@ -58,14 +61,15 @@ author:
     affiliations:
       - ref: lmu
       - name: University College London
-        department: Global Business School for Health
+        department: UCL Global Business School for Health
 author-note:
   disclosures:
     data-sharing: This is version 2.5 of our preprint published at <https://doi.org/10.31234/osf.io/rpjem>. All materials (reproducible manuscript, including R code and all simulation results) are available in the project's repository on the Open Science Framework (OSF) at <https://osf.io/dhwf4/>. A Quarto Manuscripts website is hosted at <https://Timo-Ko.github.io/glmm_simulation_tutorial/>.
-    conflict-of-interest: The authors declare that there were no conflicts of interest with respect to the authorship or the publication of this article.
+    conflict-of-interest: The authors declare that there were no conflicts of interest concerning the authorship or the publication of this article.
     financial-support: This research was funded by a grant from the Volkswagen Foundation (Grant No. 98525).
     gratitude: ~
     authorship-agreements: ~
+title-block-role-introduction: "Author roles were classified using the Contributor Role Taxonomy (CRediT; <https://credit.niso.org/>):"
 abstract: When planning experimental research, determining an appropriate sample size and using suitable statistical models are crucial for robust and informative results. The recent replication crisis underlines the need for more rigorous statistical methodology and adequately powered designs. Generalized linear mixed models (GLMMs) offer a flexible statistical framework to analyze experimental data with complex (e.g., dependent and hierarchical) data structures. However, available methods and software for a priori sample size planning for GLMMs are often limited to specific designs. Tailored data simulation approaches are a more flexible alternative. Based on a practical case study, the current tutorial equips researchers with a step-by-step guide and corresponding code for conducting tailored a priori sample size planning with GLMMs. We not only focus on power analysis but also explain how to use the precision of parameter estimates to determine appropriate sample sizes. We conclude with an outlook on the increasing importance of simulation-based sample size planning.
 keywords: [tutorial, sample size planning, generalized linear mixed model, power analysis, precision, data simulation]
 bibliography: [Simulation Tutorial Paper.bib, r-references.bib]
