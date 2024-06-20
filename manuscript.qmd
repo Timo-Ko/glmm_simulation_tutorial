@@ -101,7 +101,7 @@ When planning experimental research, it is essential to determine an appropriate
 
 <!-- # Recommended background knowledge -->
 
-To benefit most of this tutorial paper, we recommend readers to familiarize themselves with basic statistical concepts like hypothesis tests (HTs) and their statistical power as well as confidence intervals (CIs) and their precision [@lakensImprovingYourStatistical2022; @riesthuisSimulationBasedPowerAnalyses2024; @kumleEstimatingPowerGeneralized2021]. Some knowledge of causal inference is beneficial but not necessary [@lundbergWhatYourEstimand2021; @deffnerCausalFrameworkCrossCultural2022]. In addition, readers should have an understanding of how to conduct statistical analyses with R [@wickhamDataScienceImport2023] and how to simulate data [@debruineUnderstandingMixedEffectsModels2021; @hallgrenConductingSimulationStudies2013; @leeUsingTidyversePackage2020]. For data simulation, we use functions from the tidyverse [@wickhamWelcomeTidyverse2019] and the faux package [@R-faux].
+To benefit most of this tutorial paper, we recommend readers to familiarize themselves with basic statistical concepts like hypothesis tests (HTs) and their statistical power as well as confidence intervals (CIs) and their precision [@lakensImprovingYourStatistical2022; @riesthuisSimulationBasedPowerAnalyses2024; @kumleEstimatingPowerGeneralized2021]. Some knowledge of causal inference is beneficial but not necessary [@lundbergWhatYourEstimand2021; @deffnerCausalFrameworkCrossCultural2022]. In addition, readers should have an understanding of how to conduct statistical analyses with R [@wickhamDataScienceImport2023] and how to simulate data [@debruineUnderstandingMixedEffectsModels2021; @hallgrenConductingSimulationStudies2013; @leeUsingTidyversePackage2020]. For data simulation, we use functions from the *tidyverse* [@wickhamWelcomeTidyverse2019] and the *faux* package [@R-faux].
 Finally, readers should have a basic understanding of regression modeling and GLMMs [@bolkerLinearGeneralizedLinear2015]. In this tutorial, we simulate data by manually specifying the model equation of a GLMM that represents our assumed data-generating process [@debruineUnderstandingMixedEffectsModels2021]. It is not necessary to understand the technical details of how GLMMs are estimated. However, it is crucial to understand the structure of a basic GLMM (e.g., logistic regression with random intercepts) and how the model assumes that the dependent variable’s values are determined by the predictor variables and the random effects.
 
 # Theoretical background
@@ -140,7 +140,7 @@ Performing tailored simulation-based sample size planning is more complicated an
 
 <!-- ## Complex study designs -->
 
-Requirements of real-world studies are often more complex than the simplified designs assumed by many user-friendly software packages for sample size planning.
+First, requirements of real-world studies are often more complex than the simplified designs assumed by many user-friendly software packages for sample size planning.
 One frequent issue in applied data analysis is missing data [@littleStatisticalAnalysisMissing2014].
 Data can be missing completely at random (e.g., because an electronic measurement device randomly failed for some technical reasons).
 Alternatively, subjects might systematically drop out or produce missing data, but this dropout can be explained by some attributes also measured in the dataset (e.g., older subjects have a higher probability to refuse answering a question on income).
@@ -148,13 +148,13 @@ In a more complicated scenario, missing data in some variables is caused by the 
 Moreover, many experimental designs contain conditions in which values of the predictor variables are missing by design. This can make data analysis more complicated because predictors have to be coded in specific ways that prevent the estimated GLMM from becoming unidentified. Whether missing data has an effect on the sample size planning depends on our theoretical assumptions on how the missingness is caused.
 However, it is often challenging to decide whether missing data can be safely ignored in the data analysis and sample size planning process based on a merely theoretical approach [@gomilaMissingDataExperiments2022].
 Tailored simulation-based approaches offer the possibility to include the assumed process of how data become missing in the data simulation, thereby determining the required sample size based on simulated datasets that contain missing values [for example, see @lanePowerStrugglesEstimating2018]. As a byproduct, the simulated datasets can also be used to test whether the intended data analysis provides the expected (unbiased) results, despite the missing data.
-Although GLMMs can handle a large variety of outcome variables, researchers are becoming increasingly aware that many datasets might profit from even more sophisticated models. Common examples are zero-inflated outcomes, censoring, and nonlinear predictor effects that can be modeled with the R packages glmmTMB [@brooksGlmmTMBBalancesSpeed2017] or brms [@burknerAdvancedBayesianMultilevel2018]. 
+Although GLMMs can handle a large variety of outcome variables, researchers are becoming increasingly aware that many datasets might profit from even more sophisticated models. Common examples are zero-inflated outcomes, censoring, and nonlinear predictor effects that can be modeled with the R packages *glmmTMB* [@brooksGlmmTMBBalancesSpeed2017] or *brms* [@burknerAdvancedBayesianMultilevel2018]. 
 Tailored simulation-based approaches do not share the same limitations as the existing software solutions for power analysis that focus exclusively on GLMMs.
 As long as there is a software package available to estimate the model of interest, it is always possible to perform tailored simulation-based sample size planning.
 
 <!-- ## Complex statistical hypotheses -->
 
-The most common hypotheses tested in psychological research are of the type $H_0: \beta = 0$, where $\beta$ is a slope or intercept of a regression model.
+Second, the most common hypotheses tested in psychological research are of the type $H_0: \beta = 0$, where $\beta$ is a slope or intercept of a regression model.
 However, many research questions in psychology actually require testing more complex statistical hypotheses.
 In the new era of preregistration and registered reports [@chambersPresentFutureRegistered2022], most research questions should be tested with directed hypotheses because good theories at least postulate whether some psychological effect of interest is positive or negative. Even better theories should be able to specify the smallest effect sizes of interest (SESOI) that must be exceeded if the effect has any practical relevance [@lakensEquivalenceTestingPsychological2018]. This might require a test such as $H_0: \beta \leq 0.1$.
 More elaborate research questions often require testing hypotheses that consist of a combination of model parameters, for example, testing simple slopes [@preacherComputationalToolsProbing2006] with a hypothesis such as $H_0: \beta_0 + \beta_1 \leq 0$.
@@ -167,19 +167,19 @@ None of the software packages for sample size planning in Table 1 can handle com
 
 <!-- ## Planning for precision -->
 
-Although planning for precision [@lakensSampleSizeJustification2022; @maxwellSampleSizePlanning2008; @cummingNewStatisticsWhy2014] has been increasingly discussed as a useful strategy for empirical research, all available software packages for sample size planning with GLMMs are based on power analysis.
+Third, although planning for precision [@lakensSampleSizeJustification2022; @maxwellSampleSizePlanning2008; @cummingNewStatisticsWhy2014] has been increasingly discussed as a useful strategy for empirical research, all available software packages for sample size planning with GLMMs are based on power analysis.
 Therefore, researchers that want to apply an estimation strategy in their studies, without testing any statistical hypotheses, currently cannot use the software packages outlined in TABLE 1.
 <!-- As long as one is interested only in confidence intervals of a single model parameter, it might be possible to adapt existing software packages to plan for precision. However, we demonstrate in our case study that in realistic research projects with GLMMs, the contrasts of interests and their respective confidence intervals are usually situated on the scale of the (expected) outcome in contrast to the scale of the model parameters.  -->
 However, tailored simulation-based sample size planning can easily handle the planning for precision approach [@maxwellSampleSizePlanning2008]. The only change in procedure is that instead of computing HTs for each simulated dataset and estimating statistical power across repetitions, CIs are computed for each simulated dataset, and their expected width is estimated.
     
 <!-- ## No prior studies or pilot data -->
 
-All frameworks for sample size planning require the user to make assumptions about the expected effect size. Assuming the true effect is of this size (or greater), one can compute the (minimum) power of a HT or the (maximum) expected width of a CI. Existing software packages for sample size planning for GLMMs usually require to provide the assumed effect in the unit of some standardized measure of effect size. When the researcher has access to similar studies or pilot data, providing such standardized effect sizes is feasible. However, choosing effect sizes based on small pilot studies is generally not recommended, as those estimates can be heavily biased [@albersWhenPowerAnalyses2018a; @lakensSampleSizeJustification2022].
+Fourth, all frameworks for sample size planning require the user to make assumptions about the expected effect size. Assuming the true effect is of this size (or greater), one can compute the (minimum) power of a HT or the (maximum) expected width of a CI. Existing software packages for sample size planning for GLMMs usually require to provide the assumed effect in the unit of some standardized measure of effect size. When the researcher has access to similar studies or pilot data, providing such standardized effect sizes is feasible. However, choosing effect sizes based on small pilot studies is generally not recommended, as those estimates can be heavily biased [@albersWhenPowerAnalyses2018a; @lakensSampleSizeJustification2022].
 Providing an informed standardized effect size can be an almost impossible challenge when no prior studies of pilot data are available. This problem is further exacerbated by the fact that GLMMs are so flexible that general heuristics of what should be considered a small effect do not exist or are difficult to defend. In our experience, using domain knowledge to construct a tailored data simulation is the only solution to determine plausible effect sizes in the absence of prior evidence. It would be possible to use these tailored simulations to extract plausible values for standardized effect sizes that could then be inserted in existing software packages for sample size planning. However, when tailored data simulations are necessary to determine effect sizes anyway, performing the whole sample size planning in a customized way is preferred over using the existing software packages.
 
 # General steps in tailored simulation-based sample size planning
 
-Although the details differ depending on the specific study characteristics, each tailored simulation-based sample size planning requires a series of steps and decisions. We will introduce each step in a theoretical section, followed by the practical application based on a case study. All code in this manuscript and simulation results are available in the project’s repository on the Open Science Framework (<https://osf.io/dhwf4/>).
+Although the details differ for each study, every tailored simulation-based sample size planning requires a series of steps and decisions. We will introduce each step in a theoretical section, followed by the practical application based on a case study. All code in this manuscript and simulation results are available on the Open Science Framework (<https://osf.io/dhwf4/>) and on our tutorial website (<https://timo-ko.github.io/glmm_simulation_tutorial/>).
 
 ## Step 1: Define the estimand
 
@@ -340,7 +340,7 @@ simulate <- function(n_subjects = 100, n_items = 50,
 }
 ```
 
-In the first four lines of the function definition, we set some default parameter values (which we will explain in the next section) and load the packages we use to manipulate and simulate data.^[The faux package [@R-faux] contains useful functions when simulating factorial designs, including random effects.] 
+In the first four lines of the function definition, we set some default parameter values (which we will explain in the next section) and load the packages we use to manipulate and simulate data.^[The *faux* package [@R-faux] contains useful functions when simulating factorial designs, including random effects.] 
 In our case study, each subject (`n_subjects` in total) is assumed to respond to each item (i.e., CT scan; `n_items` in total). Thus, the `add_random` command creates a fully-crossed `data.frame` with `n_subjects` $\times$ `n_items` rows.
 We add a between-subject effect with the `add_between` command, simulating that about $25\%$ of subjects are experts.
 The next two lines simulate that in $\frac{2}{3}$ of trials, subjects will be presented with AI advice, and if advice is presented, the advice will be correct in about $80\%$ of cases (the variable `advice_correct` is always 0 when no advice is presented). Next, we simulate one random effect for each subject (`u0s`) and for each item (`u0i`).
@@ -598,7 +598,7 @@ For our simulation, we used the probabilities of average participants to solve a
 
 At this point, the researcher is capable of producing a simulated dataset similar to the actual dataset to be collected in the planned study.
 The next step is to specify how the statistical model shall be estimated in the actual study collected later.
-This usually includes the selection of 1) a statistical framework (e.g., frequentist statistics), 2) a software package that is capable of estimating the model class of interest (e.g., the lme4 R package), 3) an estimation algorithm (e.g., the default optimizer "bobyqa"), and 4) the specific model structure including all fixed effects, random effects, and the model family of the dependent variable.
+This usually includes the selection of 1) a statistical framework (e.g., frequentist statistics), 2) a software package that is capable of estimating the model class of interest (e.g., the *lme4* R package), 3) an estimation algorithm (e.g., the default optimizer "bobyqa"), and 4) the specific model structure including all fixed effects, random effects, and the model family of the dependent variable.
 
 Note that this does not always mean that one will specify the same GLMM that was used when specifying the data-generating process.
 On the one hand, using a simpler model for data simulation than for model estimation can be a useful strategy in scenarios where making plausible assumptions for complicated random effect structures and interactions is not feasible.
@@ -606,7 +606,7 @@ On the other hand, using a more complex model for data simulation than for model
 
 ### PRACTICE
 
-In our case study, we use the lme4 R package [@batesFittingLinearMixedEffects2015], which is a state-of-the-art tool for fitting frequentist GLMMs.^[For Bayesian GLMMs, the brms R package is currently the most prominent option [@burknerBrmsPackageBayesian2017].]
+In our case study, we use the *lme4* R package [@batesFittingLinearMixedEffects2015], which is a state-of-the-art tool for fitting frequentist GLMMs.^[For Bayesian GLMMs, the *brms* R package is currently the most prominent option [@burknerBrmsPackageBayesian2017].]
 For the current example, we simulate data according to our model, in which 100 subjects respond to 50 items (we use `set.seed` to make the simulation reproducible). However, for the sake of the exercise, we can imagine that this would be real data resulting from our future experiment and think about how we would analyze this data.
 
 ```{r}
@@ -617,7 +617,7 @@ set.seed(1)
 dat <- simulate(n_subjects = 100, n_items = 50)
 ```
 
-The lme4 package uses a special syntax for model specification. Our specific GLMM is represented by the formula:
+The *lme4* package uses a special syntax for model specification. Our specific GLMM is represented by the formula:
 
 ```{r}
 #| message: false
@@ -628,9 +628,9 @@ f <- y_bin ~ 1 + expert + advice_present + advice_correct +
   (1|subject) + (1|item)
 ```
 
-The first two lines look similar to any linear model in R (general intercept indicated by `1`; main effects indicated by variable names in the dataset; interactions indicated by `variable1:variable2`). The third line specifies a random intercept for each subject `(1|subject)` and for each item `(1|item)`. The complete set of rules for the syntax is outlined in @batesFittingLinearMixedEffects2015 and in the documentation of the lme4 package.
+The first two lines look similar to any linear model in R (general intercept indicated by `1`; main effects indicated by variable names in the dataset; interactions indicated by `variable1:variable2`). The third line specifies a random intercept for each subject `(1|subject)` and for each item `(1|item)`. The complete set of rules for the syntax is outlined in @batesFittingLinearMixedEffects2015 and in the documentation of the *lme4* package.
 
-In lme4, a GLMM is fitted with the `glmer` function. By setting `family =  "binomial"`, we request a binomial GLMM appropriate for our binary dependent variable `y_bin` (the binomial GLMM uses the canonical logit link by default), which is defined as an accurate (1) vs. inaccurate (0) diagnosis.
+In *lme4*, a GLMM is fitted with the `glmer` function. By setting `family =  "binomial"`, we request a binomial GLMM appropriate for our binary dependent variable `y_bin` (the binomial GLMM uses the canonical logit link by default), which is defined as an accurate (1) vs. inaccurate (0) diagnosis.
 
 ```{r}
 #| echo: true
@@ -644,7 +644,7 @@ We can inspect the estimates for all model parameters with the `summary` command
 summary(fit)
 ```
 
-In the lme4 output, the `Estimate` column in the `Fixed effects` table contains the estimates for the $\beta$ parameters, while the `Std.Dev.` column in the `Random effects` table contains the estimates for $\sigma_S$ and $\sigma_I$.
+In the *lme4* output, the `Estimate` column in the `Fixed effects` table contains the estimates for the $\beta$ parameters, while the `Std.Dev.` column in the `Random effects` table contains the estimates for $\sigma_S$ and $\sigma_I$.
 
 ## Step 5: Compute the estimate
 
@@ -654,7 +654,7 @@ In previous steps, we have defined the theoretical estimand, written a data simu
 The next step is to specify how to compute a concrete point estimate of the theoretical estimand within the framework of the fitted GLMM.
 For some research questions, the estimate corresponds with a single regression coefficient. In more complicated scenarios, the estimate is computed from a combination of coefficients.
 Beyond computing the point estimate, we have already discussed that both hypothesis testing and interval estimation can be used to answer the research question.
-The decision on testing or estimating is then followed by selecting the specific statistical method that shall be applied to compute the HT(s) or CI(s) (e.g., compute HTs and CIs with the marginaleffects R package using the delta method).
+The decision on testing or estimating is then followed by selecting the specific statistical method that shall be applied to compute the HT(s) or CI(s) (e.g., compute HTs and CIs with the *marginaleffects* R package using the delta method).
 
 ### PRACTICE
 
@@ -692,7 +692,7 @@ Plugging in the GLMM model equation produces an equation for computing each cont
 
 We could use our knowledge of the structure of the GLMM to determine the exact formula needed to compute the contrasts of interest and then plug in the parameter estimates manually from the `summary(fit)` output.
 However, this would be tedious and we can use R to compute this contrast without doing the math.
-Using the first contrast *(correct advice, expert) - (no advice, expert)* as our example, we could apply the `predict` function of the lme4 package to compute the predicted probability for a correct diagnosis based on our fitted model, plug in the two sets of predictor values, and compute the difference between the two estimated probabilities.
+Using the first contrast *(correct advice, expert) - (no advice, expert)* as our example, we could apply the `predict` function of the *lme4* package to compute the predicted probability for a correct diagnosis based on our fitted model, plug in the two sets of predictor values, and compute the difference between the two estimated probabilities.
 
 ```{r}
 #| echo: true
@@ -707,7 +707,7 @@ pred[1] - pred[2]
 The argument `type = "response"` specifies that predictions are made on the probability scale (instead of the log-odds scale of the $\beta$ parameters), while `re.form = NA` sets all random effects to 0.
 We could use this method to compute point estimates for all four contrasts that are part of our estimand.
 However, depending on whether we are interested in hypothesis testing or parameter estimation, we also need a method to compute HTs or CI.
-The marginaleffects package [@R-marginaleffects] is a very flexible, increasingly popular package to compute HTs and CIs for contrasts with a variety of statistical models, including GLMMs estimated with lme4.
+The *marginaleffects* package [@R-marginaleffects] is a very flexible, increasingly popular package to compute HTs and CIs for contrasts with a variety of statistical models, including GLMMs estimated with *lme4*.
 First, we specify a grid of all combinations of predictor variables and then compute estimated probabilities for all experimental conditions in our experiment with the `predictions` function:
 
 ```{r}
@@ -731,7 +731,7 @@ This is no problem as long as we never interpret those estimates.
 Next, we use the estimated probabilities to compute the four specific contrasts that are part of our estimand.
 For this, we must specify which rows in `probs` have to be subtracted from each other.
 We will use the `hypotheses` function to compute our four contrasts of interest together with HTs and CIs.
-We use the default inference options of the marginaleffects package that compute HTs and CIs based on the approximate delta method.
+We use the default inference options of the *marginaleffects* package that compute HTs and CIs based on the approximate delta method.
 
 ```{r}
 #| echo: true
@@ -812,7 +812,7 @@ sim_and_analyse <- function(
 }
 ```
 
-We use the future [@R-RJ-2021-048] and furrr [@R-furrr] packages to perform computations in parallel. First, we enable parallelization with the `plan` function and specify how many parallel cores ("workers") of our computer to use (users can find out the maximum number of cores on their computer with the command `parallel::detectCores()`), and set a seed to make the simulation reproducible.
+We use the *future* [@R-RJ-2021-048] and *furrr* [@R-furrr] packages to perform computations in parallel. First, we enable parallelization with the `plan` function and specify how many parallel cores ("workers") of our computer to use (users can find out the maximum number of cores on their computer with the command `parallel::detectCores()`), and set a seed to make the simulation reproducible.
 
 ```{r}
 #| message: false
@@ -842,11 +842,11 @@ sim_result <- crossing(
 ```
 
 The result of this computation is a data frame that contains the p-values and CIs of all specified contrasts for each simulated dataset.
-In some iterations (predominantly in conditions with small sample sizes), model estimation did not converge with the lme4 package. When the model fails to converge, it means that the statistical model being fitted to the data failed to reach a stable or valid solution during the estimation process. We do not remove these results because non-convergence can also happen when analyzing the real data we plan to collect, thus, we want to factor in this possibility to keep our simulation more realistic.
+In some iterations (predominantly in conditions with small sample sizes), model estimation did not converge with the *lme4* package. When the model fails to converge, it means that the statistical model being fitted to the data failed to reach a stable or valid solution during the estimation process. We do not remove these results because non-convergence can also happen when analyzing the real data we plan to collect, thus, we want to factor in this possibility to keep our simulation more realistic.
 
 #### Power results
 
-For our exemplary combined hypothesis, power is defined as the (long-run) percentage of simulations in which all four p-values of our individual hypotheses are significant at the $\alpha = 0.05$ level. Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% CIs) and visualize the results with the following code.^[This code was inspired by the "Mixed Design Simulation" vignette of the faux package at <https://debruine.github.io/faux/articles/sim_mixed.html>.]
+For our exemplary combined hypothesis, power is defined as the (long-run) percentage of simulations in which all four p-values of our individual hypotheses are significant at the $\alpha = 0.05$ level. Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% CIs) and visualize the results with the following code.^[This code was inspired by the "Mixed Design Simulation" vignette of the *faux* package at <https://debruine.github.io/faux/articles/sim_mixed.html>.]
 
 ```{r}
 #| echo: false
@@ -931,7 +931,7 @@ As should be the case, precision estimates in @fig-finalprecision increase  (i.e
 The CIs reported here indicate how precisely the expected width of the CI for our focal contrast was estimated by our simulation. Applying our simple heuristic of targeting an expected CI width that is smaller than 0.1, we see the same trade-off between the number of subjects and the number of items as with planning for power. We could either choose 100 subjects and 30 items or 200 subjects and 10 items. Note that our simple heuristic for determining sample size in the planning for precision scenario was quite liberal. This is reflected in the result that we would need a smaller sample size than in the planning for power scenario.
 With a more conservative precision target, the result is generally the opposite: As a rule, precise parameter estimates usually require bigger samples than null hypothesis testing.
 
-## Sensitivity analysis
+## Step 7 (optional): Sensitivity analysis
 
 In our case study, we have performed simulation-based sample size planning from a single set of parameter values that reflect our assumptions of an expected effect size. Instead of extracting this expected effect size from meta-analyses or pilot data, which has been the main focus of previous tutorials [e.g., @kumleEstimatingPowerGeneralized2021], we have demonstrated some strategies to determine plausible parameter values in GLMMs based on domain knowledge. Domain knowledge can be considered a vague theoretical model about the data-generating process that is less formal and can only be accessed by a back-and-forth exchange in which domain experts assess the plausibility of simulated data. When sample sizes are chosen based on the results of our simulation-based power analysis, a future study will be informative to reject the null hypothesis if an effect of our *expected size* is present (or estimate the effect with satisfying precision). However, if the true effect is indeed smaller, power (or precision) will be lower, and the study might not be sufficiently informative. A common, more conservative strategy for sample size justification is to perform sample size planning for the smallest effect size of interest (SESOI). An effect smaller than the SESOI would be considered too small to be interesting or practically meaningful, even if the effect is not actually zero [@kingPointMinimalImportant2011; @lakensEquivalenceTestingPsychological2018]. For strategies on the even more difficult task of specifying a plausible SESOI, as well as a thorough discussion of various topics concerning power analysis, see [@lakensImprovingYourStatistical2022]. When domain knowledge or formal theories about the research topic of interest are too vague to specify a meaningful SESOI, it is still recommended to demonstrate power or precision for different effect sizes in what is called *sensitivity power analysis*. By simulating power (or precision) for different effect sizes (in addition to the different number of subjects and items), one can make sure that power (or precision) would still be sufficient to detect smaller effect sizes than our expected effect or at least get an impression of how strongly power (or precision) depends on the size of the true effect. For our case study that investigates combined hypotheses in a GLMM modeling framework, sensitivity analysis would require manually specifying additional sets of plausible parameter values that reflect scenarios with smaller or larger differences between groups with respect to our specific research question. Power (or precision) could then be simulated for several of these scenarios (across different numbers of subjects and items, as considered earlier).
 
