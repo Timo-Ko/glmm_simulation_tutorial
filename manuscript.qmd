@@ -193,7 +193,7 @@ For many common research questions in psychology, it is possible to express the 
 
 ### PRACTICE
 
-In the present case study, we consider the effectiveness of feedback provided by an artificial intelligence (AI) embedded in a clinical decision support system. The context is a clinical setting, where task experts, i.e., radiologists, and non-expert, i.e., medical students, must detect bleedings based on head scans from computer tomography (CT). The AI model can provide initial diagnostic advice, which can be used as guidance by the humans who are required to make the final diagnostic decision. The research goal is to validate the effectiveness of the AI-enabled advice. We consider the AI-enabled advice effective, if the following pattern holds:
+In the present case study, we consider the effectiveness of feedback provided by an artificial intelligence (AI) embedded in a clinical decision support system. The context is a clinical setting, where task experts (i.e., radiologists), and non-expert (i.e., medical students) must detect bleedings based on head scans from computer tomography (CT). The AI model can provide initial diagnostic advice, which can be used as guidance by the humans who are required to make the final diagnostic decision. The research goal is to validate the effectiveness of the AI-enabled advice. We consider the AI-enabled advice effective, if the following pattern holds:
 
 *We expect that for BOTH radiologists and medical students, correct AI advice leads to a higher probability of accurately diagnosing a CT scan compared to no AI advice presented, AND, we expect that for BOTH task experts and non-experts, incorrect advice leads to a lower probability of accurately diagnosing a CT scan compared to no advice presented.*
 
@@ -210,7 +210,7 @@ $$
 $$
 \begin{aligned}
 & P(\text{correct diagnosis} | \text{no advice, average expert, average scan}) \\
-& \quad - P(\text{correct diagnosis} | \text{wrong advice, average expert, average scan})
+& \quad - P(\text{correct diagnosis} | \text{incorrect advice, average expert, average scan})
 \end{aligned}
 $$
 $$
@@ -223,7 +223,7 @@ $$
 $$
 \begin{aligned}
 & P(\text{correct diagnosis} | \text{no advice, average student, average scan}) \\
-& \quad - P(\text{correct diagnosis} | \text{wrong advice, average student, average scan})
+& \quad - P(\text{correct diagnosis} | \text{incorrect advice, average student, average scan})
 \end{aligned}
 $$
 For example, the first expression is concerned with the difference between the probability that a correct diagnosis is made if correct AI advice is presented and the probability that a correct diagnosis is made if no AI advice is presented. This contrast is quantified for a hypothetical *typical* expert and a *typical* scan, where *typical* is usually defined as an average score on all attributes of the expert or scan.^[Note that a different estimand would be the so-called average treatment effect (ATE). For the ATE, the probability contrast is defined for each combination of expert and scan, and then these contrasts are averaged across all experts and scans from the target population [@lundbergWhatYourEstimand2021].].
@@ -239,7 +239,7 @@ When the estimand has been defined, the next step in the research process is to 
 
 #### PRACTICE
 
-In our case study, radiologists and students review a series of head CT scans to assess the presence of a bleeding. An AI model provides initial diagnostic advice to assist their decision-making. In the control condition, no AI advice is presented. When AI advice is given, this advice can be either correct or incorrect. The type of advice (no advice, wrong advice, correct advice) is randomized within subjects across CT scans. After reviewing a CT scan, participants deliver a diagnosis (bleeding or no bleeding), which may be either accurate or inaccurate. This experimental design introduces some missing values by design since the advice is neither correct nor incorrect when no advice is present, which must be taken into account when simulating and analyzing the data. In this example, recruiting task experts (i.e., radiologists) is more challenging due to their limited availability, while non-experts (i.e., students) are more readily accessible. The goal of simulation-based sample size planning is to determine how many task experts and non-experts must be recruited to achieve sufficient statistical power or precision in the planned experiment.
+In our case study, radiologists and students review a series of head CT scans to assess the presence of a bleeding. An AI model provides initial diagnostic advice to assist their decision-making. In the control condition, no AI advice is presented. When AI advice is given, this advice can be either correct or incorrect. The type of advice (no advice, incorrect advice, correct advice) is randomized within subjects across CT scans. After reviewing a CT scan, participants deliver a diagnosis (bleeding or no bleeding), which may be either accurate or inaccurate. This experimental design introduces some missing values by design since the advice is neither correct nor incorrect when no advice is present, which must be taken into account when simulating and analyzing the data. In this example, recruiting task experts (i.e., radiologists) is more challenging due to their limited availability, while non-experts (i.e., students) are more readily accessible. The goal of simulation-based sample size planning is to determine how many task experts and non-experts must be recruited to achieve sufficient statistical power or precision in the planned experiment.
 
 ##### Our specific GLMM
 
@@ -377,7 +377,7 @@ P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0}) = \\
 $$
 In fact, we would only need the full equation if the subject is an expert and correct advice is presented.
 In all other experimental conditions, some terms drop from the equation because they are multiplied by $0$.
-For example, the probability that a non-expert with average ability solves an item with average difficulty when no advice is presented only requires the intercept:
+For example, the probability that a student with average ability solves an item with average difficulty when no advice is presented only requires the intercept:
 $$
 \begin{aligned}
 P(Y=1| advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0) = \\
@@ -393,8 +393,8 @@ We can revert this perspective by choosing plausible probability values based on
 #| echo: false
 probtable <- data.frame(
   col1 = 
-    c("no advice, no expert", "no advice, expert", "false advice, no expert", 
-      "false advice, expert", "correct advice, no expert", "correct advice, expert"),
+    c("no advice, student", "no advice, expert", "incorrect advice, student", 
+      "incorrect advice, expert", "correct advice, student", "correct advice, expert"),
   col2 =
     c("0.70", "0.90", "0.40", "0.85", "0.90", "0.95"),
   col3 = 
@@ -468,9 +468,9 @@ dat |>
   mutate(condition = fct_cross(
     factor(expert), factor(advice_present), factor(advice_correct))) |>
   mutate(condition = fct_recode(condition,
- "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
- "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
- "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
+ "student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+ "student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
+ "student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
   group_by(condition) |>
   summarize(relative_frequency = sum(y_bin) / n())
 ```
@@ -506,9 +506,9 @@ dat |>
   mutate(condition = fct_cross(
     factor(expert), factor(advice_present), factor(advice_correct))) |>
   mutate(condition = fct_recode(condition,
-"no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
-"no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
-"no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
+"student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+"student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
+"student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
     breaks = "Sturges") +
@@ -527,15 +527,15 @@ dat |>
   mutate(condition = fct_cross(
     factor(expert), factor(advice_present), factor(advice_correct))) |>
   mutate(condition = fct_recode(condition,
-"no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
-"no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
-"no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
+"student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+"student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
+"student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
     breaks = "Sturges") +
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
 ```
-For the next plot, we have set the item standard deviation to almost zero ($\sigma_I = 0.01$). This gives us a better way to see the variability between persons. As an example, @fig-margdist2 reveals a number of implicit assumptions about the comparison between experts and non-experts: With wrong advice, virtually all experts have a higher probability of making a correct diagnosis compared to non-experts when considering only items with average difficulty. In contrast, there is considerable overlap in probability between experts and non-experts with no advice and even higher overlap with correct advice. Patterns like these should be considered carefully and discussed with the domain experts. Parameter values ($\beta$ parameters, and $\sigma_S$) should be adjusted if the implications do not seem reasonable.
+For the next plot, we have set the item standard deviation to almost zero ($\sigma_I = 0.01$). This gives us a better way to see the variability between persons. As an example, @fig-margdist2 reveals a number of implicit assumptions about the comparison between experts and students: With incorrect advice, virtually all experts have a higher probability of making a correct diagnosis compared to students when considering only items with average difficulty. In contrast, there is considerable overlap in probability between experts and students with no advice and even higher overlap with correct advice. Patterns like these should be considered carefully and discussed with the domain experts. Parameter values ($\beta$ parameters, and $\sigma_S$) should be adjusted if the implications do not seem reasonable.
 We could also have a closer look at the variability between items by setting the subject standard deviation to almost zero ($\sigma_S = 0.01$).
 ```{r}
 #| include: false
@@ -545,9 +545,9 @@ dat |>
   mutate(condition = fct_cross(
     factor(expert), factor(advice_present), factor(advice_correct))) |>
   mutate(condition = fct_recode(condition,
-"no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
-"no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
-"no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
+"student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+"student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
+"student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
     breaks = "Sturges") +
@@ -565,9 +565,9 @@ dat |>
   mutate(condition = fct_cross(
     factor(expert), factor(advice_present), factor(advice_correct))) |>
   mutate(condition = fct_recode(condition,
-    "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
-    "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
-    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
+    "student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+    "student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
+    "student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
     breaks = "Sturges") +
@@ -585,10 +585,10 @@ Gathering domain knowledge by domain experts and the specification of population
 All parameter values in our present case study have been determined based on repeated discussions with domain experts in radiology to validate our assumptions.
 Initially, we reviewed the literature to establish a reasonable baseline performance rate for examining head CT scans for intracranial hemorrhage.
 Existing studies indicate that radiologists typically demonstrate high accuracies around 90%, while interns have been shown to perform below 80%, and medical students fall even shorter.
-For simplicity, we assumed plausible probability values of .90 for experts and .70 for non-experts, respectively.
+For simplicity, we assumed plausible probability values of .90 for experts and .70 for students, respectively.
 Our experts confirmed that these values are realistic baselines for reviewing diverse head CT images without AI assistance. Subsequently, we consulted several published papers investigating the effect of correct and incorrect advice on decision-making performance in other settings.
-From their findings, we inferred that both experts and non-experts should benefit from correct and suffer losses from incorrect advice.
-However, the magnitude of these effects should be substantially greater for non-experts, given their stronger reliance on advice compared to experts.
+From their findings, we inferred that both experts and students should benefit from correct and suffer losses from incorrect advice.
+However, the magnitude of these effects should be substantially greater for students, given their stronger reliance on advice compared to experts.
 We further validated the plausibility of our estimated gains and losses with the collaborating radiologists.
 For our simulation, we used the probabilities of average participants to solve an average case, as shown in Table 1.
 
@@ -739,9 +739,9 @@ We use the default inference options of the marginaleffects package that compute
 contrasts <- preds |> 
   hypotheses(hypothesis = c(
     "b8 = b2",  # (correct advice, expert) - (no advice, expert)
-    "b2 = b6",  # (no advice, expert) - (wrong advice, expert) 
-    "b7 = b1",  # (correct advice, no expert) - (no advice, no expert)
-    "b1 = b5"), # (no advice, no expert) - (wrong advice, no expert)
+    "b2 = b6",  # (no advice, expert) - (incorrect advice, expert) 
+    "b7 = b1",  # (correct advice, student) - (no advice, student)
+    "b1 = b5"), # (no advice, student) - (incorrect advice, student)
     equivalence = c(0, 0))
 print(contrasts, style = "tinytable") |> theme_tt(theme = "resize")
 ```
@@ -778,7 +778,7 @@ If we chose parameter estimation for our case study, we would focus on the two-s
 With a standard confidence level of $1 - \alpha = 0.95$ plausible values are clearly in the positive range for the first, third, and fourth contrast, while both negative and positive values seem plausible for the second contrast.
 Note that due to the constrained range of the probability scale, the width of the CI differs between the four contrasts (which is the expected behavior for binomial GLMMs).
 The smallest width is observed for the first contrast (expert with correct advice vs. expert without advice), where both underlying probabilities are close to 1.
-The largest width is observed for the fourth contrast (non-expert with wrong advice vs. non-expert without advice), where both underlying probabilities are closer to 0.5.
+The largest width is observed for the fourth contrast (student with incorrect advice vs. student without advice), where both underlying probabilities are closer to 0.5.
 
 ## Step 6: Perform repeated simulations
 
@@ -888,7 +888,7 @@ power |>
 
 As should be the case, power estimates in @fig-finalpwr increase with both the number of subjects and the number of items. The CIs reported here indicate how precisely power was estimated by our simulation. Higher precision (which would be reflected in narrower CIs) could be obtained by increasing the number of repetitions (`rep`) in the simulation. In practice, data simulations are often run multiple times with adjusted combinations of sample sizes. When running for the first time, it might be revealed that power is way too low (or much higher than required) for some combinations of `n_subjects` and `n_items`. When narrowing down the best combination that achieves sufficient power while at the same time striking a good balance of how many subjects and items are practically feasible, later rounds of data simulation will typically include a smaller grid of sample sizes combined with a higher number of repetitions. This will assure high precision for the final power estimates, which are then used for the sample size justification of the future study.
 
-Much has been written on the optimal amount of power to target in empirical research. The most prominent heuristic is to target a power of 0.8 (when combined with a type I error rate of $\alpha = 0.05$), but depending on the research goals of the study, there are often good reasons to move away from this standard depending on the research goals and resource constraints  [@lakensJustifyYourAlpha2018; @lakensSampleSizeJustification2022]. When target power has been specified, the number of subjects and the number of items in our study design can be traded against each other based on practical considerations. For the sake of the example, let the targeted power be indeed about 0.8, using an $\alpha$ of 0.05 to detect an effect of the expected size implied by our data simulation. This could be achieved by collecting data from 200 subjects (about 25% of which will be experts), each completing the same 50 items (with advice present in about 67% of cases, which is correct in about 80% of cases with present advice). If collecting data from 200 subjects is not feasible, an alternative would be to recruit 150 subjects but increase the length of the experiment to over 70 items. However, 70 items might take too long to complete for the radiologists participating in the study, who have a busy schedule. The simulation suggests that it might also be possible to plan a shorter experiment with only 30 items if it is feasible to recruit an even higher number of subjects (\> 250, to be determined by additional rounds of power analysis). Design parameters that also affect power, and which could be investigated in the simulation to find a more optimal trade-off, are the ratio of experts to non-experts, the frequency of whether advice is presented at all, and whether it is correct or incorrect.
+Much has been written on the optimal amount of power to target in empirical research. The most prominent heuristic is to target a power of 0.8 (when combined with a type I error rate of $\alpha = 0.05$), but depending on the research goals of the study, there are often good reasons to move away from this standard depending on the research goals and resource constraints  [@lakensJustifyYourAlpha2018; @lakensSampleSizeJustification2022]. When target power has been specified, the number of subjects and the number of items in our study design can be traded against each other based on practical considerations. For the sake of the example, let the targeted power be indeed about 0.8, using an $\alpha$ of 0.05 to detect an effect of the expected size implied by our data simulation. This could be achieved by collecting data from 200 subjects (about 25% of which will be experts), each completing the same 50 items (with advice present in about 67% of cases, which is correct in about 80% of cases with present advice). If collecting data from 200 subjects is not feasible, an alternative would be to recruit 150 subjects but increase the length of the experiment to over 70 items. However, 70 items might take too long to complete for the radiologists participating in the study, who have a busy schedule. The simulation suggests that it might also be possible to plan a shorter experiment with only 30 items if it is feasible to recruit an even higher number of subjects (\> 250, to be determined by additional rounds of power analysis). Design parameters that also affect power, and which could be investigated in the simulation to find a more optimal trade-off, are the ratio of experts to students, the frequency of whether advice is presented at all, and whether it is correct or incorrect.
 
 #### Precision results
 
