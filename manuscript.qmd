@@ -92,12 +92,13 @@ library("future")
 library("furrr")
 library("binom")
 library("papaja")
+library("pwr")
 r_refs("r-references.bib", append = FALSE)
 ```
 
 # Introduction
 
-When planning experimental research, it is essential to determine an appropriate sample size and use appropriate statistical models to analyze the data to ensure that the results are robust and informative [@lakensSampleSizeJustification2022]. The recent replication crisis in Psychology and other disciplines has illustrated many challenges surrounding the reproducibility and reliability of study findings [@yarkoniGeneralizabilityCrisis2022]. As a result, there is a growing need for more rigorous statistical methodology and the adoption of adequately powered experimental designs. Multiple easy-to-use software solutions exist for simple statistical models and experimental designs. A priori sample size planning for more complex research designs such as flexible generalized linear mixed models (GLMM) is not covered by standard software solutions. Researchers willing to use this framework will need to use data simulation. In the present work, we provide a tutorial on how to determine adequate sample sizes by performing tailored simulation-based sample size planning for GLMMs. After introducing some theoretical background on sample size planning, we review existing software solutions in R and discuss under which circumstances tailored data simulations are necessary. We proceed by describing the relevant steps and decisions involved in tailored data simulation, illustrated in a case study.
+When planning experimental research, it is essential to determine an appropriate sample size and use appropriate statistical models to analyze the data to ensure that the results are robust and informative [@lakensSampleSizeJustification2022]. The recent replication crisis in Psychology and other disciplines has illustrated many challenges surrounding the reproducibility and reliability of study findings [@yarkoniGeneralizabilityCrisis2022]. As a result, there is a growing need for more rigorous statistical methodology and the adoption of adequately powered experimental designs. Multiple easy-to-use software solutions exist for simple statistical models and experimental designs [@R-pwr; @lakensSimulationBasedPowerAnalysis2021]. A priori sample size planning for more complex research designs such as flexible generalized linear mixed models (GLMM) is not covered by standard software solutions. Researchers willing to use this framework will need to use data simulation. In the present work, we provide a tutorial on how to determine adequate sample sizes by performing tailored simulation-based sample size planning for GLMMs. After introducing some theoretical background on sample size planning, we review existing software solutions in R and discuss under which circumstances tailored data simulations are necessary. We proceed by describing the relevant steps and decisions involved in tailored data simulation, illustrated in a case study.
 
 <!-- # Recommended background knowledge -->
 
@@ -115,7 +116,7 @@ Most empirical studies in psychology and other social sciences apply hypothesis 
 Statistical power is defined as the probability that a HT has a significant p-value when analyzing repeated samples from a population with a true effect of some pre-specified size [@cohenPowerPrimer1992]. Less formally, power is described as the probability that a HT correctly rejects the null hypothesis when the alternative hypothesis is true. If the sample size (i.e., the number of participants and/or stimuli) is insufficient to detect the effects or relationships being investigated with high probability, the study is considered "underpowered".
 When planning for power, a target is set for the statistical power of a HT of interest. Assuming an effect size of interest and a desired significance level, a minimum sample size can be determined that, on average, would guarantee reaching this target. Although it is recommended to justify the desired significance level and power [@lakensJustifyYourAlpha2018], most empirical studies adopt the heuristic of $\alpha = 0.05$ and $1 - \beta = 0.80$.
 
-In contrast to power analysis, sample size planning can also be based on the precision of parameter estimates (i.e., planning for precision or planning for accuracy) [@lakensSampleSizeJustification2022; @maxwellSampleSizePlanning2008]. Not all research questions are best answered by hypothesis testing. It has been argued that basic research rarely requires discrete decisions on whether some effect has been "discovered" and should thus shift from hypothesis testing towards an estimation framework [@mcelreathStatisticalRethinkingBayesian2020; @cummingNewStatisticsWhy2014; @kruschkeBayesianNewStatistics2018]. Although this view is not without critique [@uyguntuncEpistemicPragmaticFunction2023], at least for exploratory or pilot studies with little prior research,  estimating the effects of interest and making the estimation uncertainty transparent by reporting CIs seems more useful. Assuming that no HTs are conducted, power analysis is not relevant for sample size planning. Nonetheless, the sample size still has a crucial effect on how informative the study will be because an effect of interest is estimated more precisely with bigger samples. In the precision framework, the target quantity commonly used for sample size planning is the expected width of a CI [@kelleySampleSizePlanning2006; @lakensSampleSizeJustification2022; @maxwellSampleSizePlanning2008]. A CI with a confidence level of 0.95 provides the smallest interval with the property that 95% of individual CIs would include the true quantity of interest upon repeated sampling. Thus, a narrow CI with fewer plausible values for the quantity of interest is more informative about the size of the true effect than a wide CI. Apart from the confidence level, the width of a CI depends strongly on the sample size. Because bigger samples carry more information, they lead to smaller CIs. When planning for precision, a target can be set for the expected width of a CI of interest. Assuming some effect size of interest and a desired confidence level, a minimum sample size can be determined that, on average, would guarantee reaching this target. Because planning for precision is still rare, there are no common heuristics for choosing the desired width of the CI [@lakensSampleSizeJustification2022]. 
+In contrast to power analysis, sample size planning can also be based on the precision of parameter estimates (i.e., planning for precision or planning for accuracy) [@lakensSampleSizeJustification2022; @maxwellSampleSizePlanning2008]. Not all research questions are best answered by hypothesis testing. It has been argued that basic research rarely requires discrete decisions on whether some effect has been "discovered" and should thus shift from hypothesis testing towards an estimation framework [@mcelreathStatisticalRethinkingBayesian2020; @cummingNewStatisticsWhy2014; @kruschkeBayesianNewStatistics2018], although this view is not without critique [@uyguntuncEpistemicPragmaticFunction2023]. Assuming that no HTs are conducted, power analysis is not relevant for sample size planning. In the precision framework, the target quantity commonly used for sample size planning is the expected width of a CI [@kelleySampleSizePlanning2006; @lakensSampleSizeJustification2022; @maxwellSampleSizePlanning2008]. A CI with a confidence level of 0.95 provides the smallest interval with the property that 95% of individual CIs would include the true quantity of interest upon repeated sampling. Thus, a narrow CI with fewer plausible values for the quantity of interest is more informative about the size of the true effect than a wide CI. Apart from the confidence level, the width of a CI depends on the sample size. Because bigger samples carry more information, they lead to smaller CIs. When planning for precision, a target can be set for the expected width of a CI of interest. Assuming some effect size of interest and a certain confidence level, a minimum sample size can be determined that would guarantee reaching the targeted expected width. Because planning for precision is still rare, there are no common heuristics for choosing the desired width of the CI [@lakensSampleSizeJustification2022]. 
 
 ## Generalized linear mixed models (GLMMs)
 
@@ -441,7 +442,7 @@ plogis(b_0 + b_e + b_a + b_c + b_ea + b_ec)
 This leaves us with the question on how to determine plausible values for the two remaining model parameters ($\sigma_S$, and $\sigma_I$) that are the standard deviations for the random intercepts.
 For this, we introduce two more strategies in the following sections. 
 
-### Insightful descriptive statistics
+### Examine insightful descriptive statistics
 
 #### THEORY
 
@@ -475,15 +476,15 @@ dat |>
   summarize(relative_frequency = sum(y_bin) / n())
 ```
 
-We tried using these descriptive statistics to judge together with domain experts whether our chosen values for the random effect standard deviations would produce data that aligned with their domain expertise. Although the result was deemed plausible, these statistics were not informative enough to determine a final set of plausible parameter values. For this reason, we will additionally look at insightful model- based quantities.
+We tried using these descriptive statistics to judge together with domain experts whether our chosen values for the random effect standard deviations would produce data that aligned with their domain expertise. Although the result was deemed plausible, these statistics were not informative enough to determine a final set of plausible parameter values (e.g., doubling the standard deviations from 0.5 to 1 produces only minor changes in relative frequency). For this reason, we will additionally look at insightful model-based quantities.
 
-### Insightful model based quantities
+### Examine insightful model-based quantities
 
 #### THEORY
 
 Because GLMMs are complicated models, descriptive statistics alone are usually not enough to specify plausible values for all model parameters.
 This is especially true for the standard deviation of random effects that have non-linear (and often unexpected) effects on the model-implied results.
-An important advantage of data simulation (where one has full control over parameter values and sample sizes) is that one can produce insightful model based quantities that can never be directly observed in an actual empirical dataset.
+An important advantage of data simulation (where one has full control over parameter values and sample sizes) is that one can produce insightful model-based quantities that can never be directly observed in an actual empirical dataset.
 For example, in a logistic model with random intercepts for participants, one can produce a visualization of the implied distribution of the probability that a participant, on average, solves a cognitive task.
 Although domain knowledge will probably not suffice to specify this distribution completely, it should be possible to rule out implausible boundary conditions.
 For example, the domain expert might deem it implausible that the 5% most able participants have a probability of more than 0.99 to solve the difficult cognitive task.
@@ -574,7 +575,7 @@ dat |>
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
 ```
 
-### Iterative process with domain experts
+### Iterate with domain experts
 
 #### THEORY
 
@@ -784,11 +785,11 @@ The largest width is observed for the fourth contrast (student with incorrect ad
 
 ### THEORY
 
-Conducting all previous steps enables the analyst to 1) simulate a dataset, 2) estimate a GLMM, and 3) compute HTs or CIs for estimands of interest, mirroring the analysis that will later be performed for the actual dataset of the planned study. The last missing piece is to write code that performs the previous steps repeatedly and allows for setting different sample sizes. On a conceptual level, we first require a function that takes the sample size and the full set of population parameter values as input. When planning for power, the function should return the p-value(s) of the HT(s) of interest when conducted on the simulated dataset. When planning for precision, the function should return the width of the CI(s) of interest. Second, we must run this function repeatedly with the same sample size and population parameters. Because fitting GLMMs with frequentist methods can quickly become time-consuming, it is recommended to use parallel computing, that is running simulations on multiple cores of the computer at the same time to reduce total run time. Third, the results of the repeated simulation must be collected and aggregated. When planning for power, we compute the relative frequency of (a) significant p-value(s) across repeated simulations. When planning for precision, we compute the average width of the CI(s). Finally, we have to repeat the complete simulation for different sample sizes to determine how big the sample must be in order to achieve the targeted power or precision.
+Conducting all previous steps enables the analyst to 1) simulate a dataset, 2) estimate a GLMM, and 3) compute HTs or CIs for estimands of interest, mirroring the analysis that will later be conducted on the actual dataset of the planned study. To produce an estimate of power or precision, the last step is to perform these previous steps repeatedly. On a conceptual level, we first require a function that takes a sample size and a full set of population parameter values as input. When planning for power, the function should return the p-value(s) of the HT(s) of interest when conducted on the simulated dataset. When planning for precision, the function should return the width of the CI(s) of interest. Second, we run this function repeatedly with the same sample size and population parameters. Because fitting GLMMs can quickly become time-consuming, it is recommended to use parallel computing, that is running simulations on multiple cores of the computer at the same time to reduce total run time. Third, the results of the repeated simulation are collected and aggregated. When planning for power, we compute the relative frequency of (a) significant p-value(s) across repeated simulations. When planning for precision, we compute the average width of the CI(s). Finally, we repeat the complete simulation for different sample sizes to determine how big the sample must be in order to achieve the targeted power or precision.
 
 ### PRACTICE
 
-We are finally ready to run our simulation-based sample size planning analyses to plan for power and precision. Wrapping the `simulate` function already constructed earlier, the helper function `sim_and_analyse` performs all previous steps (simulate a dataset, fit a GLMM, compute p-values and CIs) in a single command.
+Wrapping the `simulate` function already constructed earlier, the helper function `sim_and_analyse` performs all previous steps (simulate a dataset, fit a GLMM, compute p-values and CIs) in a single command.
 
 ```{r}
 #| echo: true
@@ -824,7 +825,7 @@ set.seed(2)
 ```
 
 The next code chunk specifies a simulation grid with different settings for both the number of subjects (`n_subjects`) and the number of items (`n_items`), each combination being repeated `rep` times.
-We chose 300 repetitions for the data simulation at hand as it strikes a balance between achieving a robust statistical estimate and remaining computationally feasible.
+The more repetitions, the more accurately power and precision can be estimated. We chose 300 repetitions for the data simulation at hand to strike a balance between achieving a robust estimate and remaining computationally feasible.
 With the current settings, this simulation takes about one hour on a MacBook Pro from 2020 with M1 chip and 16 GB working memory. If you want to quickly experiment with the code yourself, a setting with `workers = 4` and `rep = 5` should finish in less than 5 minutes, even on smaller machines. 
 
 ```{r}
