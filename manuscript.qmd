@@ -599,7 +599,7 @@ For our simulation, we used the probabilities of average participants to solve a
 
 At this point, the researcher is capable of producing a simulated dataset similar to the actual dataset to be collected in the planned study.
 The next step is to specify how the statistical model shall be estimated in the actual study collected later.
-This usually includes the selection of 1) a statistical framework (e.g., frequentist statistics), 2) a software package that is capable of estimating the model class of interest (e.g., the *lme4* R package), 3) an estimation algorithm (e.g., the default optimizer "bobyqa"), and 4) the specific model structure including all fixed effects, random effects, and the model family of the dependent variable.
+This requires the selection of a statistical framework, a software package that is capable of estimating the model class of interest, an estimation algorithm, and the specific model structure including all fixed effects, random effects, and the model family of the dependent variable.
 
 Note that this does not always mean that one will specify the same GLMM that was used when specifying the data-generating process.
 On the one hand, using a simpler model for data simulation than for model estimation can be a useful strategy in scenarios where making plausible assumptions for complicated random effect structures and interactions is not feasible.
@@ -631,7 +631,7 @@ f <- y_bin ~ 1 + expert + advice_present + advice_correct +
 
 The first two lines look similar to any linear model in R (general intercept indicated by `1`; main effects indicated by variable names in the dataset; interactions indicated by `variable1:variable2`). The third line specifies a random intercept for each subject `(1|subject)` and for each item `(1|item)`. The complete set of rules for the syntax is outlined in @batesFittingLinearMixedEffects2015 and in the documentation of the *lme4* package.
 
-In *lme4*, a GLMM is fitted with the `glmer` function. By setting `family =  "binomial"`, we request a binomial GLMM appropriate for our binary dependent variable `y_bin` (the binomial GLMM uses the canonical logit link by default), which is defined as an accurate (1) vs. inaccurate (0) diagnosis.
+In *lme4*, a GLMM is fitted with the `glmer` function. By setting `family =  "binomial"`, we request a binomial GLMM appropriate for our binary dependent variable `y_bin` (the binomial GLMM uses the canonical logit link by default), which is defined as an accurate (1) vs. inaccurate (0) diagnosis. We use the default estimation algorithm (see `?glmerControl` for a list of alternative options).
 
 ```{r}
 #| echo: true
@@ -645,7 +645,7 @@ We can inspect the estimates for all model parameters with the `summary` command
 summary(fit)
 ```
 
-In the *lme4* output, the `Estimate` column in the `Fixed effects` table contains the estimates for the $\beta$ parameters, while the `Std.Dev.` column in the `Random effects` table contains the estimates for $\sigma_S$ and $\sigma_I$.
+In the model output, the `Estimate` column in the `Fixed effects` table contains the estimates for the $\beta$ parameters, while the `Std.Dev.` column in the `Random effects` table contains the estimates for $\sigma_S$ and $\sigma_I$.
 
 ## Step 5: Compute the estimate
 
