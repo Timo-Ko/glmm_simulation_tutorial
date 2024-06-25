@@ -355,12 +355,12 @@ In the final step, we simulate the binary dependent variable `y_bin` (i.e., whet
 ### THEORY
 
 Population parameters are all model parameters estimated in a GLMM, in particular the regression coefficients of the fixed effects and the standard deviation of the random effects (and the correlation between random effects in more complicated models).
-In the absence of previous studies with the same design or pilot data, strategies to specify population parameters require access to domain knowledge from domain experts. Because most domain knowledge can only be expressed in unstandardized measurement units of a specific application, we argue that unstandardized effect sizes are usually preferable over standardized effect sizes for tailored simulation-based sample size planning. The basic idea of all strategies is how the data-generating process implied by certain values of population parameters can be quantified or visualized in an intuitive way that enables calibration of population parameters based on the available knowledge of domain experts.
+In the absence of previous studies with the same design or pilot data, strategies to specify population parameters require access to domain knowledge from domain experts. Because most domain knowledge can only be expressed in unstandardized measurement units of a specific application, we argue that unstandardized effect sizes are usually preferable over standardized effect sizes for tailored simulation-based sample size planning. The basic idea of all strategies is to quantify or visualize the data-generating process implied by certain values of population parameters in an intuitive way that enables calibration of population parameters based on the available knowledge of domain experts.
 Although we use frequentist model estimation in our tutorial, many strategies demonstrated in this chapter are inspired by research on monitoring the plausibility of model assumptions in applied Bayesian statistics [@gelmanBayesianWorkflow2020].
 
 ### PRACTICE
 
-When introducing the simulation function for our case study, we have used theoretically plausible values as defaults for all model parameters ($\beta_0$, $\beta_e$, $\beta_a$, $\beta_c$, $\beta_{ea}$, $\beta_{ec}$, $\sigma_S$, and $\sigma_I$) but have not talked about where these numbers came from. The starting point for all parameter values in our present case study was based on results from distantly related study designs in the literature. Additionally, we had repeated discussions with our affiliated domain experts in radiology to check whether our assumptions regarding participants’ diagnostic performance seemed plausible.
+When introducing the simulation function for our case study, we have used theoretically plausible values as defaults for all model parameters ($\beta_0$, $\beta_e$, $\beta_a$, $\beta_c$, $\beta_{ea}$, $\beta_{ec}$, $\sigma_S$, and $\sigma_I$) but have not talked about where these numbers came from. The starting point for all parameter values was based on results from distantly related study designs in the literature. Additionally, we had repeated discussions with our affiliated domain experts in radiology to check whether our assumptions regarding participants’ diagnostic performance seemed plausible.
 
 We now outline our main strategy to determine plausible parameter values for the fixed effects ($\beta$ parameters):
 Unfortunately, the model parameters in a binomial GLMM are hard to interpret in isolation because first, the  parameters are connected to the modeled probability via the non-linear inverse-logit link, and second, we also have to consider the random effects. The most simple interpretation, which allows us to ignore the random effects for now, works by imagining a subject with average ability ($u_{0s} = 0$) responding to an item (i.e., CT scan) with average difficulty ($u_{0i} = 0$).
@@ -443,17 +443,16 @@ For this, we introduce two more strategies in the following sections.
 
 #### THEORY
 
-The mathematical structure of GLMMs determines which patterns in data would be produced by the model, if a specific set of values for the population parameters would be specified. The knowledge of how to simulate from a GLMM enables us to compute insightful descriptive statistics that can be compared to available domain knowledge much more easily than the opaque values of model parameters. For example, domain experts might not be able to directly choose plausible values for the  coefficients in a logistic regression model (which are measured on the log-odds scale). However, they should be able to reason about the expected ratio of the binary dependent variable in different experimental conditions, i.e., which relative frequency they expect to observe (on average). The job of the analyst who is familiar with the mathematical structure of the GLMM is to produce the model-implied value of the insightful descriptive statistic expected by the domain expert. Although insightful descriptive statistics usually depend on the model parameters in a non-linear way, it is not necessary to solve the exact relationship mathematically. Instead, one can simply adjust the population parameters by trial and error until the model-implied quantities produce the desired result.
+The mathematical structure of GLMMs determines which patterns in data would be produced by the model, if a specific set of values for the population parameters is specified. The knowledge of how to simulate from a GLMM enables us to compute *insightful descriptive statistics* that can be compared to available domain knowledge much more easily than the opaque values of model parameters. For example, domain experts might not be able to directly choose plausible values for the  coefficients in a logistic regression model (which are measured on the log-odds scale). However, they should be able to reason about the expected ratio of the binary dependent variable in different experimental conditions, i.e., which relative frequency they expect to observe. The job of the analyst who is familiar with the mathematical structure of the GLMM is to produce the model-implied value of the insightful descriptive statistic that is expected by the domain expert. Although insightful descriptive statistics usually depend on the model parameters in a non-linear way, it is not necessary to solve the exact relationship mathematically. Instead, one can simply adjust the population parameters by trial and error until the model-implied quantities produce the desired result.
 
 #### PRACTICE
 
-In the last section, we showed how we can derive the model-implied probability that a subject with average ability solves an item with average difficulty for each experimental condition. Although these derivations are straightforward, it is important not to misinterpret their implications: In binomial GLMMs, the average probability to solve an item (averaged across persons of varying ability and items of varying difficulty) is **not** equal to the probability that a person with average ability solves an item with average difficulty [@fahrmeirRegressionModelsMethods2021]. The first perspective implies a so-called marginal interpretation, while the second one implies a conditional interpretation.
+In the last section, we showed how we can derive the model-implied probability that a subject with average ability solves an item with average difficulty for each experimental condition. Although these derivations are straightforward, it is important not to misinterpret their implications: In binomial GLMMs, the average probability to solve an item (averaged across persons of varying ability and items of varying difficulty) is **not** equal to the probability that a person with average ability solves an item with average difficulty [@fahrmeirRegressionModelsMethods2021]. The first perspective implies a so-called *marginal interpretation*, while the second one implies a *conditional interpretation*.
 
 For example, we determined the $\beta$ parameters in a way that corresponds to a desired conditional probability of $0.95$, that an expert with average ability solves an item with average difficulty when presented with correct advice (the conditional perspective).
 However, even if the model assumptions were true, we would not observe that 95% of experts responding to items presented with correct advice from a big sample of subjects drawn from their natural distribution of ability and items drawn from their natural distribution of difficulty (the marginal perspective).
 How much the two probabilities differ depends on the standard deviations of the random intercepts (the two probabilities are only equal if both standard deviations are be zero).
 We want to use the model-implied observed proportion of correct diagnoses in each experimental condition as an insightful descriptive statistic to determine plausible values for the random effect standard deviations.
-
 We will simulate a large dataset (for which the observed values of the descriptive statistic will be close to their model-implied true values) and simply compute the relative frequency of correct diagnoses for each experimental condition.
 
 ```{r}
@@ -473,7 +472,7 @@ dat |>
   summarize(relative_frequency = sum(y_bin) / n())
 ```
 
-We tried using these descriptive statistics to judge together with domain experts whether our chosen values for the random effect standard deviations would produce data that aligned with their domain expertise. Although the result was deemed plausible, these statistics were not informative enough to determine a final set of plausible parameter values (e.g., doubling the standard deviations from 0.5 to 1 produces only minor changes in relative frequency). For this reason, we will additionally look at insightful model-based quantities.
+We tried using these descriptive statistics to judge together with domain experts whether our chosen values for the random effect standard deviations would produce data that aligned with their expectations. Although the result was deemed plausible, these statistics were not informative enough to determine a final set of plausible parameter values (e.g., doubling the standard deviations from 0.5 to 1 produces only minor changes in relative frequency). For this reason, we will additionally look at insightful model-based quantities.
 
 ### Examine insightful model-based quantities
 
@@ -481,7 +480,7 @@ We tried using these descriptive statistics to judge together with domain expert
 
 Because GLMMs are complicated models, descriptive statistics alone are usually not enough to specify plausible values for all model parameters.
 This is especially true for the standard deviation of random effects that have non-linear (and often unexpected) effects on the model-implied results.
-An important advantage of data simulation (where one has full control over parameter values and sample sizes) is that one can produce insightful model-based quantities that can never be directly observed in an actual empirical dataset.
+An important advantage of data simulation (where one has full control over parameter values and sample sizes) is that one can produce *insightful model-based quantities* that can never be directly observed in an actual empirical dataset.
 For example, in a logistic model with random intercepts for participants, one can produce a visualization of the implied distribution of the probability that a participant, on average, solves a cognitive task.
 Although domain knowledge will probably not suffice to specify this distribution completely, it should be possible to rule out implausible boundary conditions.
 For example, the domain expert might deem it implausible that the 5% most able participants have a probability of more than 0.99 to solve the difficult cognitive task.
@@ -512,7 +511,7 @@ dat |>
     breaks = "Sturges") +
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
 ```
-@fig-margdist1 shows the model-implied marginal distributions, including the mean, 66% and 95% intervals. We can see that, indeed, the average probabilities (black dots) slightly differ from the probabilities of average subjects and items considered in the previous section. This difference increases with the variability of the random effects.
+@fig-margdist1 shows the model-implied marginal distributions, including the mean, 66% and 95% intervals. We can see that, indeed, the average probabilities (black dots) slightly differ from the probabilities of average subjects and items considered previously. This difference increases with the variability of the random effects.
 We can use plots like @fig-margdist1 as a useful tool to decide whether the specified standard deviations of the subject and item random intercepts ($\sigma_S$ and $\sigma_I$) are reasonable by comparing the ranges and overlap between conditions to domain knowledge.
 
 ```{r}
@@ -576,7 +575,7 @@ dat |>
 
 #### THEORY
 
-Gathering domain knowledge and the specification of population parameter values is an iterative process, in which domain experts repeatedly assess the plausibility of simulated data. As a first step, domain experts can be interviewed to “elicit” their domain knowledge about how the data of the planned study is expected to look. As most domain experts are no experts in statistical modeling and GLMMs, they often struggle without further guidance to communicate their knowledge in a way that is useful when specifying the parameters for data simulation. For this reason, we suggest that after an initial interview, the analyst who is familiar with the structure of the GLMM selects an initial set of insightful descriptive statistics and model-based quantities. Then they reenter into an iterative discussion with the domain experts where some set of population values are selected, and the plausibility of resulting implied quantities is evaluated. Then, the population parameters are updated until the domain experts are satisfied with the result. During this process, the monitored model-based quantities and descriptive statistics can be updated or extended to capture as much available domain knowledge as possible.
+Gathering domain knowledge and the specification of population parameter values is an iterative process, in which domain experts repeatedly assess the plausibility of simulated data. As a first step, domain experts can be interviewed to “elicit” their domain knowledge about how the data of the planned study is expected to look. As most domain experts are no experts in statistical modeling and GLMMs, they often struggle without further guidance to communicate their knowledge in a way that is useful when specifying the parameters for data simulation. For this reason, we suggest that after an initial interview, the analyst who is familiar with the structure of the GLMM selects an initial set of insightful descriptive statistics and model-based quantities. Then they reenter into an iterative discussion with the domain experts where some set of population values are selected, and the plausibility of resulting implied quantities is evaluated. Then, the population parameters are updated until the domain experts are satisfied with the result. During this process, the monitored descriptive statistics and model-based quantities can be updated or extended to capture as much available domain knowledge as possible.
 
 ##### PRACTICE
 
@@ -587,14 +586,13 @@ For simplicity, we assumed plausible probability values of .90 for experts and .
 Our experts confirmed that these values are realistic baselines for reviewing diverse head CT images without AI assistance. Subsequently, we consulted several published papers investigating the effect of correct and incorrect advice on decision-making performance in other settings.
 From their findings, we inferred that both experts and students should benefit from correct and suffer losses from incorrect advice.
 However, the magnitude of these effects should be substantially greater for students, given their stronger reliance on advice compared to experts.
-We further validated the plausibility of our estimated gains and losses with the collaborating radiologists.
-For our simulation, we used the probabilities of average participants to solve an average case, as shown in Table 1.
+We further validated the plausibility of our estimated gains and losses with the collaborating radiologists until we settled on the probabilities shown in @tbl-probtable.
 
 ## Step 4: Estimate the statistical model
 
 ### THEORY
 
-At this point, the researcher is capable of producing a simulated dataset similar to the actual dataset to be collected in the planned study.
+At this point, the researcher is capable of producing a simulated dataset that is comparable to the actual dataset to be collected in the planned study.
 The next step is to specify how the statistical model shall be estimated in the actual study collected later.
 This requires the selection of a statistical framework, a software package that is capable of estimating the model class of interest, an estimation algorithm, and the specific model structure including all fixed effects, random effects, and the model family of the dependent variable.
 
@@ -651,8 +649,8 @@ In the model output, the `Estimate` column in the `Fixed effects` table contains
 In previous steps, we have defined the theoretical estimand, written a data simulation function and specified how to estimate a GLMM using simulated data.
 The next step is to specify how to compute a concrete point estimate of the theoretical estimand within the framework of the fitted GLMM.
 For some research questions, the estimate corresponds with a single regression coefficient. In more complicated scenarios, the estimate is computed from a combination of coefficients.
-Beyond computing the point estimate, we have already discussed that both hypothesis testing and interval estimation can be used to answer the research question.
-The decision on testing or estimating is then followed by selecting the specific statistical method that shall be applied to compute the HT(s) or CI(s) (e.g., compute HTs and CIs with the *marginaleffects* R package using the delta method).
+Beyond computing the point estimate, we have already discussed that both hypothesis testing and interval estimation could be used to answer the research question.
+The decision on testing or estimating is then followed by selecting the specific statistical method that shall be applied to compute the HTs or CIs (e.g., compute HTs and CIs with the *marginaleffects* R package using the delta method).
 
 ### PRACTICE
 
@@ -704,7 +702,7 @@ pred[1] - pred[2]
 
 The argument `type = "response"` specifies that predictions are made on the probability scale (instead of the log-odds scale of the $\beta$ parameters), while `re.form = NA` sets all random effects to 0.
 We could use this method to compute point estimates for all four contrasts that are part of our estimand.
-However, depending on whether we are interested in hypothesis testing or parameter estimation, we also need a method to compute HTs or CI.
+However, depending on whether we are interested in hypothesis testing or parameter estimation, we also need a method to compute HTs or CIs.
 The *marginaleffects* package [@R-marginaleffects] is a very flexible, increasingly popular package to compute HTs and CIs for contrasts with a variety of statistical models, including GLMMs estimated with *lme4*.
 First, we specify a grid of all combinations of predictor variables and then compute estimated probabilities for all experimental conditions in our experiment with the `predictions` function:
 
@@ -721,13 +719,11 @@ preds <- predictions(fit, newdata = grid2,
 print(preds, style = "tinytable") |> theme_tt(theme = "resize")
 ```
 
-<!-- print(probs, style = "tinytable") -->
-
 The point estimates for all experimental conditions are reported in the `Estimate` column.
 Note that the output also contains the two missing by design conditions that will never be observed in the actual study ($advice\_present = 0, advice\_correct = 1, expert = 1$ and $advice\_present = 0, advice\_correct = 1, expert = 0$).
 This is no problem as long as we never interpret those estimates.
 Next, we use the estimated probabilities to compute the four specific contrasts that are part of our estimand.
-For this, we must specify which rows in `probs` have to be subtracted from each other.
+For this, we must specify which rows in `preds` have to be subtracted from each other.
 We will use the `hypotheses` function to compute our four contrasts of interest together with HTs and CIs.
 We use the default inference options of the *marginaleffects* package that compute HTs and CIs based on the approximate delta method.
 
@@ -744,7 +740,7 @@ contrasts <- preds |>
 print(contrasts, style = "tinytable") |> theme_tt(theme = "resize")
 ```
 
-The expression `"b8 = b2"` is special syntax to subtract the estimate in row number 8 from the estimate in row number 2 in the `probs`-output.
+The expression `"b8 = b2"` is special syntax to subtract the estimate in row number 8 from the estimate in row number 2 in the `preds`-output.
 The argument `equivalence = c(0, 0)` can be used to compute one-sided p-values, testing whether the contrast in the population is smaller than 0 (`p (NonSub)` column) or greater than 0 (`p (NonInf)` column).
 The point estimates for four contrasts are reported in the `Estimate` column.
 Note that to facilitate interpretation, we arranged the contrasts in a way that we theoretically expect positive values for all four of them.
