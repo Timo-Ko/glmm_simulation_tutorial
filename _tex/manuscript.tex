@@ -552,12 +552,12 @@ distribution family of the outcome variable.
 GLMMs}\label{simulation-based-sample-size-planning-with-glmms}
 
 To our knowledge, existing approaches for sample size planning for GLMMs
-have exclusively focused on planning for power. In Table 1, we review
-available software packages that can be used to perform power analysis
-for multilevel models in R {[}Version 4.4.0; R Core Team
-(\citeproc{ref-R-base}{2024}){]}. Power analysis methods can be
-categorized into formula-based, summary-statistics-based and
-simulation-based methods
+have exclusively focused on planning for power. In
+Table~\ref{tbl-rpackages}, we review available software packages that
+can be used to perform power analysis for multilevel models in R
+{[}Version 4.4.0; R Core Team (\citeproc{ref-R-base}{2024}){]}. Power
+analysis methods can be categorized into formula-based,
+summary-statistics-based and simulation-based methods
 (\citeproc{ref-murayamaSummarystatisticsbasedPowerAnalysis2022}{Murayama
 et al., 2022}). Formula-based methods rely on exact formulas to
 calculate power directly. Summary-statistics-based methods use
@@ -580,7 +580,7 @@ for multilevel models
 Stevens, 2018};
 \citeproc{ref-debruineUnderstandingMixedEffectsModels2021}{DeBruine \&
 Barr, 2021}; \citeproc{ref-greenSIMRPackagePower2016a}{Green \& MacLeod,
-2016}; \citeproc{ref-kainPracticalGuidePower2015}{Kain et al., 2015};
+2016a}; \citeproc{ref-kainPracticalGuidePower2015}{Kain et al., 2015};
 \citeproc{ref-kumleEstimatingPowerGeneralized2021}{Kumle et al., 2021};
 \citeproc{ref-lafitSelectionNumberParticipants2021}{Lafit et al., 2021};
 \citeproc{ref-zimmerSampleSizePlanning2022}{Zimmer et al., 2022}).
@@ -606,17 +606,100 @@ discussion in Maxwell et al.
 discuss a number of strategies on how to specify model parameters for
 application-specific, tailored data simulations in a later chapter.
 
-INSERT TABLE 1 HERE!
+\begin{table}
+
+{\caption{{Overview of software packages for power analysis for
+(generalized) linear mixed models in R.}{\label{tbl-rpackages}}}
+\vspace{-20pt}}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1165}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3947}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0526}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0489}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2030}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1842}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Package name
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Summary
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+GUI available
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+GLMM support
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Design limitations
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Reference
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+glmmrBase & Formula- and simulation-based power analysis; non-linear
+fixed effects and flexible covariance functions & no & yes & none &
+Watson (\citeproc{ref-watsonGeneralisedLinearMixed2023}{2023}) \\
+longpower & Formula-based power analysis; focus on longitudinal data &
+\href{https://atrihub.shinyapps.io/power/}{yes} & no & limited set of
+study designs with two levels & Iddi and C Donohue
+(\citeproc{ref-iddiPowerSampleSize2022}{2022}) \\
+mixedpower & Simulation-based power analysis; based on `simr' package &
+no & yes & none & Kumle et al.
+(\citeproc{ref-kumleEstimatingPowerGeneralized2021}{2021}) \\
+mlmpower & Simulation-based power analysis; missing data mechanisms & no
+& no & limited to two levels & Enders et al.
+(\citeproc{ref-endersSimpleMonteCarlo2023}{2023}) \\
+pamm & Simulation-based power analysis; based on `lme4' package & no &
+no & none & Martin et al.
+(\citeproc{ref-martinMeasuringIndividualDifferences2011}{2011}) \\
+pass.lme & Formula-based power analysis; limited documentation & no & no
+& none & Marco Chak Yan YU
+(\citeproc{ref-marcochakyanyuPassLmePower2019}{2019}) \\
+PowerAnalysisIL & Simulation-based power analysis; focus on longitudinal
+data &
+\href{https://github.com/ginettelafit/PowerAnalysisIL?tab=readme-ov-file\#shiny-app-and-r-package-to-perform-power-analysis-to-select-the-number-of-participants-in-intensive-longitudinal-studies}{yes}
+& no & limited set of study designs with two levels & Lafit et al.
+(\citeproc{ref-lafitSelectionNumberParticipants2021}{2021}) \\
+powerlmm & Simulation-based power analysis; missing data mechanisms;
+focus on longitudinal data &
+\href{https://github.com/rpsychologist/powerlmm?tab=readme-ov-file\#launch-interactive-web-application}{yes}
+& no & limited set of study designs with two or three levels & Magnusson
+et al.
+(\citeproc{ref-magnussonConsequencesIgnoringTherapist2018}{2018}) \\
+simglm & Simulation-based power analysis; missing data mechanisms &
+\href{https://simglm.brandonlebeau.org/reference/run_shiny.html}{yes} &
+yes & limited to two or three levels & LeBeau
+(\citeproc{ref-lebeauSimglmSimulateModels2017}{2017}) \\
+simr & Simulation-based power analysis; based on `lme4' package & no &
+yes & none & Green and MacLeod
+(\citeproc{ref-greenSIMRPackagePower2016}{2016b}) \\
+summary\_statistics based\_power & Summary-statistics-based power
+analysis; based on `pwr' package &
+\href{https://koumurayama.shinyapps.io/summary_statistics_based_power/}{yes}
+& yes & limited set of study designs with two levels & Murayama et al.
+(\citeproc{ref-murayamaSummarystatisticsbasedPowerAnalysis2022}{2022}) \\
+WebPower & Formula-based power analysis; based on `longpower' package;
+focus on longitudinal data &
+\href{https://webpower.psychstat.org/wiki/start}{yes} & no & limited set
+of study designs with two levels & Zhang and Yuan
+(\citeproc{ref-zhangPracticalStatisticalPower2018}{2018}) \\
+\end{longtable}
+
+{\vspace{-20pt}
+\noindent \emph{Note.} GUI available = whether a graphical user interface is provided (usually a Shiny app that is available online or can be downloaded to run locally), GLMM support = whether power analysis can be performed for generalized linear mixed model (otherwise only linear mixed models are supported). Design limitations = whether only a limited selection of study designs can be specified (otherwise arbitrary designs within the model class are supported).}
+
+\end{table}
 
 \section{Reasons to use tailored data
 simulation}\label{reasons-to-use-tailored-data-simulation}
 
 Performing tailored simulation-based sample size planning is more
 complicated and time-consuming than using the existing software tools
-outlined in TABLE 1. Circumstances under which tailored simulation-based
-sample size planning is necessary include 1) complex study designs, 2)
-complex statistical hypotheses, 3) planning for precision, and 4) lack
-of prior studies or pilot data.
+outlined in Table~\ref{tbl-rpackages}. Circumstances under which
+tailored simulation-based sample size planning is necessary include 1)
+complex study designs, 2) complex statistical hypotheses, 3) planning
+for precision, and 4) lack of prior studies or pilot data.
 
 First, requirements of real-world studies are often more complex than
 the simplified designs assumed by many user-friendly software packages
@@ -698,23 +781,24 @@ single hypotheses must be corrected for multiple testing to avoid
 combined with \emph{AND}, a correction for multiple testing is not
 necessary but rather a mistake that unnecessarily reduces the power of
 the global HT. None of the software packages for sample size planning in
-Table 1 can handle combined hypotheses and only some can handle directed
-hypotheses. In contrast, our case study will demonstrate how we can test
-directed combined hypotheses with tailored simulation-based sample size
-planning.
+Table~\ref{tbl-rpackages} can handle combined hypotheses and only some
+can handle directed hypotheses. In contrast, our case study will
+demonstrate how we can test directed combined hypotheses with tailored
+simulation-based sample size planning.
 
 Third, all available software packages for sample size planning with
 GLMMs are based on power analysis and do not support planning for
 precision. Thus, researchers that want to apply an estimation strategy
 instead of testing statistical hypotheses
 (\citeproc{ref-cummingNewStatisticsWhy2014}{Cumming, 2014}), currently
-cannot use the software packages outlined in TABLE 1. However, tailored
-simulation-based sample size planning can easily handle the planning for
-precision approach (\citeproc{ref-maxwellSampleSizePlanning2008}{Maxwell
-et al., 2008}). The only change in procedure is that instead of
-computing HTs for each simulated dataset and estimating statistical
-power across repetitions, CIs are computed for each simulated dataset,
-and their expected width is estimated.
+cannot use the software packages outlined in Table~\ref{tbl-rpackages}.
+However, tailored simulation-based sample size planning can easily
+handle the planning for precision approach
+(\citeproc{ref-maxwellSampleSizePlanning2008}{Maxwell et al., 2008}).
+The only change in procedure is that instead of computing HTs for each
+simulated dataset and estimating statistical power across repetitions,
+CIs are computed for each simulated dataset, and their expected width is
+estimated.
 
 Fourth, all frameworks for sample size planning require the user to make
 assumptions about the expected effect size. Assuming the true effect is
@@ -2476,6 +2560,11 @@ Dmitrienko, A., \& D'Agostino, R. (2013). Traditional multiplicity
 adjustment methods in clinical trials. \emph{Statistics in Medicine},
 \emph{32}(29), 5172--5218. \url{https://doi.org/10.1002/sim.5990}
 
+\bibitem[\citeproctext]{ref-endersSimpleMonteCarlo2023}
+Enders, C. K., Keller, B. T., \& Woller, M. P. (2023). A simple {Monte
+Carlo} method for estimating power in multilevel designs.
+\emph{Psychological Methods}. \url{https://doi.org/10.1037/met0000614}
+
 \bibitem[\citeproctext]{ref-fahrmeirRegressionModelsMethods2021}
 Fahrmeir, L., Kneib, T., Lang, S., \& Marx, B. D. (2021).
 \emph{Regression: {Models}, {Methods} and {Applications}}. Springer
@@ -2493,9 +2582,15 @@ Gomila, R., \& Clark, C. S. (2022). Missing data in experiments:
 143--155. \url{https://doi.org/10.1037/met0000361}
 
 \bibitem[\citeproctext]{ref-greenSIMRPackagePower2016a}
-Green, P., \& MacLeod, C. J. (2016). {\textsc{SIMR}} : An {R} package
+Green, P., \& MacLeod, C. J. (2016a). {\textsc{SIMR}} : An {R} package
 for power analysis of generalized linear mixed models by simulation.
 \emph{Methods in Ecology and Evolution}, \emph{7}(4), 493--498.
+\url{https://doi.org/10.1111/2041-210X.12504}
+
+\bibitem[\citeproctext]{ref-greenSIMRPackagePower2016}
+Green, P., \& MacLeod, C. J. (2016b). {SIMR}: An {R} package for power
+analysis of generalized linear mixed models by simulation. \emph{Methods
+in Ecology and Evolution}, \emph{7}(4), 493--498.
 \url{https://doi.org/10.1111/2041-210X.12504}
 
 \bibitem[\citeproctext]{ref-hallgrenConductingSimulationStudies2013}
@@ -2503,6 +2598,12 @@ Hallgren, K. A. (2013). Conducting {Simulation Studies} in the {R
 Programming Environment}. \emph{Tutorials in Quantitative Methods for
 Psychology}, \emph{9}(2), 43--60.
 \url{https://doi.org/10.20982/tqmp.09.2.p043}
+
+\bibitem[\citeproctext]{ref-iddiPowerSampleSize2022}
+Iddi, S., \& C Donohue, M. (2022). Power and {Sample Size} for
+{Longitudinal Models} in {R} -- {The} longpower {Package} and {Shiny
+App}. \emph{The R Journal}, \emph{14}(1), 264--282.
+\url{https://doi.org/10.32614/RJ-2022-022}
 
 \bibitem[\citeproctext]{ref-kainPracticalGuidePower2015}
 Kain, M. P., Bolker, B. M., \& McCoy, M. W. (2015). A practical guide
@@ -2581,6 +2682,11 @@ sample size for multilevel relationships research. \emph{Journal of
 Social and Personal Relationships}, \emph{35}(1), 7--31.
 \url{https://doi.org/10.1177/0265407517710342}
 
+\bibitem[\citeproctext]{ref-lebeauSimglmSimulateModels2017}
+LeBeau, B. (2017). \emph{Simglm: {Simulate Models Based} on the
+{Generalized Linear Model}} (p. 0.8.9). Comprehensive R Archive Network.
+\url{https://doi.org/10.32614/CRAN.package.simglm}
+
 \bibitem[\citeproctext]{ref-leeUsingTidyversePackage2020}
 Lee, S., Sriutaisuk, S., \& Kim, H. (2020). Using the {Tidyverse
 Package} in {R} for {Simulation Studies} in {SEM}. \emph{Structural
@@ -2596,6 +2702,24 @@ Lundberg, I., Johnson, R., \& Stewart, B. M. (2021). What {Is Your
 Estimand}? {Defining} the {Target Quantity Connects Statistical
 Evidence} to {Theory}. \emph{American Sociological Review},
 \emph{86}(3), 532--565. \url{https://doi.org/10.1177/00031224211004187}
+
+\bibitem[\citeproctext]{ref-magnussonConsequencesIgnoringTherapist2018}
+Magnusson, K., Andersson, G., \& Carlbring, P. (2018). The consequences
+of ignoring therapist effects in trials with longitudinal data: {A}
+simulation study. \emph{Journal of Consulting and Clinical Psychology},
+\emph{86}(9), 711--725. \url{https://doi.org/10.1037/ccp0000333}
+
+\bibitem[\citeproctext]{ref-marcochakyanyuPassLmePower2019}
+Marco Chak Yan YU. (2019). \emph{Pass.lme: {Power} and {Sample Size} for
+{Linear Mixed Effect Models}} (p. 0.9.0). Comprehensive R Archive
+Network. \url{https://doi.org/10.32614/CRAN.package.pass.lme}
+
+\bibitem[\citeproctext]{ref-martinMeasuringIndividualDifferences2011}
+Martin, J. G. A., Nussey, D. H., Wilson, A. J., \& Réale, D. (2011).
+Measuring individual differences in reaction norms in field and
+experimental studies: A power analysis of random regression models.
+\emph{Methods in Ecology and Evolution}, \emph{2}(4), 362--374.
+\url{https://doi.org/10.1111/j.2041-210X.2010.00084.x}
 
 \bibitem[\citeproctext]{ref-matuschekBalancingTypeError2017}
 Matuschek, H., Kliegl, R., Vasishth, S., Baayen, H., \& Bates, D.
@@ -2661,6 +2785,12 @@ tests. \emph{Theory \& Psychology}, \emph{33}(3), 403--423.
 Vaughan, D., \& Dancho, M. (2022). \emph{Furrr: Apply mapping functions
 in parallel using futures}. \url{https://github.com/DavisVaughan/furrr}
 
+\bibitem[\citeproctext]{ref-watsonGeneralisedLinearMixed2023}
+Watson, S. I. (2023). \emph{Generalised {Linear Mixed Model
+Specification}, {Analysis}, {Fitting}, and {Optimal Design} in {R} with
+the glmmr {Packages}}. arXiv.
+\url{https://doi.org/10.48550/ARXIV.2303.12657}
+
 \bibitem[\citeproctext]{ref-westfallStatisticalPowerOptimal2014}
 Westfall, J., Kenny, D. A., \& Judd, C. M. (2014). Statistical power and
 optimal design in experiments in which samples of participants respond
@@ -2685,6 +2815,11 @@ edition). O'Reilly.
 Yarkoni, T. (2022). The generalizability crisis. \emph{Behavioral and
 Brain Sciences}, \emph{45}, e1.
 \url{https://doi.org/10.1017/S0140525X20001685}
+
+\bibitem[\citeproctext]{ref-zhangPracticalStatisticalPower2018}
+Zhang, Z., \& Yuan, K.-H. (2018). \emph{Practical statistical power
+analysis using {Webpower} and {R}}. ISDSA Press.
+\url{https://doi.org/10.35566/power}
 
 \bibitem[\citeproctext]{ref-zimmerSampleSizePlanning2022}
 Zimmer, F., Henninger, M., \& Debelak, R. (2022). \emph{Sample {Size

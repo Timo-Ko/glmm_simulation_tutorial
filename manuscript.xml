@@ -386,9 +386,10 @@ simulation-based sample size planning.
     <sec id="simulation-based-sample-size-planning-with-glmms">
       <title>Simulation-based sample size planning with GLMMs</title>
       <p>To our knowledge, existing approaches for sample size planning for
-  GLMMs have exclusively focused on planning for power. In Table 1, we
-  review available software packages that can be used to perform power
-  analysis for multilevel models in R [Version 4.4.0; R Core Team
+  GLMMs have exclusively focused on planning for power. In
+  <xref alt="Table 1" rid="tbl-rpackages">Table 1</xref>, we review
+  available software packages that can be used to perform power analysis
+  for multilevel models in R [Version 4.4.0; R Core Team
   (<xref alt="2024" rid="ref-R-base" ref-type="bibr">2024</xref>)].
   Power analysis methods can be categorized into formula-based,
   summary-statistics-based and simulation-based methods
@@ -415,8 +416,8 @@ simulation-based sample size planning.
   &amp; Stevens, 2018</xref>;
   <xref alt="DeBruine &amp; Barr, 2021" rid="ref-debruineUnderstandingMixedEffectsModels2021" ref-type="bibr">DeBruine
   &amp; Barr, 2021</xref>;
-  <xref alt="Green &amp; MacLeod, 2016" rid="ref-greenSIMRPackagePower2016a" ref-type="bibr">Green
-  &amp; MacLeod, 2016</xref>;
+  <xref alt="Green &amp; MacLeod, 2016a" rid="ref-greenSIMRPackagePower2016a" ref-type="bibr">Green
+  &amp; MacLeod, 2016a</xref>;
   <xref alt="Kain et al., 2015" rid="ref-kainPracticalGuidePower2015" ref-type="bibr">Kain
   et al., 2015</xref>;
   <xref alt="Kumle et al., 2021" rid="ref-kumleEstimatingPowerGeneralized2021" ref-type="bibr">Kumle
@@ -449,16 +450,184 @@ simulation-based sample size planning.
   We will discuss a number of strategies on how to specify model
   parameters for application-specific, tailored data simulations in a
   later chapter.</p>
-      <p>INSERT TABLE 1 HERE!</p>
+      <fig id="tbl-rpackages">
+        <caption>
+          <p>Table 1: Overview of software packages for power
+    analysis for (generalized) linear mixed models in R.</p>
+        </caption>
+        <table-wrap>
+          <table>
+            <colgroup>
+              <col width="12%"/>
+              <col width="39%"/>
+              <col width="5%"/>
+              <col width="5%"/>
+              <col width="20%"/>
+              <col width="18%"/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th align="left">Package name</th>
+                <th align="left">Summary</th>
+                <th align="left">GUI available</th>
+                <th align="left">GLMM support</th>
+                <th align="left">Design limitations</th>
+                <th align="left">Reference</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td align="left">glmmrBase</td>
+                <td align="left">Formula- and simulation-based power
+            analysis; non-linear fixed effects and flexible covariance
+            functions</td>
+                <td align="left">no</td>
+                <td align="left">yes</td>
+                <td align="left">none</td>
+                <td align="left">Watson
+            (<xref alt="2023" rid="ref-watsonGeneralisedLinearMixed2023" ref-type="bibr">2023</xref>)</td>
+              </tr>
+              <tr>
+                <td align="left">longpower</td>
+                <td align="left">Formula-based power analysis; focus on
+            longitudinal data</td>
+                <td align="left">
+                  <ext-link ext-link-type="uri" xlink:href="https://atrihub.shinyapps.io/power/">yes</ext-link>
+                </td>
+                <td align="left">no</td>
+                <td align="left">limited set of study designs with two
+            levels</td>
+                <td align="left">Iddi &amp; C Donohue
+            (<xref alt="2022" rid="ref-iddiPowerSampleSize2022" ref-type="bibr">2022</xref>)</td>
+              </tr>
+              <tr>
+                <td align="left">mixedpower</td>
+                <td align="left">Simulation-based power analysis; based on
+            ‘simr’ package</td>
+                <td align="left">no</td>
+                <td align="left">yes</td>
+                <td align="left">none</td>
+                <td align="left">Kumle et al.
+            (<xref alt="2021" rid="ref-kumleEstimatingPowerGeneralized2021" ref-type="bibr">2021</xref>)</td>
+              </tr>
+              <tr>
+                <td align="left">mlmpower</td>
+                <td align="left">Simulation-based power analysis; missing
+            data mechanisms</td>
+                <td align="left">no</td>
+                <td align="left">no</td>
+                <td align="left">limited to two levels</td>
+                <td align="left">Enders et al.
+            (<xref alt="2023" rid="ref-endersSimpleMonteCarlo2023" ref-type="bibr">2023</xref>)</td>
+              </tr>
+              <tr>
+                <td align="left">pamm</td>
+                <td align="left">Simulation-based power analysis; based on
+            ‘lme4’ package</td>
+                <td align="left">no</td>
+                <td align="left">no</td>
+                <td align="left">none</td>
+                <td align="left">Martin et al.
+            (<xref alt="2011" rid="ref-martinMeasuringIndividualDifferences2011" ref-type="bibr">2011</xref>)</td>
+              </tr>
+              <tr>
+                <td align="left">pass.lme</td>
+                <td align="left">Formula-based power analysis; limited
+            documentation</td>
+                <td align="left">no</td>
+                <td align="left">no</td>
+                <td align="left">none</td>
+                <td align="left">Marco Chak Yan YU
+            (<xref alt="2019" rid="ref-marcochakyanyuPassLmePower2019" ref-type="bibr">2019</xref>)</td>
+              </tr>
+              <tr>
+                <td align="left">PowerAnalysisIL</td>
+                <td align="left">Simulation-based power analysis; focus on
+            longitudinal data</td>
+                <td align="left">
+                  <ext-link ext-link-type="uri" xlink:href="https://github.com/ginettelafit/PowerAnalysisIL?tab=readme-ov-file#shiny-app-and-r-package-to-perform-power-analysis-to-select-the-number-of-participants-in-intensive-longitudinal-studies">yes</ext-link>
+                </td>
+                <td align="left">no</td>
+                <td align="left">limited set of study designs with two
+            levels</td>
+                <td align="left">Lafit et al.
+            (<xref alt="2021" rid="ref-lafitSelectionNumberParticipants2021" ref-type="bibr">2021</xref>)</td>
+              </tr>
+              <tr>
+                <td align="left">powerlmm</td>
+                <td align="left">Simulation-based power analysis; missing
+            data mechanisms; focus on longitudinal data</td>
+                <td align="left">
+                  <ext-link ext-link-type="uri" xlink:href="https://github.com/rpsychologist/powerlmm?tab=readme-ov-file#launch-interactive-web-application">yes</ext-link>
+                </td>
+                <td align="left">no</td>
+                <td align="left">limited set of study designs with two or
+            three levels</td>
+                <td align="left">Magnusson et al.
+            (<xref alt="2018" rid="ref-magnussonConsequencesIgnoringTherapist2018" ref-type="bibr">2018</xref>)</td>
+              </tr>
+              <tr>
+                <td align="left">simglm</td>
+                <td align="left">Simulation-based power analysis; missing
+            data mechanisms</td>
+                <td align="left">
+                  <ext-link ext-link-type="uri" xlink:href="https://simglm.brandonlebeau.org/reference/run_shiny.html">yes</ext-link>
+                </td>
+                <td align="left">yes</td>
+                <td align="left">limited to two or three levels</td>
+                <td align="left">LeBeau
+            (<xref alt="2017" rid="ref-lebeauSimglmSimulateModels2017" ref-type="bibr">2017</xref>)</td>
+              </tr>
+              <tr>
+                <td align="left">simr</td>
+                <td align="left">Simulation-based power analysis; based on
+            ‘lme4’ package</td>
+                <td align="left">no</td>
+                <td align="left">yes</td>
+                <td align="left">none</td>
+                <td align="left">Green &amp; MacLeod
+            (<xref alt="2016b" rid="ref-greenSIMRPackagePower2016" ref-type="bibr">2016b</xref>)</td>
+              </tr>
+              <tr>
+                <td align="left">summary_statistics based_power</td>
+                <td align="left">Summary-statistics-based power analysis;
+            based on ‘pwr’ package</td>
+                <td align="left">
+                  <ext-link ext-link-type="uri" xlink:href="https://koumurayama.shinyapps.io/summary_statistics_based_power/">yes</ext-link>
+                </td>
+                <td align="left">yes</td>
+                <td align="left">limited set of study designs with two
+            levels</td>
+                <td align="left">Murayama et al.
+            (<xref alt="2022" rid="ref-murayamaSummarystatisticsbasedPowerAnalysis2022" ref-type="bibr">2022</xref>)</td>
+              </tr>
+              <tr>
+                <td align="left">WebPower</td>
+                <td align="left">Formula-based power analysis; based on
+            ‘longpower’ package; focus on longitudinal data</td>
+                <td align="left">
+                  <ext-link ext-link-type="uri" xlink:href="https://webpower.psychstat.org/wiki/start">yes</ext-link>
+                </td>
+                <td align="left">no</td>
+                <td align="left">limited set of study designs with two
+            levels</td>
+                <td align="left">Zhang &amp; Yuan
+            (<xref alt="2018" rid="ref-zhangPracticalStatisticalPower2018" ref-type="bibr">2018</xref>)</td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
+      </fig>
     </sec>
     <sec id="reasons-to-use-tailored-data-simulation">
       <title>Reasons to use tailored data simulation</title>
       <p>Performing tailored simulation-based sample size planning is more
   complicated and time-consuming than using the existing software tools
-  outlined in TABLE 1. Circumstances under which tailored
-  simulation-based sample size planning is necessary include 1) complex
-  study designs, 2) complex statistical hypotheses, 3) planning for
-  precision, and 4) lack of prior studies or pilot data.</p>
+  outlined in <xref alt="Table 1" rid="tbl-rpackages">Table 1</xref>.
+  Circumstances under which tailored simulation-based sample size
+  planning is necessary include 1) complex study designs, 2) complex
+  statistical hypotheses, 3) planning for precision, and 4) lack of
+  prior studies or pilot data.</p>
       <p>First, requirements of real-world studies are often more complex
   than the simplified designs assumed by many user-friendly software
   packages for sample size planning. One frequent issue in applied data
@@ -557,18 +726,21 @@ simulation-based sample size planning.
   is combined with <italic>AND</italic>, a correction for multiple
   testing is not necessary but rather a mistake that unnecessarily
   reduces the power of the global HT. None of the software packages for
-  sample size planning in Table 1 can handle combined hypotheses and
-  only some can handle directed hypotheses. In contrast, our case study
-  will demonstrate how we can test directed combined hypotheses with
-  tailored simulation-based sample size planning.</p>
+  sample size planning in
+  <xref alt="Table 1" rid="tbl-rpackages">Table 1</xref> can handle
+  combined hypotheses and only some can handle directed hypotheses. In
+  contrast, our case study will demonstrate how we can test directed
+  combined hypotheses with tailored simulation-based sample size
+  planning.</p>
       <p>Third, all available software packages for sample size planning
   with GLMMs are based on power analysis and do not support planning for
   precision. Thus, researchers that want to apply an estimation strategy
   instead of testing statistical hypotheses
   (<xref alt="Cumming, 2014" rid="ref-cummingNewStatisticsWhy2014" ref-type="bibr">Cumming,
   2014</xref>), currently cannot use the software packages outlined in
-  TABLE 1. However, tailored simulation-based sample size planning can
-  easily handle the planning for precision approach
+  <xref alt="Table 1" rid="tbl-rpackages">Table 1</xref>. However,
+  tailored simulation-based sample size planning can easily handle the
+  planning for precision approach
   (<xref alt="Maxwell et al., 2008" rid="ref-maxwellSampleSizePlanning2008" ref-type="bibr">Maxwell
   et al., 2008</xref>). The only change in procedure is that instead of
   computing HTs for each simulated dataset and estimating statistical
@@ -1169,7 +1341,7 @@ simulation-based sample size planning.
       condition.</p>
           <fig id="tbl-probtable">
             <caption>
-              <p>Table 1: Assumed probabilities that an average
+              <p>Table 2: Assumed probabilities that an average
         subject solves an average item in each experimental
         condition.</p>
             </caption>
@@ -1469,7 +1641,7 @@ simulation-based sample size planning.
               </table>
             </table-wrap>
           </fig>
-          <p><xref alt="Table 1" rid="tbl-probtable">Table 1</xref> shows
+          <p><xref alt="Table 2" rid="tbl-probtable">Table 2</xref> shows
       our set of assumptions concerning the probability that an average
       subject solves an average item for each experimental condition, as
       well as the corresponding equations implied by the model. The
@@ -1787,7 +1959,7 @@ dat |&gt;
           validated the plausibility of our estimated gains and losses
           with the collaborating radiologists until we settled on the
           probabilities shown in
-          <xref alt="Table 1" rid="tbl-probtable">Table 1</xref>.</p>
+          <xref alt="Table 2" rid="tbl-probtable">Table 2</xref>.</p>
             </sec>
           </sec>
         </sec>
@@ -4185,6 +4357,35 @@ precision |&gt;
           <lpage>5218</lpage>
         </element-citation>
       </ref>
+      <ref id="ref-endersSimpleMonteCarlo2023">
+        <element-citation publication-type="article-journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Enders</surname>
+              <given-names>Craig K.</given-names>
+            </name>
+            <name>
+              <surname>Keller</surname>
+              <given-names>Brian T.</given-names>
+            </name>
+            <name>
+              <surname>Woller</surname>
+              <given-names>Michael P.</given-names>
+            </name>
+          </person-group>
+          <article-title>A simple Monte Carlo method for estimating power in multilevel designs.</article-title>
+          <source>Psychological Methods</source>
+          <year iso-8601-date="2023-11">2023</year>
+          <month>11</month>
+          <date-in-citation content-type="access-date">
+            <year iso-8601-date="2024-06-24">2024</year>
+            <month>06</month>
+            <day>24</day>
+          </date-in-citation>
+          <issn>1939-1463, 1082-989X</issn>
+          <pub-id pub-id-type="doi">10.1037/met0000614</pub-id>
+        </element-citation>
+      </ref>
       <ref id="ref-fahrmeirRegressionModelsMethods2021">
         <element-citation publication-type="book">
           <person-group person-group-type="author">
@@ -4303,6 +4504,34 @@ precision |&gt;
           <lpage>155</lpage>
         </element-citation>
       </ref>
+      <ref id="ref-greenSIMRPackagePower2016">
+        <element-citation publication-type="article-journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Green</surname>
+              <given-names>Peter</given-names>
+            </name>
+            <name>
+              <surname>MacLeod</surname>
+              <given-names>Catriona J.</given-names>
+            </name>
+          </person-group>
+          <article-title>SIMR: An R package for power analysis of generalized linear mixed models by simulation</article-title>
+          <source>Methods in Ecology and Evolution</source>
+          <year iso-8601-date="2016">2016</year>
+          <date-in-citation content-type="access-date">
+            <year iso-8601-date="2023-04-24">2023</year>
+            <month>04</month>
+            <day>24</day>
+          </date-in-citation>
+          <volume>7</volume>
+          <issue>4</issue>
+          <issn>2041-210X</issn>
+          <pub-id pub-id-type="doi">10.1111/2041-210X.12504</pub-id>
+          <fpage>493</fpage>
+          <lpage>498</lpage>
+        </element-citation>
+      </ref>
       <ref id="ref-greenSIMRPackagePower2016a">
         <element-citation publication-type="article-journal">
           <person-group person-group-type="author">
@@ -4361,6 +4590,35 @@ precision |&gt;
           <pub-id pub-id-type="doi">10.20982/tqmp.09.2.p043</pub-id>
           <fpage>43</fpage>
           <lpage>60</lpage>
+        </element-citation>
+      </ref>
+      <ref id="ref-iddiPowerSampleSize2022">
+        <element-citation publication-type="article-journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Iddi</surname>
+              <given-names>Samuel</given-names>
+            </name>
+            <name>
+              <surname>C Donohue</surname>
+              <given-names>Michael</given-names>
+            </name>
+          </person-group>
+          <article-title>Power and Sample Size for Longitudinal Models in R – The longpower Package and Shiny App</article-title>
+          <source>The R Journal</source>
+          <year iso-8601-date="2022-07">2022</year>
+          <month>07</month>
+          <date-in-citation content-type="access-date">
+            <year iso-8601-date="2024-06-24">2024</year>
+            <month>06</month>
+            <day>24</day>
+          </date-in-citation>
+          <volume>14</volume>
+          <issue>1</issue>
+          <issn>2073-4859</issn>
+          <pub-id pub-id-type="doi">10.32614/RJ-2022-022</pub-id>
+          <fpage>264</fpage>
+          <lpage>282</lpage>
         </element-citation>
       </ref>
       <ref id="ref-kainPracticalGuidePower2015">
@@ -5064,6 +5322,28 @@ precision |&gt;
           <lpage>31</lpage>
         </element-citation>
       </ref>
+      <ref id="ref-lebeauSimglmSimulateModels2017">
+        <element-citation>
+          <person-group person-group-type="author">
+            <name>
+              <surname>LeBeau</surname>
+              <given-names>Brandon</given-names>
+            </name>
+          </person-group>
+          <article-title>Simglm: Simulate Models Based on the Generalized Linear Model</article-title>
+          <publisher-name>Comprehensive R Archive Network</publisher-name>
+          <year iso-8601-date="2017-05">2017</year>
+          <month>05</month>
+          <date-in-citation content-type="access-date">
+            <year iso-8601-date="2024-06-24">2024</year>
+            <month>06</month>
+            <day>24</day>
+          </date-in-citation>
+          <pub-id pub-id-type="doi">10.32614/CRAN.package.simglm</pub-id>
+          <fpage>0.8.9</fpage>
+          <lpage/>
+        </element-citation>
+      </ref>
       <ref id="ref-leeUsingTidyversePackage2020">
         <element-citation publication-type="article-journal">
           <person-group person-group-type="author">
@@ -5148,6 +5428,95 @@ precision |&gt;
           <pub-id pub-id-type="doi">10.1177/00031224211004187</pub-id>
           <fpage>532</fpage>
           <lpage>565</lpage>
+        </element-citation>
+      </ref>
+      <ref id="ref-magnussonConsequencesIgnoringTherapist2018">
+        <element-citation publication-type="article-journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Magnusson</surname>
+              <given-names>Kristoffer</given-names>
+            </name>
+            <name>
+              <surname>Andersson</surname>
+              <given-names>Gerhard</given-names>
+            </name>
+            <name>
+              <surname>Carlbring</surname>
+              <given-names>Per</given-names>
+            </name>
+          </person-group>
+          <article-title>The consequences of ignoring therapist effects in trials with longitudinal data: A simulation study.</article-title>
+          <source>Journal of Consulting and Clinical Psychology</source>
+          <year iso-8601-date="2018-09">2018</year>
+          <month>09</month>
+          <date-in-citation content-type="access-date">
+            <year iso-8601-date="2024-06-24">2024</year>
+            <month>06</month>
+            <day>24</day>
+          </date-in-citation>
+          <volume>86</volume>
+          <issue>9</issue>
+          <issn>1939-2117, 0022-006X</issn>
+          <pub-id pub-id-type="doi">10.1037/ccp0000333</pub-id>
+          <fpage>711</fpage>
+          <lpage>725</lpage>
+        </element-citation>
+      </ref>
+      <ref id="ref-marcochakyanyuPassLmePower2019">
+        <element-citation>
+          <person-group person-group-type="author">
+            <string-name>Marco Chak Yan YU</string-name>
+          </person-group>
+          <article-title>Pass.lme: Power and Sample Size for Linear Mixed Effect Models</article-title>
+          <publisher-name>Comprehensive R Archive Network</publisher-name>
+          <year iso-8601-date="2019-08">2019</year>
+          <month>08</month>
+          <date-in-citation content-type="access-date">
+            <year iso-8601-date="2024-06-24">2024</year>
+            <month>06</month>
+            <day>24</day>
+          </date-in-citation>
+          <pub-id pub-id-type="doi">10.32614/CRAN.package.pass.lme</pub-id>
+          <fpage>0.9.0</fpage>
+          <lpage/>
+        </element-citation>
+      </ref>
+      <ref id="ref-martinMeasuringIndividualDifferences2011">
+        <element-citation publication-type="article-journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Martin</surname>
+              <given-names>Julien G. A.</given-names>
+            </name>
+            <name>
+              <surname>Nussey</surname>
+              <given-names>Daniel H.</given-names>
+            </name>
+            <name>
+              <surname>Wilson</surname>
+              <given-names>Alastair J.</given-names>
+            </name>
+            <name>
+              <surname>Réale</surname>
+              <given-names>Denis</given-names>
+            </name>
+          </person-group>
+          <article-title>Measuring individual differences in reaction norms in field and experimental studies: A power analysis of random regression models</article-title>
+          <source>Methods in Ecology and Evolution</source>
+          <year iso-8601-date="2011-08">2011</year>
+          <month>08</month>
+          <date-in-citation content-type="access-date">
+            <year iso-8601-date="2024-06-24">2024</year>
+            <month>06</month>
+            <day>24</day>
+          </date-in-citation>
+          <volume>2</volume>
+          <issue>4</issue>
+          <issn>2041-210X, 2041-210X</issn>
+          <pub-id pub-id-type="doi">10.1111/j.2041-210X.2010.00084.x</pub-id>
+          <fpage>362</fpage>
+          <lpage>374</lpage>
         </element-citation>
       </ref>
       <ref id="ref-matuschekBalancingTypeError2017">
@@ -5430,6 +5799,25 @@ precision |&gt;
           <lpage>423</lpage>
         </element-citation>
       </ref>
+      <ref id="ref-watsonGeneralisedLinearMixed2023">
+        <element-citation>
+          <person-group person-group-type="author">
+            <name>
+              <surname>Watson</surname>
+              <given-names>Samuel I.</given-names>
+            </name>
+          </person-group>
+          <article-title>Generalised Linear Mixed Model Specification, Analysis, Fitting, and Optimal Design in R with the glmmr Packages</article-title>
+          <publisher-name>arXiv</publisher-name>
+          <year iso-8601-date="2023">2023</year>
+          <date-in-citation content-type="access-date">
+            <year iso-8601-date="2024-06-24">2024</year>
+            <month>06</month>
+            <day>24</day>
+          </date-in-citation>
+          <pub-id pub-id-type="doi">10.48550/ARXIV.2303.12657</pub-id>
+        </element-citation>
+      </ref>
       <ref id="ref-westfallStatisticalPowerOptimal2014">
         <element-citation publication-type="article-journal">
           <person-group person-group-type="author">
@@ -5622,6 +6010,30 @@ precision |&gt;
           <lpage/>
         </element-citation>
       </ref>
+      <ref id="ref-zhangPracticalStatisticalPower2018">
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zhang</surname>
+              <given-names>Zhiyong</given-names>
+            </name>
+            <name>
+              <surname>Yuan</surname>
+              <given-names>Ke-Hai</given-names>
+            </name>
+          </person-group>
+          <source>Practical statistical power analysis using Webpower and R</source>
+          <publisher-name>ISDSA Press</publisher-name>
+          <year iso-8601-date="2018">2018</year>
+          <date-in-citation content-type="access-date">
+            <year iso-8601-date="2024-06-24">2024</year>
+            <month>06</month>
+            <day>24</day>
+          </date-in-citation>
+          <isbn>978-1-946728-02-9</isbn>
+          <pub-id pub-id-type="doi">10.35566/power</pub-id>
+        </element-citation>
+      </ref>
       <ref id="ref-zimmerSampleSizePlanning2022">
         <element-citation>
           <person-group person-group-type="author">
@@ -5780,7 +6192,7 @@ precision |&gt;
       </fn>
     </fn-group>
   </back>
-  <sub-article article-type="notebook" id="nb-6-nb-article">
+  <sub-article article-type="notebook" id="nb-8-nb-article">
     <front-stub>
       <title-group>
         <article-title>A Tutorial on Tailored Simulation-Based Sample Size
@@ -6227,9 +6639,10 @@ r_refs("r-references.bib", append = FALSE)</code>
       <sec id="simulation-based-sample-size-planning-with-glmms-nb-article">
         <title>Simulation-based sample size planning with GLMMs</title>
         <p>To our knowledge, existing approaches for sample size planning for
-  GLMMs have exclusively focused on planning for power. In Table 1, we
-  review available software packages that can be used to perform power
-  analysis for multilevel models in R [Version 4.4.0; R Core Team
+  GLMMs have exclusively focused on planning for power. In
+  <xref alt="Table 1" rid="tbl-rpackages-nb-article">Table 1</xref>, we review
+  available software packages that can be used to perform power analysis
+  for multilevel models in R [Version 4.4.0; R Core Team
   (<xref alt="2024" rid="ref-R-base-nb-article" ref-type="bibr">2024</xref>)].
   Power analysis methods can be categorized into formula-based,
   summary-statistics-based and simulation-based methods
@@ -6256,8 +6669,8 @@ r_refs("r-references.bib", append = FALSE)</code>
   &amp; Stevens, 2018</xref>;
   <xref alt="DeBruine &amp; Barr, 2021" rid="ref-debruineUnderstandingMixedEffectsModels2021-nb-article" ref-type="bibr">DeBruine
   &amp; Barr, 2021</xref>;
-  <xref alt="Green &amp; MacLeod, 2016" rid="ref-greenSIMRPackagePower2016a-nb-article" ref-type="bibr">Green
-  &amp; MacLeod, 2016</xref>;
+  <xref alt="Green &amp; MacLeod, 2016a" rid="ref-greenSIMRPackagePower2016a-nb-article" ref-type="bibr">Green
+  &amp; MacLeod, 2016a</xref>;
   <xref alt="Kain et al., 2015" rid="ref-kainPracticalGuidePower2015-nb-article" ref-type="bibr">Kain
   et al., 2015</xref>;
   <xref alt="Kumle et al., 2021" rid="ref-kumleEstimatingPowerGeneralized2021-nb-article" ref-type="bibr">Kumle
@@ -6290,16 +6703,207 @@ r_refs("r-references.bib", append = FALSE)</code>
   We will discuss a number of strategies on how to specify model
   parameters for application-specific, tailored data simulations in a
   later chapter.</p>
-        <p>INSERT TABLE 1 HERE!</p>
+        <sec specific-use="notebook-content">
+          <code language="r script">packagetable &lt;- data.frame(
+  col1 = c("glmmrBase", "longpower", "mixedpower", "mlmpower", "pamm", "pass.lme", "PowerAnalysisIL", "powerlmm", "simglm", "simr", "summary_statistics based_power", "WebPower"),
+  col2 = c("Formula- and simulation-based power analysis; non-linear fixed effects and flexible covariance functions",
+              "Formula-based power analysis; focus on longitudinal data",
+              "Simulation-based power analysis; based on 'simr' package",
+              "Simulation-based power analysis; missing data mechanisms",
+              "Simulation-based power analysis; based on 'lme4' package",
+              "Formula-based power analysis; limited documentation",
+              "Simulation-based power analysis; focus on longitudinal data",
+              "Simulation-based power analysis; missing data mechanisms; focus on longitudinal data",
+              "Simulation-based power analysis; missing data mechanisms",
+              "Simulation-based power analysis; based on 'lme4' package",
+              "Summary-statistics-based power analysis; based on 'pwr' package",
+              "Formula-based power analysis; based on 'longpower' package; focus on longitudinal data"),
+  col3 = c("no", "[yes](https://atrihub.shinyapps.io/power/)", "no", "no", "no", "no", "[yes](https://github.com/ginettelafit/PowerAnalysisIL?tab=readme-ov-file#shiny-app-and-r-package-to-perform-power-analysis-to-select-the-number-of-participants-in-intensive-longitudinal-studies)", "[yes](https://github.com/rpsychologist/powerlmm?tab=readme-ov-file#launch-interactive-web-application)", "[yes](https://simglm.brandonlebeau.org/reference/run_shiny.html)", "no", "[yes](https://koumurayama.shinyapps.io/summary_statistics_based_power/)", "[yes](https://webpower.psychstat.org/wiki/start)"),
+  col4 = c("yes", "no", "yes", "no", "no", "no", "no", "no", "yes", "yes", "yes", "no"),
+  col5 = c("none", "limited set of study designs with two levels", "none", "limited to two levels", "none", "none", "limited set of study designs with two levels", "limited set of study designs with two or three levels", "limited to two or three levels", "none", "limited set of study designs with two levels", "limited set of study designs with two levels"),
+  col6 = c("@watsonGeneralisedLinearMixed2023", "@iddiPowerSampleSize2022", "@kumleEstimatingPowerGeneralized2021", "@endersSimpleMonteCarlo2023", "@martinMeasuringIndividualDifferences2011", "@marcochakyanyuPassLmePower2019", "@lafitSelectionNumberParticipants2021", "@magnussonConsequencesIgnoringTherapist2018", "@lebeauSimglmSimulateModels2017", "@greenSIMRPackagePower2016", "@murayamaSummarystatisticsbasedPowerAnalysis2022", "@zhangPracticalStatisticalPower2018")
+)
+
+knitr::kable(packagetable, col.names = c("Package name", "Summary", "GUI available", "GLMM support", "Design limitations", "Reference"), escape = FALSE)</code>
+          <fig id="tbl-rpackages-nb-article">
+            <caption>
+              <p>Table 1: Overview of software packages for power
+    analysis for (generalized) linear mixed models in R.</p>
+            </caption>
+            <table-wrap>
+              <table>
+                <colgroup>
+                  <col width="12%"/>
+                  <col width="39%"/>
+                  <col width="5%"/>
+                  <col width="5%"/>
+                  <col width="20%"/>
+                  <col width="18%"/>
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th align="left">Package name</th>
+                    <th align="left">Summary</th>
+                    <th align="left">GUI available</th>
+                    <th align="left">GLMM support</th>
+                    <th align="left">Design limitations</th>
+                    <th align="left">Reference</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td align="left">glmmrBase</td>
+                    <td align="left">Formula- and simulation-based power
+            analysis; non-linear fixed effects and flexible covariance
+            functions</td>
+                    <td align="left">no</td>
+                    <td align="left">yes</td>
+                    <td align="left">none</td>
+                    <td align="left">Watson
+            (<xref alt="2023" rid="ref-watsonGeneralisedLinearMixed2023-nb-article" ref-type="bibr">2023</xref>)</td>
+                  </tr>
+                  <tr>
+                    <td align="left">longpower</td>
+                    <td align="left">Formula-based power analysis; focus on
+            longitudinal data</td>
+                    <td align="left">
+                      <ext-link ext-link-type="uri" xlink:href="https://atrihub.shinyapps.io/power/">yes</ext-link>
+                    </td>
+                    <td align="left">no</td>
+                    <td align="left">limited set of study designs with two
+            levels</td>
+                    <td align="left">Iddi &amp; C Donohue
+            (<xref alt="2022" rid="ref-iddiPowerSampleSize2022-nb-article" ref-type="bibr">2022</xref>)</td>
+                  </tr>
+                  <tr>
+                    <td align="left">mixedpower</td>
+                    <td align="left">Simulation-based power analysis; based on
+            ‘simr’ package</td>
+                    <td align="left">no</td>
+                    <td align="left">yes</td>
+                    <td align="left">none</td>
+                    <td align="left">Kumle et al.
+            (<xref alt="2021" rid="ref-kumleEstimatingPowerGeneralized2021-nb-article" ref-type="bibr">2021</xref>)</td>
+                  </tr>
+                  <tr>
+                    <td align="left">mlmpower</td>
+                    <td align="left">Simulation-based power analysis; missing
+            data mechanisms</td>
+                    <td align="left">no</td>
+                    <td align="left">no</td>
+                    <td align="left">limited to two levels</td>
+                    <td align="left">Enders et al.
+            (<xref alt="2023" rid="ref-endersSimpleMonteCarlo2023-nb-article" ref-type="bibr">2023</xref>)</td>
+                  </tr>
+                  <tr>
+                    <td align="left">pamm</td>
+                    <td align="left">Simulation-based power analysis; based on
+            ‘lme4’ package</td>
+                    <td align="left">no</td>
+                    <td align="left">no</td>
+                    <td align="left">none</td>
+                    <td align="left">Martin et al.
+            (<xref alt="2011" rid="ref-martinMeasuringIndividualDifferences2011-nb-article" ref-type="bibr">2011</xref>)</td>
+                  </tr>
+                  <tr>
+                    <td align="left">pass.lme</td>
+                    <td align="left">Formula-based power analysis; limited
+            documentation</td>
+                    <td align="left">no</td>
+                    <td align="left">no</td>
+                    <td align="left">none</td>
+                    <td align="left">Marco Chak Yan YU
+            (<xref alt="2019" rid="ref-marcochakyanyuPassLmePower2019-nb-article" ref-type="bibr">2019</xref>)</td>
+                  </tr>
+                  <tr>
+                    <td align="left">PowerAnalysisIL</td>
+                    <td align="left">Simulation-based power analysis; focus on
+            longitudinal data</td>
+                    <td align="left">
+                      <ext-link ext-link-type="uri" xlink:href="https://github.com/ginettelafit/PowerAnalysisIL?tab=readme-ov-file#shiny-app-and-r-package-to-perform-power-analysis-to-select-the-number-of-participants-in-intensive-longitudinal-studies">yes</ext-link>
+                    </td>
+                    <td align="left">no</td>
+                    <td align="left">limited set of study designs with two
+            levels</td>
+                    <td align="left">Lafit et al.
+            (<xref alt="2021" rid="ref-lafitSelectionNumberParticipants2021-nb-article" ref-type="bibr">2021</xref>)</td>
+                  </tr>
+                  <tr>
+                    <td align="left">powerlmm</td>
+                    <td align="left">Simulation-based power analysis; missing
+            data mechanisms; focus on longitudinal data</td>
+                    <td align="left">
+                      <ext-link ext-link-type="uri" xlink:href="https://github.com/rpsychologist/powerlmm?tab=readme-ov-file#launch-interactive-web-application">yes</ext-link>
+                    </td>
+                    <td align="left">no</td>
+                    <td align="left">limited set of study designs with two or
+            three levels</td>
+                    <td align="left">Magnusson et al.
+            (<xref alt="2018" rid="ref-magnussonConsequencesIgnoringTherapist2018-nb-article" ref-type="bibr">2018</xref>)</td>
+                  </tr>
+                  <tr>
+                    <td align="left">simglm</td>
+                    <td align="left">Simulation-based power analysis; missing
+            data mechanisms</td>
+                    <td align="left">
+                      <ext-link ext-link-type="uri" xlink:href="https://simglm.brandonlebeau.org/reference/run_shiny.html">yes</ext-link>
+                    </td>
+                    <td align="left">yes</td>
+                    <td align="left">limited to two or three levels</td>
+                    <td align="left">LeBeau
+            (<xref alt="2017" rid="ref-lebeauSimglmSimulateModels2017-nb-article" ref-type="bibr">2017</xref>)</td>
+                  </tr>
+                  <tr>
+                    <td align="left">simr</td>
+                    <td align="left">Simulation-based power analysis; based on
+            ‘lme4’ package</td>
+                    <td align="left">no</td>
+                    <td align="left">yes</td>
+                    <td align="left">none</td>
+                    <td align="left">Green &amp; MacLeod
+            (<xref alt="2016b" rid="ref-greenSIMRPackagePower2016-nb-article" ref-type="bibr">2016b</xref>)</td>
+                  </tr>
+                  <tr>
+                    <td align="left">summary_statistics based_power</td>
+                    <td align="left">Summary-statistics-based power analysis;
+            based on ‘pwr’ package</td>
+                    <td align="left">
+                      <ext-link ext-link-type="uri" xlink:href="https://koumurayama.shinyapps.io/summary_statistics_based_power/">yes</ext-link>
+                    </td>
+                    <td align="left">yes</td>
+                    <td align="left">limited set of study designs with two
+            levels</td>
+                    <td align="left">Murayama et al.
+            (<xref alt="2022" rid="ref-murayamaSummarystatisticsbasedPowerAnalysis2022-nb-article" ref-type="bibr">2022</xref>)</td>
+                  </tr>
+                  <tr>
+                    <td align="left">WebPower</td>
+                    <td align="left">Formula-based power analysis; based on
+            ‘longpower’ package; focus on longitudinal data</td>
+                    <td align="left">
+                      <ext-link ext-link-type="uri" xlink:href="https://webpower.psychstat.org/wiki/start">yes</ext-link>
+                    </td>
+                    <td align="left">no</td>
+                    <td align="left">limited set of study designs with two
+            levels</td>
+                    <td align="left">Zhang &amp; Yuan
+            (<xref alt="2018" rid="ref-zhangPracticalStatisticalPower2018-nb-article" ref-type="bibr">2018</xref>)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </table-wrap>
+          </fig>
+        </sec>
       </sec>
       <sec id="reasons-to-use-tailored-data-simulation-nb-article">
         <title>Reasons to use tailored data simulation</title>
         <p>Performing tailored simulation-based sample size planning is more
   complicated and time-consuming than using the existing software tools
-  outlined in TABLE 1. Circumstances under which tailored
-  simulation-based sample size planning is necessary include 1) complex
-  study designs, 2) complex statistical hypotheses, 3) planning for
-  precision, and 4) lack of prior studies or pilot data.</p>
+  outlined in <xref alt="Table 1" rid="tbl-rpackages-nb-article">Table 1</xref>.
+  Circumstances under which tailored simulation-based sample size
+  planning is necessary include 1) complex study designs, 2) complex
+  statistical hypotheses, 3) planning for precision, and 4) lack of
+  prior studies or pilot data.</p>
         <p>First, requirements of real-world studies are often more complex
   than the simplified designs assumed by many user-friendly software
   packages for sample size planning. One frequent issue in applied data
@@ -6398,18 +7002,21 @@ r_refs("r-references.bib", append = FALSE)</code>
   is combined with <italic>AND</italic>, a correction for multiple
   testing is not necessary but rather a mistake that unnecessarily
   reduces the power of the global HT. None of the software packages for
-  sample size planning in Table 1 can handle combined hypotheses and
-  only some can handle directed hypotheses. In contrast, our case study
-  will demonstrate how we can test directed combined hypotheses with
-  tailored simulation-based sample size planning.</p>
+  sample size planning in
+  <xref alt="Table 1" rid="tbl-rpackages-nb-article">Table 1</xref> can handle
+  combined hypotheses and only some can handle directed hypotheses. In
+  contrast, our case study will demonstrate how we can test directed
+  combined hypotheses with tailored simulation-based sample size
+  planning.</p>
         <p>Third, all available software packages for sample size planning
   with GLMMs are based on power analysis and do not support planning for
   precision. Thus, researchers that want to apply an estimation strategy
   instead of testing statistical hypotheses
   (<xref alt="Cumming, 2014" rid="ref-cummingNewStatisticsWhy2014-nb-article" ref-type="bibr">Cumming,
   2014</xref>), currently cannot use the software packages outlined in
-  TABLE 1. However, tailored simulation-based sample size planning can
-  easily handle the planning for precision approach
+  <xref alt="Table 1" rid="tbl-rpackages-nb-article">Table 1</xref>. However,
+  tailored simulation-based sample size planning can easily handle the
+  planning for precision approach
   (<xref alt="Maxwell et al., 2008" rid="ref-maxwellSampleSizePlanning2008-nb-article" ref-type="bibr">Maxwell
   et al., 2008</xref>). The only change in procedure is that instead of
   computing HTs for each simulated dataset and estimating statistical
@@ -7037,7 +7644,7 @@ knitr::kable(probtable, col.names = c("Experimental condition",
     "Implied equation"), escape = FALSE)</code>
               <fig id="tbl-probtable-nb-article">
                 <caption>
-                  <p>Table 1: Assumed probabilities that an average
+                  <p>Table 2: Assumed probabilities that an average
         subject solves an average item in each experimental
         condition.</p>
                 </caption>
@@ -7338,7 +7945,7 @@ knitr::kable(probtable, col.names = c("Experimental condition",
                 </table-wrap>
               </fig>
             </sec>
-            <p><xref alt="Table 1" rid="tbl-probtable-nb-article">Table 1</xref> shows
+            <p><xref alt="Table 2" rid="tbl-probtable-nb-article">Table 2</xref> shows
       our set of assumptions concerning the probability that an average
       subject solves an average item for each experimental condition, as
       well as the corresponding equations implied by the model. The
@@ -7626,7 +8233,7 @@ dat |&gt;
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
     breaks = "Sturges") +
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))</code>
-                <graphic mimetype="image" mime-subtype="png" xlink:href="manuscript_files/figure-jats/unnamed-chunk-10-1.png"/>
+                <graphic mimetype="image" mime-subtype="png" xlink:href="manuscript_files/figure-jats/unnamed-chunk-11-1.png"/>
               </sec>
               <p>The final plot demonstrates that these plots are also useful
         for spotting standard deviations that were specified too high.
@@ -7716,7 +8323,7 @@ dat |&gt;
           validated the plausibility of our estimated gains and losses
           with the collaborating radiologists until we settled on the
           probabilities shown in
-          <xref alt="Table 1" rid="tbl-probtable-nb-article">Table 1</xref>.</p>
+          <xref alt="Table 2" rid="tbl-probtable-nb-article">Table 2</xref>.</p>
               </sec>
             </sec>
           </sec>
@@ -10152,6 +10759,35 @@ precision |&gt;
             <lpage>5218</lpage>
           </element-citation>
         </ref>
+        <ref id="ref-endersSimpleMonteCarlo2023-nb-article">
+          <element-citation publication-type="article-journal">
+            <person-group person-group-type="author">
+              <name>
+                <surname>Enders</surname>
+                <given-names>Craig K.</given-names>
+              </name>
+              <name>
+                <surname>Keller</surname>
+                <given-names>Brian T.</given-names>
+              </name>
+              <name>
+                <surname>Woller</surname>
+                <given-names>Michael P.</given-names>
+              </name>
+            </person-group>
+            <article-title>A simple Monte Carlo method for estimating power in multilevel designs.</article-title>
+            <source>Psychological Methods</source>
+            <year iso-8601-date="2023-11">2023</year>
+            <month>11</month>
+            <date-in-citation content-type="access-date">
+              <year iso-8601-date="2024-06-24">2024</year>
+              <month>06</month>
+              <day>24</day>
+            </date-in-citation>
+            <issn>1939-1463, 1082-989X</issn>
+            <pub-id pub-id-type="doi">10.1037/met0000614</pub-id>
+          </element-citation>
+        </ref>
         <ref id="ref-fahrmeirRegressionModelsMethods2021-nb-article">
           <element-citation publication-type="book">
             <person-group person-group-type="author">
@@ -10270,6 +10906,34 @@ precision |&gt;
             <lpage>155</lpage>
           </element-citation>
         </ref>
+        <ref id="ref-greenSIMRPackagePower2016-nb-article">
+          <element-citation publication-type="article-journal">
+            <person-group person-group-type="author">
+              <name>
+                <surname>Green</surname>
+                <given-names>Peter</given-names>
+              </name>
+              <name>
+                <surname>MacLeod</surname>
+                <given-names>Catriona J.</given-names>
+              </name>
+            </person-group>
+            <article-title>SIMR: An R package for power analysis of generalized linear mixed models by simulation</article-title>
+            <source>Methods in Ecology and Evolution</source>
+            <year iso-8601-date="2016">2016</year>
+            <date-in-citation content-type="access-date">
+              <year iso-8601-date="2023-04-24">2023</year>
+              <month>04</month>
+              <day>24</day>
+            </date-in-citation>
+            <volume>7</volume>
+            <issue>4</issue>
+            <issn>2041-210X</issn>
+            <pub-id pub-id-type="doi">10.1111/2041-210X.12504</pub-id>
+            <fpage>493</fpage>
+            <lpage>498</lpage>
+          </element-citation>
+        </ref>
         <ref id="ref-greenSIMRPackagePower2016a-nb-article">
           <element-citation publication-type="article-journal">
             <person-group person-group-type="author">
@@ -10328,6 +10992,35 @@ precision |&gt;
             <pub-id pub-id-type="doi">10.20982/tqmp.09.2.p043</pub-id>
             <fpage>43</fpage>
             <lpage>60</lpage>
+          </element-citation>
+        </ref>
+        <ref id="ref-iddiPowerSampleSize2022-nb-article">
+          <element-citation publication-type="article-journal">
+            <person-group person-group-type="author">
+              <name>
+                <surname>Iddi</surname>
+                <given-names>Samuel</given-names>
+              </name>
+              <name>
+                <surname>C Donohue</surname>
+                <given-names>Michael</given-names>
+              </name>
+            </person-group>
+            <article-title>Power and Sample Size for Longitudinal Models in R – The longpower Package and Shiny App</article-title>
+            <source>The R Journal</source>
+            <year iso-8601-date="2022-07">2022</year>
+            <month>07</month>
+            <date-in-citation content-type="access-date">
+              <year iso-8601-date="2024-06-24">2024</year>
+              <month>06</month>
+              <day>24</day>
+            </date-in-citation>
+            <volume>14</volume>
+            <issue>1</issue>
+            <issn>2073-4859</issn>
+            <pub-id pub-id-type="doi">10.32614/RJ-2022-022</pub-id>
+            <fpage>264</fpage>
+            <lpage>282</lpage>
           </element-citation>
         </ref>
         <ref id="ref-kainPracticalGuidePower2015-nb-article">
@@ -11031,6 +11724,28 @@ precision |&gt;
             <lpage>31</lpage>
           </element-citation>
         </ref>
+        <ref id="ref-lebeauSimglmSimulateModels2017-nb-article">
+          <element-citation>
+            <person-group person-group-type="author">
+              <name>
+                <surname>LeBeau</surname>
+                <given-names>Brandon</given-names>
+              </name>
+            </person-group>
+            <article-title>Simglm: Simulate Models Based on the Generalized Linear Model</article-title>
+            <publisher-name>Comprehensive R Archive Network</publisher-name>
+            <year iso-8601-date="2017-05">2017</year>
+            <month>05</month>
+            <date-in-citation content-type="access-date">
+              <year iso-8601-date="2024-06-24">2024</year>
+              <month>06</month>
+              <day>24</day>
+            </date-in-citation>
+            <pub-id pub-id-type="doi">10.32614/CRAN.package.simglm</pub-id>
+            <fpage>0.8.9</fpage>
+            <lpage/>
+          </element-citation>
+        </ref>
         <ref id="ref-leeUsingTidyversePackage2020-nb-article">
           <element-citation publication-type="article-journal">
             <person-group person-group-type="author">
@@ -11115,6 +11830,95 @@ precision |&gt;
             <pub-id pub-id-type="doi">10.1177/00031224211004187</pub-id>
             <fpage>532</fpage>
             <lpage>565</lpage>
+          </element-citation>
+        </ref>
+        <ref id="ref-magnussonConsequencesIgnoringTherapist2018-nb-article">
+          <element-citation publication-type="article-journal">
+            <person-group person-group-type="author">
+              <name>
+                <surname>Magnusson</surname>
+                <given-names>Kristoffer</given-names>
+              </name>
+              <name>
+                <surname>Andersson</surname>
+                <given-names>Gerhard</given-names>
+              </name>
+              <name>
+                <surname>Carlbring</surname>
+                <given-names>Per</given-names>
+              </name>
+            </person-group>
+            <article-title>The consequences of ignoring therapist effects in trials with longitudinal data: A simulation study.</article-title>
+            <source>Journal of Consulting and Clinical Psychology</source>
+            <year iso-8601-date="2018-09">2018</year>
+            <month>09</month>
+            <date-in-citation content-type="access-date">
+              <year iso-8601-date="2024-06-24">2024</year>
+              <month>06</month>
+              <day>24</day>
+            </date-in-citation>
+            <volume>86</volume>
+            <issue>9</issue>
+            <issn>1939-2117, 0022-006X</issn>
+            <pub-id pub-id-type="doi">10.1037/ccp0000333</pub-id>
+            <fpage>711</fpage>
+            <lpage>725</lpage>
+          </element-citation>
+        </ref>
+        <ref id="ref-marcochakyanyuPassLmePower2019-nb-article">
+          <element-citation>
+            <person-group person-group-type="author">
+              <string-name>Marco Chak Yan YU</string-name>
+            </person-group>
+            <article-title>Pass.lme: Power and Sample Size for Linear Mixed Effect Models</article-title>
+            <publisher-name>Comprehensive R Archive Network</publisher-name>
+            <year iso-8601-date="2019-08">2019</year>
+            <month>08</month>
+            <date-in-citation content-type="access-date">
+              <year iso-8601-date="2024-06-24">2024</year>
+              <month>06</month>
+              <day>24</day>
+            </date-in-citation>
+            <pub-id pub-id-type="doi">10.32614/CRAN.package.pass.lme</pub-id>
+            <fpage>0.9.0</fpage>
+            <lpage/>
+          </element-citation>
+        </ref>
+        <ref id="ref-martinMeasuringIndividualDifferences2011-nb-article">
+          <element-citation publication-type="article-journal">
+            <person-group person-group-type="author">
+              <name>
+                <surname>Martin</surname>
+                <given-names>Julien G. A.</given-names>
+              </name>
+              <name>
+                <surname>Nussey</surname>
+                <given-names>Daniel H.</given-names>
+              </name>
+              <name>
+                <surname>Wilson</surname>
+                <given-names>Alastair J.</given-names>
+              </name>
+              <name>
+                <surname>Réale</surname>
+                <given-names>Denis</given-names>
+              </name>
+            </person-group>
+            <article-title>Measuring individual differences in reaction norms in field and experimental studies: A power analysis of random regression models</article-title>
+            <source>Methods in Ecology and Evolution</source>
+            <year iso-8601-date="2011-08">2011</year>
+            <month>08</month>
+            <date-in-citation content-type="access-date">
+              <year iso-8601-date="2024-06-24">2024</year>
+              <month>06</month>
+              <day>24</day>
+            </date-in-citation>
+            <volume>2</volume>
+            <issue>4</issue>
+            <issn>2041-210X, 2041-210X</issn>
+            <pub-id pub-id-type="doi">10.1111/j.2041-210X.2010.00084.x</pub-id>
+            <fpage>362</fpage>
+            <lpage>374</lpage>
           </element-citation>
         </ref>
         <ref id="ref-matuschekBalancingTypeError2017-nb-article">
@@ -11397,6 +12201,25 @@ precision |&gt;
             <lpage>423</lpage>
           </element-citation>
         </ref>
+        <ref id="ref-watsonGeneralisedLinearMixed2023-nb-article">
+          <element-citation>
+            <person-group person-group-type="author">
+              <name>
+                <surname>Watson</surname>
+                <given-names>Samuel I.</given-names>
+              </name>
+            </person-group>
+            <article-title>Generalised Linear Mixed Model Specification, Analysis, Fitting, and Optimal Design in R with the glmmr Packages</article-title>
+            <publisher-name>arXiv</publisher-name>
+            <year iso-8601-date="2023">2023</year>
+            <date-in-citation content-type="access-date">
+              <year iso-8601-date="2024-06-24">2024</year>
+              <month>06</month>
+              <day>24</day>
+            </date-in-citation>
+            <pub-id pub-id-type="doi">10.48550/ARXIV.2303.12657</pub-id>
+          </element-citation>
+        </ref>
         <ref id="ref-westfallStatisticalPowerOptimal2014-nb-article">
           <element-citation publication-type="article-journal">
             <person-group person-group-type="author">
@@ -11587,6 +12410,30 @@ precision |&gt;
             <pub-id pub-id-type="doi">10.1017/S0140525X20001685</pub-id>
             <fpage>e1</fpage>
             <lpage/>
+          </element-citation>
+        </ref>
+        <ref id="ref-zhangPracticalStatisticalPower2018-nb-article">
+          <element-citation publication-type="book">
+            <person-group person-group-type="author">
+              <name>
+                <surname>Zhang</surname>
+                <given-names>Zhiyong</given-names>
+              </name>
+              <name>
+                <surname>Yuan</surname>
+                <given-names>Ke-Hai</given-names>
+              </name>
+            </person-group>
+            <source>Practical statistical power analysis using Webpower and R</source>
+            <publisher-name>ISDSA Press</publisher-name>
+            <year iso-8601-date="2018">2018</year>
+            <date-in-citation content-type="access-date">
+              <year iso-8601-date="2024-06-24">2024</year>
+              <month>06</month>
+              <day>24</day>
+            </date-in-citation>
+            <isbn>978-1-946728-02-9</isbn>
+            <pub-id pub-id-type="doi">10.35566/power</pub-id>
           </element-citation>
         </ref>
         <ref id="ref-zimmerSampleSizePlanning2022-nb-article">
