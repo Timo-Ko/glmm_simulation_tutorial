@@ -137,11 +137,12 @@ Available formula-based and summary-statistics-based software packages for multi
 
 ```{r}
 #| label: tbl-rpackages
-#| tbl-cap: Overview of available software packages for power analysis for multilevel models in R.
+#| tbl-cap: Overview of software packages for power analysis for (generalized) linear mixed models in R.
+#| apa-note: GUI available = whether a graphical user interface is provided (usually a Shiny app that is available online or can be downloaded to run locally), GLMM support = whether power analysis can be performed for generalized linear mixed model (otherwise only linear mixed models are supported), Design limitations = whether only a limited selection of study designs can be specified (otherwise arbitrary designs within the model class are supported).  
 #| echo: false
 
 packagetable <- data.frame(
-  col1 = c("glmmrBase", "longpower", "mixedpower", "mlmpower", "pamm", "pass.lme", "PowerAnalysisIL", "powerlmm", "simglm", "simr", "summary_statistics_based_power", "WebPower"),
+  col1 = c("glmmrBase", "longpower", "mixedpower", "mlmpower", "pamm", "pass.lme", "PowerAnalysisIL", "powerlmm", "simglm", "simr", "summary_statistics based_power", "WebPower"),
   col2 = c("Formula- and simulation-based power analysis; non-linear fixed effects and flexible covariance functions",
               "Formula-based power analysis; focus on longitudinal data",
               "Simulation-based power analysis; based on 'simr' package",
@@ -154,19 +155,18 @@ packagetable <- data.frame(
               "Simulation-based power analysis; based on 'lme4' package",
               "Summary-statistics-based power analysis; based on 'pwr' package",
               "Formula-based power analysis; based on 'longpower' package; focus on longitudinal data"),
-  col3 = c("no", "yes", "no", "no", "no", "no", "yes", "no", "no", "no", "yes", "yes"),
+  col3 = c("no", "[yes](https://atrihub.shinyapps.io/power/)", "no", "no", "no", "no", "[yes](https://github.com/ginettelafit/PowerAnalysisIL?tab=readme-ov-file#shiny-app-and-r-package-to-perform-power-analysis-to-select-the-number-of-participants-in-intensive-longitudinal-studies)", "[yes](https://github.com/rpsychologist/powerlmm?tab=readme-ov-file#launch-interactive-web-application)", "[yes](https://simglm.brandonlebeau.org/reference/run_shiny.html)", "no", "[yes](https://koumurayama.shinyapps.io/summary_statistics_based_power/)", "[yes](https://webpower.psychstat.org/wiki/start)"),
   col4 = c("yes", "no", "yes", "no", "no", "no", "no", "no", "yes", "yes", "yes", "no"),
   col5 = c("none", "limited set of study designs with two levels", "none", "limited to two levels", "none", "none", "limited set of study designs with two levels", "limited set of study designs with two or three levels", "limited to two or three levels", "none", "limited set of study designs with two levels", "limited set of study designs with two levels"),
   col6 = c("@watsonGeneralisedLinearMixed2023", "@iddiPowerSampleSize2022", "@kumleEstimatingPowerGeneralized2021", "@endersSimpleMonteCarlo2023", "@martinMeasuringIndividualDifferences2011", "@marcochakyanyuPassLmePower2019", "@lafitSelectionNumberParticipants2021", "@magnussonConsequencesIgnoringTherapist2018", "@lebeauSimglmSimulateModels2017", "@greenSIMRPackagePower2016", "@murayamaSummarystatisticsbasedPowerAnalysis2022", "@zhangPracticalStatisticalPower2018")
 )
 
-knitr::kable(packagetable, col.names = c("Package name", "Summary", "GUI available", "Supports GLMMs", "Design limitations", "Reference"), escape = FALSE)
-
+knitr::kable(packagetable, col.names = c("Package name", "Summary", "GUI available", "GLMM support", "Design limitations", "Reference"), escape = FALSE)
 ```
 
 # Reasons to use tailored data simulation
 
-Performing tailored simulation-based sample size planning is more complicated and time-consuming than using the existing software tools outlined in @tbl-rpackage. Circumstances under which tailored simulation-based sample size planning is necessary include 1) complex study designs, 2) complex statistical hypotheses, 3) planning for precision, and 4) lack of prior studies or pilot data.
+Performing tailored simulation-based sample size planning is more complicated and time-consuming than using the existing software tools outlined in @tbl-rpackages. Circumstances under which tailored simulation-based sample size planning is necessary include 1) complex study designs, 2) complex statistical hypotheses, 3) planning for precision, and 4) lack of prior studies or pilot data.
 
 <!-- ## Complex study designs -->
 
