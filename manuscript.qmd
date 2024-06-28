@@ -132,14 +132,15 @@ GLMMs extend the LMM framework to accommodate non-normally distributed continuou
 <!-- For less complex statistical models, like t-tests, ANOVA, and linear regression, with common study designs (e.g., mean comparison between two groups), user-friendly software for a priori sample size planning is readily available [@faulStatisticalPowerAnalyses2009; @champelyPackagePwr2018; @kelleyObtainingPowerObtaining2003; @kelleySampleSizePlanning2006].  -->
 <!-- However, these software packages are often not flexible enough to perform sample size planning for complex designs. -->
 
-To our knowledge, existing approaches for sample size planning for GLMMs have exclusively focused on planning for power. In @tbl-rpackages, we review available software packages that can be used to perform power analysis for multilevel models in `r cite_r()`. Power analysis methods can be categorized into formula-based, summary-statistics-based and simulation-based methods [@murayamaSummarystatisticsbasedPowerAnalysis2022]. Formula-based methods rely on exact formulas to calculate power directly. Summary-statistics-based methods use statistical theory to approximate power based on formula-based methods developed for simple t-tests. Simulation-based methods rely on repeatedly simulating data with a known true effect size and estimating power empirically, that is what percentage of simulated datasets produces a significant p-value.
+To our knowledge, existing approaches for sample size planning for GLMMs have exclusively focused on planning for power. In Table 1, we review available software packages that can be used to perform power analysis for multilevel models in `r cite_r()`. Power analysis methods can be categorized into formula-based, summary-statistics-based and simulation-based methods [@murayamaSummarystatisticsbasedPowerAnalysis2022]. Formula-based methods rely on exact formulas to calculate power directly. Summary-statistics-based methods use statistical theory to approximate power based on formula-based methods developed for simple t-tests. Simulation-based methods rely on repeatedly simulating data with a known true effect size and estimating power empirically, that is what percentage of simulated datasets produces a significant p-value.
 Available formula-based and summary-statistics-based software packages for multilevel models often do not include GLMMs or are limited to simple designs [@westfallStatisticalPowerOptimal2014; @murayamaSummarystatisticsbasedPowerAnalysis2022], making it necessary to build data simulations tailored specifically to the study design. A number of tutorials have been published describing how to perform such simulation-based power analysis for multilevel models [@arendStatisticalPowerTwolevel2019; @lafitSelectionNumberParticipants2021; @zimmerSampleSizePlanning2023; @brysbaertPowerAnalysisEffect2018; @kumleEstimatingPowerGeneralized2021; @debruineUnderstandingMixedEffectsModels2021; @kainPracticalGuidePower2015; @greenSIMRPackagePower2016a]. However, many of these tutorials focus on LMMs and the most common study designs [see @kumleEstimatingPowerGeneralized2021 for a tutorial that also covers more advanced settings]. This narrow focus provides limited guidance for researchers using more complex study designs, especially when little prior knowledge about plausible effect sizes is available [see the discussion in @kumleEstimatingPowerGeneralized2021]. Simulation-based power analysis with GLMMs requires making a range of assumptions about the model structure that should align with the characteristics of the data being analyzed. Existing tutorials often rely on heuristics for specifying variance components (e.g., the standard deviation of random intercepts) or assume that results from meta-analyses or data from pilot studies are available to determine plausible values for all model parameters. However, in practice, knowledge about those parameters from prior studies is often limited, which makes specifying assumptions a practical challenge (see the discussion in @maxwellSampleSizePlanning2008 and @kumleEstimatingPowerGeneralized2021). We will discuss a number of strategies on how to specify model parameters for application-specific, tailored data simulations in a later chapter.
 
 ```{r}
-#| label: tbl-rpackages
 #| tbl-cap: Overview of software packages for power analysis for (generalized) linear mixed models in R.
 #| apa-note: GUI available = whether a graphical user interface is provided (usually a Shiny app that is available online or can be downloaded to run locally), GLMM support = whether power analysis can be performed for generalized linear mixed model (otherwise only linear mixed models are supported), Design limitations = whether only a limited selection of study designs can be specified (otherwise arbitrary designs within the model class are supported).  
 #| echo: false
+#| message: false
+# label: tbl-rpackages # There is currently a bug in apaquarto that prevents referencing for multipage tables (https://github.com/wjschne/apaquarto/issues/71)
 
 packagetable <- data.frame(
   col1 = c("glmmrBase", "longpower", "mixedpower", "mlmpower", "pamm", "pass.lme", "PowerAnalysisIL", "powerlmm", "simglm", "simr", "summary_statistics based_power", "WebPower"),
@@ -161,12 +162,24 @@ packagetable <- data.frame(
   col6 = c("@watsonGeneralisedLinearMixed2023", "@iddiPowerSampleSize2022", "@kumleEstimatingPowerGeneralized2021", "@endersSimpleMonteCarlo2023", "@martinMeasuringIndividualDifferences2011", "@marcochakyanyuPassLmePower2019", "@lafitSelectionNumberParticipants2021", "@magnussonConsequencesIgnoringTherapist2018", "@lebeauSimglmSimulateModels2017", "@greenSIMRPackagePower2016", "@murayamaSummarystatisticsbasedPowerAnalysis2022", "@zhangPracticalStatisticalPower2018")
 )
 
-knitr::kable(packagetable, col.names = c("Package name", "Summary", "GUI available", "GLMM support", "Design limitations", "Reference"), escape = FALSE)
+flextable::flextable(packagetable) |>
+  flextable::width(j = "Package name", width = 3, unit = "cm") |>
+  flextable::width(j = "Summary", width = 4, unit = "cm") |>
+  flextable::width(j = "GUI available", width = 1.5, unit = "cm") |>
+  flextable::width(j = "GLMM support", width = 1.5, unit = "cm") |>
+  flextable::width(j = "Design limitations", width = 3, unit = "cm") |>
+  flextable::width(j = "Reference", width = 2, unit = "cm") |>
+  flextable::fontsize(size = 10, part = "all") |>
+  flextable::theme_apa() |>
+  ftExtra::colformat_md()
 ```
+:::{.NoIndent}
+*Note.* GUI available = whether a graphical user interface is provided (usually a Shiny app that is available online or can be downloaded to run locally), GLMM support = whether power analysis can be performed for generalized linear mixed model (otherwise only linear mixed models are supported), Design limitations = whether only a limited selection of study designs can be specified (otherwise arbitrary designs within the model class are supported).
+:::
 
 # Reasons to use tailored data simulation
 
-Performing tailored simulation-based sample size planning is more complicated and time-consuming than using the existing software tools outlined in @tbl-rpackages. Circumstances under which tailored simulation-based sample size planning is necessary include 1) complex study designs, 2) complex statistical hypotheses, 3) planning for precision, and 4) lack of prior studies or pilot data.
+Performing tailored simulation-based sample size planning is more complicated and time-consuming than using the existing software tools outlined in Table 1. Circumstances under which tailored simulation-based sample size planning is necessary include 1) complex study designs, 2) complex statistical hypotheses, 3) planning for precision, and 4) lack of prior studies or pilot data.
 
 <!-- ## Complex study designs -->
 
@@ -191,11 +204,11 @@ For some research questions, the combined null hypothesis $H_0$ would be rejecte
 For other research questions, the combined null hypothesis $H_0$ would be rejected if $H_{01}$ *OR* $H_{02}$ *OR* both are rejected.
 If the global hypothesis $H_0$ is combined with *OR*, the p-values of the single hypotheses must be corrected for multiple testing to avoid $\alpha$-inflation for the global hypothesis [@dmitrienkoTraditionalMultiplicityAdjustment2013].
 However, if the global hypothesis $H_0$ is combined with *AND*, a correction for multiple testing is not necessary but rather a mistake that unnecessarily reduces the power of the global HT.
-None of the software packages for sample size planning in @tbl-rpackages can handle combined hypotheses and only some can handle directed hypotheses. In contrast, our case study will demonstrate how we can test directed combined hypotheses with tailored simulation-based sample size planning. 
+None of the software packages for sample size planning in Table 1 can handle combined hypotheses and only some can handle directed hypotheses. In contrast, our case study will demonstrate how we can test directed combined hypotheses with tailored simulation-based sample size planning. 
 
 <!-- ## Planning for precision -->
 
-Third, all available software packages for sample size planning with GLMMs are based on power analysis and do not support planning for precision. Thus, researchers that want to apply an estimation strategy instead of testing statistical hypotheses [@cummingNewStatisticsWhy2014], currently cannot use the software packages outlined in @tbl-rpackages.
+Third, all available software packages for sample size planning with GLMMs are based on power analysis and do not support planning for precision. Thus, researchers that want to apply an estimation strategy instead of testing statistical hypotheses [@cummingNewStatisticsWhy2014], currently cannot use the software packages outlined in Table 1.
 However, tailored simulation-based sample size planning can easily handle the planning for precision approach [@maxwellSampleSizePlanning2008]. The only change in procedure is that instead of computing HTs for each simulated dataset and estimating statistical power across repetitions, CIs are computed for each simulated dataset, and their expected width is estimated.
 <!-- As long as one is interested only in confidence intervals of a single model parameter, it might be possible to adapt existing software packages to plan for precision. However, we demonstrate in our case study that in realistic research projects with GLMMs, the contrasts of interests and their respective confidence intervals are usually situated on the scale of the (expected) outcome in contrast to the scale of the model parameters.  -->
 
@@ -206,7 +219,7 @@ Providing an informed standardized effect size can be an almost impossible chall
 
 # General steps in tailored simulation-based sample size planning
 
-Although the details differ for each study, every tailored simulation-based sample size planning requires a series of steps and decisions. We will introduce each step in a theoretical section, followed by the practical application based on a case study. All code in this manuscript and simulation results are available on the Open Science Framework (<https://osf.io/dhwf4/>) and on our tutorial website (<https://timo-ko.github.io/glmm_simulation_tutorial/>).
+Although the details differ for each study, every tailored simulation-based sample size planning requires a series of steps and decisions. We will introduce each step in a theoretical section, followed by the practical application based on a case study. To keep the tutorial manageable we focus on a binomial GLMM with two random intercepts and discrete predictor variables. All code in this manuscript and simulation results are available on the Open Science Framework (<https://osf.io/dhwf4/>) and on our tutorial website (<https://timo-ko.github.io/glmm_simulation_tutorial/>).
 
 ## Step 1: Define the estimand
 
@@ -434,7 +447,7 @@ knitr::kable(probtable, col.names = c("Experimental condition",
     "Implied equation"), escape = FALSE)
 ```
 
-@tbl-probtable shows our set of assumptions concerning the probability that an average subject solves an average item for each experimental condition, as well as the corresponding equations implied by the model.
+Table 2 shows our set of assumptions concerning the probability that an average subject solves an average item for each experimental condition, as well as the corresponding equations implied by the model.
 The table can be used to compute the implied values for the $\beta$ parameters, starting with the first equation and reinserting the computed $\beta$ values in all following equations (`b_0` stands for the intercept $\beta_0$, `b_e` for the slope $\beta_e$, and so on):
 
 ```{r}
@@ -613,7 +626,7 @@ For simplicity, we assumed plausible probability values of .90 for experts and .
 Our experts confirmed that these values are realistic baselines for reviewing diverse head CT images without AI assistance. Subsequently, we consulted several published papers investigating the effect of correct and incorrect advice on decision-making performance in other settings.
 From their findings, we inferred that both experts and students should benefit from correct and suffer losses from incorrect advice.
 However, the magnitude of these effects should be substantially greater for students, given their stronger reliance on advice compared to experts.
-We further validated the plausibility of our estimated gains and losses with the collaborating radiologists until we settled on the probabilities shown in @tbl-probtable.
+We further validated the plausibility of our estimated gains and losses with the collaborating radiologists until we settled on the probabilities shown in Table 2.
 
 ## Step 4: Estimate the statistical model
 
