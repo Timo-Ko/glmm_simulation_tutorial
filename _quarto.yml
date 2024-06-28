@@ -24,7 +24,9 @@ format:
   jats: default
   apaquarto-pdf:
     documentmode: man
-  apaquarto-docx: default
+    a4paper: true
+  apaquarto-docx:
+    a4paper: true
 
 notebook-links: global
 
