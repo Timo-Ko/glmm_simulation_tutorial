@@ -161,6 +161,7 @@ packagetable <- data.frame(
   col5 = c("none", "limited set of study designs with two levels", "none", "limited to two levels", "none", "none", "limited set of study designs with two levels", "limited set of study designs with two or three levels", "limited to two or three levels", "none", "limited set of study designs with two levels", "limited set of study designs with two levels"),
   col6 = c("@watsonGeneralisedLinearMixed2023", "@iddiPowerSampleSize2022", "@kumleEstimatingPowerGeneralized2021", "@endersSimpleMonteCarlo2023", "@martinMeasuringIndividualDifferences2011", "@marcochakyanyuPassLmePower2019", "@lafitSelectionNumberParticipants2021", "@magnussonConsequencesIgnoringTherapist2018", "@lebeauSimglmSimulateModels2017", "@greenSIMRPackagePower2016", "@murayamaSummarystatisticsbasedPowerAnalysis2022", "@zhangPracticalStatisticalPower2018")
 )
+names(packagetable) <- c("Package name", "Summary", "GUI available", "GLMM support", "Design limitations", "Reference")
 
 flextable::flextable(packagetable) |>
   flextable::width(j = "Package name", width = 3, unit = "cm") |>
