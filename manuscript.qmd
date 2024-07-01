@@ -136,7 +136,7 @@ To our knowledge, existing approaches for sample size planning for GLMMs have ex
 Available formula-based and summary-statistics-based software packages for multilevel models often do not include GLMMs or are limited to simple designs [@westfallStatisticalPowerOptimal2014; @murayamaSummarystatisticsbasedPowerAnalysis2022], making it necessary to build data simulations tailored specifically to the study design. A number of tutorials have been published describing how to perform such simulation-based power analysis for multilevel models [@arendStatisticalPowerTwolevel2019; @lafitSelectionNumberParticipants2021; @zimmerSampleSizePlanning2023; @brysbaertPowerAnalysisEffect2018; @kumleEstimatingPowerGeneralized2021; @debruineUnderstandingMixedEffectsModels2021; @kainPracticalGuidePower2015; @greenSIMRPackagePower2016a; @johnsonPowerAnalysisGeneralized2015]. However, many of these tutorials focus on LMMs and the most common study designs [see @kumleEstimatingPowerGeneralized2021 for a tutorial that also covers more advanced settings]. This narrow focus provides limited guidance for researchers using more complex study designs, especially when little prior knowledge about plausible effect sizes is available [see the discussion in @kumleEstimatingPowerGeneralized2021]. Simulation-based power analysis with GLMMs requires making a range of assumptions about the model structure that should align with the characteristics of the data being analyzed. Existing tutorials often rely on heuristics for specifying variance components (e.g., the standard deviation of random intercepts) or assume that results from meta-analyses or data from pilot studies are available to determine plausible values for all model parameters. However, in practice, knowledge about those parameters from prior studies is often limited, which makes specifying assumptions a practical challenge (see the discussion in @maxwellSampleSizePlanning2008 and @kumleEstimatingPowerGeneralized2021). We will discuss a number of strategies on how to specify model parameters for application-specific, tailored data simulations in a later chapter.
 
 ```{r}
-#| tbl-cap: Table 1: Overview of software packages for power analysis for (generalized) linear mixed models in R.
+#| tbl-cap: Table 1. Overview of software packages for power analysis for (generalized) linear mixed models in R.
 #| apa-note: GUI available = whether a graphical user interface is provided (usually a Shiny app that is available online or can be downloaded to run locally), GLMM support = whether power analysis can be performed for generalized linear mixed model (otherwise only linear mixed models are supported), Design limitations = whether only a limited selection of study designs can be specified (otherwise arbitrary designs within the model class are supported).  
 #| echo: false
 #| message: false
@@ -426,7 +426,7 @@ $$
 We can revert this perspective by choosing plausible probability values based on domain knowledge and deriving the parameter values implied by these probabilities for each experimental condition.
 
 ```{r}
-#| tbl-cap: Table 2: Assumed probabilities that an average subject solves an average item in each experimental condition.
+#| tbl-cap: Table 2. Assumed probabilities that an average subject solves an average item in each experimental condition.
 #| apa-note: Implied equations are derived based on the model equations and setting all random intercept terms to 0.
 #| echo: false
 probtable <- data.frame(
