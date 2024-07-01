@@ -18,19 +18,19 @@ simulate <- function(n_subjects = 100, n_items = 50,
   require(dplyr)
   require(faux)
   # simulate design
-  dat <- add_random(subject = n_subjects, item = n_items) |>
-    add_between("subject", expert = c(1, 0), .prob = c(0.25, 0.75)) |>
-    mutate(advice_present = rbinom(n(), 1, prob = 2/3)) |>
+  dat <- add_random(subject = n_subjects, item = n_items) %>%
+    add_between("subject", expert = c(1, 0), .prob = c(0.25, 0.75)) %>%
+    mutate(advice_present = rbinom(n(), 1, prob = 2/3)) %>%
     mutate(advice_correct = if_else(advice_present == 1L, 
-                                    rbinom(n(), 1L, prob = 0.8), 0L)) |>
+                                    rbinom(n(), 1L, prob = 0.8), 0L)) %>%
     # add random effects
-    add_ranef("subject", u0s = sd_u0s) |>
-    add_ranef("item", u0i = sd_u0i) |>
+    add_ranef("subject", u0s = sd_u0s) %>%
+    add_ranef("item", u0i = sd_u0i) %>%
     # compute dependent variable
     mutate(linpred = b_0 + u0i + u0s +
-        b_e * expert + b_a * advice_present + b_c * advice_correct +
-        b_ea * expert * advice_present + b_ec * expert * advice_correct) |>
-    mutate(y_prob = plogis(linpred)) |>
+      b_e * expert + b_a * advice_present + b_c * advice_correct +
+      b_ea * expert * advice_present + b_ec * expert * advice_correct) %>%
+    mutate(y_prob = plogis(linpred)) %>%
     mutate(y_bin = rbinom(n = n(), size = 1, prob = y_prob))
   dat
 }
@@ -59,14 +59,14 @@ library(tidyverse)
 set.seed(1)
 dat <- simulate(n_subjects = 500, n_items = 500,
   sd_u0s = 0.5, sd_u0i = 0.5)
-dat |> 
+dat %>% 
   mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) |>
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
   mutate(condition = fct_recode(condition,
- "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
- "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
- "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
-  group_by(condition) |>
+ "student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+ "student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
+ "student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
+  group_by(condition) %>%
   summarize(relative_frequency = sum(y_bin) / n())
 ```
 
@@ -77,13 +77,13 @@ dat |>
 #| fig-cap: "Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions."
 
 library(ggdist)
-dat |> 
+dat %>% 
   mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) |>
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
   mutate(condition = fct_recode(condition,
- "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
- "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
- "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
+"student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+"student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
+"student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
     breaks = "Sturges") +
@@ -95,13 +95,13 @@ dat |>
 #| fig-cap: "Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions while setting the standard deviation of item random intercepts to 0.01."
 set.seed(1)
 dat <- simulate(n_subjects = 500, n_items = 500, sd_u0i = 0.01)
-dat |> 
+dat %>% 
   mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) |>
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
   mutate(condition = fct_recode(condition,
-    "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
-    "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
-    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
+"student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+"student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
+"student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
     breaks = "Sturges") +
@@ -112,13 +112,13 @@ dat |>
 #| include: false
 set.seed(1)
 dat <- simulate(n_subjects = 500, n_items = 500, sd_u0s = 0.01)
-dat |> 
+dat %>% 
   mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) |>
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
   mutate(condition = fct_recode(condition,
-    "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
-    "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
-    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
+"student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+"student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
+"student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
     breaks = "Sturges") +
@@ -132,13 +132,13 @@ dat |>
 #| fig-cap: "Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions while setting the standard deviation of subject and item random intercepts to 3."
 set.seed(1)
 dat <- simulate(n_subjects = 500, n_items = 500, sd_u0s = 3, sd_u0i = 3)
-dat |> 
+dat %>% 
   mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) |>
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
   mutate(condition = fct_recode(condition,
-    "no expert, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
-    "no expert, wrong advice" = "0:1:0", "expert, wrong advice" = "1:1:0",
-    "no expert, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
+"student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+"student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
+"student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
     breaks = "Sturges") +
@@ -172,23 +172,25 @@ pred[1] - pred[2]
 ```
 
 ```{r}
+library(marginaleffects)
+library(tinytable)
 grid2 <- expand_grid(advice_present = 0:1, 
   advice_correct = 0:1, expert = 0:1)
 grid2
 preds <- predictions(fit, newdata = grid2, 
   type = "response", re.form = NA)
-as.data.frame(preds)[,c(2,7:11)]
+print(preds, style = "tinytable") %>% theme_tt(theme = "resize")
 ```
 
 ```{r}
-contrasts <- preds |> 
+contrasts <- preds %>% 
   hypotheses(hypothesis = c(
     "b8 = b2",  # (correct advice, expert) - (no advice, expert)
-    "b2 = b6",  # (no advice, expert) - (wrong advice, expert) 
-    "b7 = b1",  # (correct advice, no expert) - (no advice, no expert)
-    "b1 = b5"), # (no advice, no expert) - (wrong advice, no expert)
+    "b2 = b6",  # (no advice, expert) - (incorrect advice, expert) 
+    "b7 = b1",  # (correct advice, student) - (no advice, student)
+    "b1 = b5"), # (no advice, student) - (incorrect advice, student)
     equivalence = c(0, 0))
-contrasts
+print(contrasts, style = "tinytable") %>% theme_tt(theme = "resize")
 ```
 
 ## Perform repeated simulations
@@ -208,8 +210,8 @@ sim_and_analyse <- function(
   # compute contrasts
   contr_df <- expand_grid(advice_present = 0:1, advice_correct = 0:1,
     expert = 0:1)
-  predictions(model, newdata = contr_df, type = "response", re.form = NA) |>
-    hypotheses(hypothesis = contrasts, equivalence = c(0, 0)) |>
+  predictions(model, newdata = contr_df, type = "response", re.form = NA) %>%
+    hypotheses(hypothesis = contrasts, equivalence = c(0, 0)) %>%
     data.frame()
 }
 ```
@@ -228,9 +230,9 @@ sim_result <- crossing(
   rep = 1:5,
   n_subjects = c(100, 150, 200, 250),
   n_items = c(10, 30, 50, 70)
-) |>
+) %>%
   mutate(res = future_pmap(., sim_and_analyse, 
-    .options = furrr_options(seed = TRUE))) |>
+    .options = furrr_options(seed = TRUE))) %>%
   unnest(col = res)
 ```
 
@@ -241,10 +243,10 @@ sim_result <- crossing(
 #| fig-cap: "Simulation-based power estimates including 95% confidence interval of the case study for different numbers of subjects and items, based on a significance level of 0.05."
 library(binom)
 alpha <- 0.05
-power <- sim_result |>
+power <- sim_result %>%
   pivot_wider(names_from = term, names_sep = "_", 
-    values_from = estimate:p.value.equiv) |>
-  group_by(n_subjects, n_items) |> 
+    values_from = estimate:p.value.equiv) %>%
+  group_by(n_subjects, n_items) %>% 
   summarise(
     power = mean(`p.value.noninf_b1=b5` < alpha & 
         `p.value.noninf_b8=b2` < alpha & `p.value.noninf_b2=b6` < alpha & 
@@ -256,8 +258,8 @@ power <- sim_result |>
     ci.lwr = binom.confint(n_sig, n, method = "wilson")$lower,
     ci.upr = binom.confint(n_sig, n, method = "wilson")$upper, 
     .groups = "drop")
-power |>
-  mutate(across(c(n_subjects, n_items), factor)) |>
+power %>%
+  mutate(across(c(n_subjects, n_items), factor)) %>%
   ggplot(aes(n_subjects, n_items, fill = power)) +
   geom_tile() +
   geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 
@@ -272,17 +274,17 @@ power |>
 ```{r}
 #| label: fig-finalprecision
 #| fig-cap: "Simulation-based precision estimates (expected width of confidence intervals) including 95% confidence interval of the case study for different numbers of subjects and items, based on a confidence level of 0.95."
-precision <- sim_result |>
+precision <- sim_result %>%
   pivot_wider(names_from = term, names_sep = "_", 
-    values_from = estimate:p.value.equiv) |>
-  group_by(n_subjects, n_items) |>
-  mutate(width = `conf.high_b8=b2` - `conf.low_b8=b2`) |>
+    values_from = estimate:p.value.equiv) %>%
+  group_by(n_subjects, n_items) %>%
+  mutate(width = `conf.high_b8=b2` - `conf.low_b8=b2`) %>%
   summarise(precision = mean(width),
     ci.lwr = t.test(width)$conf.int[1],
     ci.upr = t.test(width)$conf.int[2], 
     .groups = "drop")
-precision |>
-  mutate(across(c(n_subjects, n_items), factor)) |>
+precision %>%
+  mutate(across(c(n_subjects, n_items), factor)) %>%
   ggplot(aes(n_subjects, n_items, fill = precision)) +
   geom_tile() +
   geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 

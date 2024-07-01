@@ -1,7 +1,7 @@
 ---
 title: "Run the full simulation for the case study example"
 execute: 
-  eval: false
+  eval: true
 ---
 
 ::: {.callout-note}
@@ -19,19 +19,19 @@ simulate <- function(n_subjects = 100, n_items = 50,
   require(dplyr)
   require(faux)
   # simulate design
-  dat <- add_random(subject = n_subjects, item = n_items) |>
-    add_between("subject", expert = c(1, 0), .prob = c(0.25, 0.75)) |>
-    mutate(advice_present = rbinom(n(), 1, prob = 2/3)) |>
+  dat <- add_random(subject = n_subjects, item = n_items) %>%
+    add_between("subject", expert = c(1, 0), .prob = c(0.25, 0.75)) %>%
+    mutate(advice_present = rbinom(n(), 1, prob = 2/3)) %>%
     mutate(advice_correct = if_else(advice_present == 1L, 
-                                    rbinom(n(), 1L, prob = 0.8), 0L)) |>
+                                    rbinom(n(), 1L, prob = 0.8), 0L)) %>%
     # add random effects
-    add_ranef("subject", u0s = sd_u0s) |>
-    add_ranef("item", u0i = sd_u0i) |>
+    add_ranef("subject", u0s = sd_u0s) %>%
+    add_ranef("item", u0i = sd_u0i) %>%
     # compute dependent variable
     mutate(linpred = b_0 + u0i + u0s +
         b_e * expert + b_a * advice_present + b_c * advice_correct +
-        b_ea * expert * advice_present + b_ec * expert * advice_correct) |>
-    mutate(y_prob = plogis(linpred)) |>
+        b_ea * expert * advice_present + b_ec * expert * advice_correct) %>%
+    mutate(y_prob = plogis(linpred)) %>%
     mutate(y_bin = rbinom(n = n(), size = 1, prob = y_prob))
   dat
 }
@@ -53,8 +53,8 @@ sim_and_analyse <- function(
   # compute contrasts
   contr_df <- expand_grid(advice_present = 0:1, advice_correct = 0:1,
     expert = 0:1)
-  predictions(model, newdata = contr_df, type = "response", re.form = NA) |>
-    hypotheses(hypothesis = contrasts, equivalence = c(0, 0)) |>
+  predictions(model, newdata = contr_df, type = "response", re.form = NA) %>%
+    hypotheses(hypothesis = contrasts, equivalence = c(0, 0)) %>%
     data.frame()
 }
 ```
@@ -71,18 +71,19 @@ plan("multisession", workers = 6)
 set.seed(2)
   
 sim_result <- crossing(
-  rep = 1:300,
+  rep = 1:500,
   n_subjects = c(100, 150, 200, 250),
   n_items = c(10, 30, 50, 70)
-) |>
+) %>%
   mutate(res = future_pmap(., sim_and_analyse, 
-    .options = furrr_options(seed = TRUE))) |>
+    .options = furrr_options(seed = TRUE))) %>%
   unnest(col = res)
 ```
 
 ## Save results file to be used in the manuscript
 
 ```{r}
+#| echo: true
 saveRDS(sim_result, file = "results.rds")
 ```
 

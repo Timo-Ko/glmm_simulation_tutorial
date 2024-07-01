@@ -2,6 +2,7 @@
   man,
   floatsintext,
   longtable,
+  a4paper,
   nolmodern,
   notxfonts,
   notimes,
@@ -218,7 +219,7 @@ Global Business School for Health, University College London}}
 
 \leftheader{Pargent, Koch, Kleine, Lermer and Gaube}
 
-\date{2024-06-12}
+\date{2024-07-01}
 
 
 \abstract{When planning experimental research, determining an
@@ -248,7 +249,7 @@ Kleine}{0000-0003-1919-2834}}\par{\addORCIDlink{Eva
 Lermer}{0000-0002-6600-9580}}\par{\addORCIDlink{Susanne
 Gaube}{0000-0002-1633-4772}} 
 
-\par{ This is version 2.5 of our preprint published at
+\par{ This is version 3 of our preprint published at
 \url{https://doi.org/10.31234/osf.io/rpjem}. All materials (reproducible
 manuscript, including R code and all simulation results) are available
 in the project's repository on the Open Science Framework (OSF) at
@@ -256,8 +257,9 @@ in the project's repository on the Open Science Framework (OSF) at
 \url{https://Timo-Ko.github.io/glmm_simulation_tutorial/}.  The authors
 declare that there were no conflicts of interest concerning the
 authorship or the publication of this article. This research was funded
-by a grant from the Volkswagen Foundation (Grant
-No.~98525).   Author roles were classified using the Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as follows: Florian
+by a grant from the Volkswagen Foundation (Grant No.~98525).  Florian
+Pargent and Timo Koch contributed equally to this
+manuscript. Author roles were classified using the Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as follows: Florian
 Pargent:   formal
 analysis, methodology, visualization, writing, editing; Timo K.
 Koch:   conceptualization, formal
@@ -283,7 +285,18 @@ St.~Gallen, Torstrasse
 
 
 
+\usepackage{fontspec}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{colortbl}
+\usepackage{hhline}
+\newlength\Oldarrayrulewidth
+\newlength\Oldtabcolsep
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{hyperref}
 \usepackage{float}
+\usepackage{wrapfig}
 \usepackage{tabularray}
 \usepackage[normalem]{ulem}
 \usepackage{graphicx}
@@ -458,11 +471,12 @@ However, depending on the research goals or resource constraints, there
 are often good reasons to move away from this standard
 (\citeproc{ref-benjaminRedefineStatisticalSignificance2017}{Benjamin et
 al., 2017}; \citeproc{ref-lakensJustifyYourAlpha2018}{Lakens, Adolfi, et
-al., 2018}). For example, the \emph{Social Sciences Replication Project}
-targeted a power of 0.9 to safeguard against biased effect sizes in the
-original studies
-(\citeproc{ref-camererEvaluatingReplicabilitySocial2018}{Camerer et al.,
-2018}).
+al., 2018}).\footnote{For example, the \emph{Social Sciences Replication
+  Project} targeted a power of 0.90 to safeguard against biased effect
+  sizes in the original studies
+  (\citeproc{ref-camererEvaluatingReplicabilitySocial2018}{Camerer et
+  al., 2018}), and \emph{Many Labs 5} even targeted a power of 0.95
+  (\citeproc{ref-ebersoleManyLabsTesting2020}{Ebersole et al., 2020}).}
 
 In contrast to power analysis, sample size planning can also be based on
 the precision of parameter estimates (i.e., planning for precision or
@@ -552,12 +566,12 @@ distribution family of the outcome variable.
 GLMMs}\label{simulation-based-sample-size-planning-with-glmms}
 
 To our knowledge, existing approaches for sample size planning for GLMMs
-have exclusively focused on planning for power. In
-Table~\ref{tbl-rpackages}, we review available software packages that
-can be used to perform power analysis for multilevel models in R
-{[}Version 4.4.0; R Core Team (\citeproc{ref-R-base}{2024}){]}. Power
-analysis methods can be categorized into formula-based,
-summary-statistics-based and simulation-based methods
+have exclusively focused on planning for power. In Table 1, we review
+available software packages that can be used to perform power analysis
+for multilevel models in R {[}Version 4.3.3; R Core Team
+(\citeproc{ref-R-base}{2024}){]}. Power analysis methods can be
+categorized into formula-based, summary-statistics-based and
+simulation-based methods
 (\citeproc{ref-murayamaSummarystatisticsbasedPowerAnalysis2022}{Murayama
 et al., 2022}). Formula-based methods rely on exact formulas to
 calculate power directly. Summary-statistics-based methods use
@@ -580,16 +594,18 @@ for multilevel models
 Stevens, 2018};
 \citeproc{ref-debruineUnderstandingMixedEffectsModels2021}{DeBruine \&
 Barr, 2021}; \citeproc{ref-greenSIMRPackagePower2016a}{Green \& MacLeod,
-2016a}; \citeproc{ref-kainPracticalGuidePower2015}{Kain et al., 2015};
-\citeproc{ref-kumleEstimatingPowerGeneralized2021}{Kumle et al., 2021};
-\citeproc{ref-lafitSelectionNumberParticipants2021}{Lafit et al., 2021};
-\citeproc{ref-zimmerSampleSizePlanning2022}{Zimmer et al., 2022}).
-However, many of these tutorials focus on LMMs and the most common study
-designs (see \citeproc{ref-kumleEstimatingPowerGeneralized2021}{Kumle et
-al., 2021} for a tutorial that also covers more advanced settings). This
-narrow focus provides limited guidance for researchers using more
-complex study designs, especially when little prior knowledge about
-plausible effect sizes is available (see the discussion in
+2016a}; \citeproc{ref-johnsonPowerAnalysisGeneralized2015}{Johnson et
+al., 2015}; \citeproc{ref-kainPracticalGuidePower2015}{Kain et al.,
+2015}; \citeproc{ref-kumleEstimatingPowerGeneralized2021}{Kumle et al.,
+2021}; \citeproc{ref-lafitSelectionNumberParticipants2021}{Lafit et al.,
+2021}; \citeproc{ref-zimmerSampleSizePlanning2023}{Zimmer et al.,
+2023}). However, many of these tutorials focus on LMMs and the most
+common study designs (see
+\citeproc{ref-kumleEstimatingPowerGeneralized2021}{Kumle et al., 2021}
+for a tutorial that also covers more advanced settings). This narrow
+focus provides limited guidance for researchers using more complex study
+designs, especially when little prior knowledge about plausible effect
+sizes is available (see the discussion in
 \citeproc{ref-kumleEstimatingPowerGeneralized2021}{Kumle et al., 2021}).
 Simulation-based power analysis with GLMMs requires making a range of
 assumptions about the model structure that should align with the
@@ -606,100 +622,140 @@ discussion in Maxwell et al.
 discuss a number of strategies on how to specify model parameters for
 application-specific, tailored data simulations in a later chapter.
 
-\begin{table}
+\global\setlength{\Oldarrayrulewidth}{\arrayrulewidth}
 
-{\caption{{Overview of software packages for power analysis for
-(generalized) linear mixed models in R.}{\label{tbl-rpackages}}}
-\vspace{-20pt}}
+\global\setlength{\Oldtabcolsep}{\tabcolsep}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1165}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3947}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0526}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0489}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2030}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1842}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-Package name
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Summary
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-GUI available
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-GLMM support
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Design limitations
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Reference
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-glmmrBase & Formula- and simulation-based power analysis; non-linear
-fixed effects and flexible covariance functions & no & yes & none &
-Watson (\citeproc{ref-watsonGeneralisedLinearMixed2023}{2023}) \\
-longpower & Formula-based power analysis; focus on longitudinal data &
-\href{https://atrihub.shinyapps.io/power/}{yes} & no & limited set of
-study designs with two levels & Iddi and C Donohue
-(\citeproc{ref-iddiPowerSampleSize2022}{2022}) \\
-mixedpower & Simulation-based power analysis; based on `simr' package &
-no & yes & none & Kumle et al.
-(\citeproc{ref-kumleEstimatingPowerGeneralized2021}{2021}) \\
-mlmpower & Simulation-based power analysis; missing data mechanisms & no
-& no & limited to two levels & Enders et al.
-(\citeproc{ref-endersSimpleMonteCarlo2023}{2023}) \\
-pamm & Simulation-based power analysis; based on `lme4' package & no &
-no & none & Martin et al.
-(\citeproc{ref-martinMeasuringIndividualDifferences2011}{2011}) \\
-pass.lme & Formula-based power analysis; limited documentation & no & no
-& none & Marco Chak Yan YU
-(\citeproc{ref-marcochakyanyuPassLmePower2019}{2019}) \\
-PowerAnalysisIL & Simulation-based power analysis; focus on longitudinal
-data &
-\href{https://github.com/ginettelafit/PowerAnalysisIL?tab=readme-ov-file\#shiny-app-and-r-package-to-perform-power-analysis-to-select-the-number-of-participants-in-intensive-longitudinal-studies}{yes}
-& no & limited set of study designs with two levels & Lafit et al.
-(\citeproc{ref-lafitSelectionNumberParticipants2021}{2021}) \\
-powerlmm & Simulation-based power analysis; missing data mechanisms;
-focus on longitudinal data &
-\href{https://github.com/rpsychologist/powerlmm?tab=readme-ov-file\#launch-interactive-web-application}{yes}
-& no & limited set of study designs with two or three levels & Magnusson
-et al.
-(\citeproc{ref-magnussonConsequencesIgnoringTherapist2018}{2018}) \\
-simglm & Simulation-based power analysis; missing data mechanisms &
-\href{https://simglm.brandonlebeau.org/reference/run_shiny.html}{yes} &
-yes & limited to two or three levels & LeBeau
-(\citeproc{ref-lebeauSimglmSimulateModels2017}{2017}) \\
-simr & Simulation-based power analysis; based on `lme4' package & no &
-yes & none & Green and MacLeod
-(\citeproc{ref-greenSIMRPackagePower2016}{2016b}) \\
-summary\_statistics based\_power & Summary-statistics-based power
-analysis; based on `pwr' package &
-\href{https://koumurayama.shinyapps.io/summary_statistics_based_power/}{yes}
-& yes & limited set of study designs with two levels & Murayama et al.
-(\citeproc{ref-murayamaSummarystatisticsbasedPowerAnalysis2022}{2022}) \\
-WebPower & Formula-based power analysis; based on `longpower' package;
-focus on longitudinal data &
-\href{https://webpower.psychstat.org/wiki/start}{yes} & no & limited set
-of study designs with two levels & Zhang and Yuan
-(\citeproc{ref-zhangPracticalStatisticalPower2018}{2018}) \\
+\setlength{\tabcolsep}{2pt}
+
+\renewcommand*{\arraystretch}{1.5}
+
+
+
+\providecommand{\ascline}[3]{\noalign{\global\arrayrulewidth #1}\arrayrulecolor[HTML]{#2}\cline{#3}}
+
+\begin{longtable}[c]{|p{1.18in}|p{1.57in}|p{0.59in}|p{0.59in}|p{1.18in}|p{0.79in}}
+\caption{Table 1. Overview of software packages for power analysis for
+(generalized) linear mixed models in R.}\tabularnewline
+
+
+
+
+\ascline{0.75pt}{000000}{1-6}
+
+\multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Package\ name}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Summary}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{GUI\ available}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{GLMM\ support}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Design\ limitations}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.79in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Reference}}}} \\
+
+\ascline{0.75pt}{000000}{1-6}\endfirsthead 
+
+\ascline{0.75pt}{000000}{1-6}
+
+\multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Package\ name}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Summary}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{GUI\ available}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{GLMM\ support}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Design\ limitations}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.79in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Reference}}}} \\
+
+\ascline{0.75pt}{000000}{1-6}\endhead
+
+
+
+\multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{glmmrBase}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Formula-}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{and}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{simulation-based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{power}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{analysis;}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{non-linear}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{fixed}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{effects}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{and}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{flexible}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{covariance}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{functions}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{no}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{yes}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{none}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.79in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Watson}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{(2023)}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{longpower}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Formula-based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{power}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{analysis;}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{focus}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{on}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{longitudinal}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{data}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{0000FF}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\href{https://atrihub.shinyapps.io/power/}{yes}}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{no}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{limited}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{set}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{of}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{study}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{designs}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{with}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{two}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{levels}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.79in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Iddi}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\&}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{C}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Donohue}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{(2022)}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{mixedpower}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Simulation-based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{power}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{analysis;}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{on}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{‘}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{simr}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{’}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{package}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{no}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{yes}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{none}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.79in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Kumle}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{et}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{al.}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{(2021)}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{mlmpower}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Simulation-based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{power}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{analysis;}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{missing}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{data}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{mechanisms}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{no}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{no}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{limited}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{to}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{two}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{levels}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.79in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Enders}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{et}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{al.}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{(2023)}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{pamm}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Simulation-based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{power}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{analysis;}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{on}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{‘}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{lme4}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{’}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{package}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{no}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{no}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{none}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.79in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Martin}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{et}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{al.}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{(2011)}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{pass.lme}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Formula-based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{power}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{analysis;}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{limited}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{documentation}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{no}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{no}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{none}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.79in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Marco}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Chak}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Yan}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{YU}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{(2019)}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{PowerAnalysisIL}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Simulation-based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{power}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{analysis;}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{focus}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{on}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{longitudinal}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{data}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{0000FF}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\href{https://github.com/ginettelafit/PowerAnalysisIL?tab=readme-ov-file\#shiny-app-and-r-package-to-perform-power-analysis-to-select-the-number-of-participants-in-intensive-longitudinal-studies}{yes}}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{no}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{limited}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{set}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{of}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{study}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{designs}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{with}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{two}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{levels}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.79in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Lafit}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{et}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{al.}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{(2021)}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{powerlmm}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Simulation-based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{power}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{analysis;}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{missing}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{data}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{mechanisms;}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{focus}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{on}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{longitudinal}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{data}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{0000FF}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\href{https://github.com/rpsychologist/powerlmm?tab=readme-ov-file\#launch-interactive-web-application}{yes}}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{no}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{limited}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{set}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{of}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{study}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{designs}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{with}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{two}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{or}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{three}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{levels}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.79in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Magnusson}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{et}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{al.}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{(2018)}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{simglm}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Simulation-based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{power}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{analysis;}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{missing}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{data}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{mechanisms}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{0000FF}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\href{https://simglm.brandonlebeau.org/reference/run\_shiny.html}{yes}}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{yes}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{limited}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{to}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{two}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{or}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{three}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{levels}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.79in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{LeBeau}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{(2019)}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{simr}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Simulation-based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{power}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{analysis;}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{on}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{‘}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{lme4}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{’}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{package}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{no}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{yes}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{none}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.79in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Green}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\&}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{MacLeod}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{(2016)}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{summary\_statistics}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{based\_power}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Summary-statistics-based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{power}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{analysis;}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{on}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{‘}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{pwr}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{’}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{package}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{0000FF}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\href{https://koumurayama.shinyapps.io/summary\_statistics\_based\_power/}{yes}}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{yes}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{limited}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{set}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{of}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{study}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{designs}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{with}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{two}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{levels}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.79in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Murayama}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{et}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{al.}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{(2022)}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{WebPower}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.57in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Formula-based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{power}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{analysis;}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{based}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{on}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{‘}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{longpower}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{’}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{package;}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{focus}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{on}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{longitudinal}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{data}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{0000FF}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\href{https://webpower.psychstat.org/wiki/start}{yes}}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.59in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{no}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 1.18in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{limited}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{set}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{of}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{study}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{designs}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{with}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{two}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{levels}}}} & \multicolumn{1}{>{\centering}m{\dimexpr 0.79in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Zhang}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\&}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{Yuan}}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{\ }}}\textcolor[HTML]{000000}{\fontsize{10}{20}\selectfont{\global\setmainfont{Times New Roman}{(2018)}}}} \\
+
+\ascline{0.75pt}{000000}{1-6}
+
+
+
 \end{longtable}
 
-{\vspace{-20pt}
-\noindent \emph{Note.} GUI available = whether a graphical user interface is provided (usually a Shiny app that is available online or can be downloaded to run locally), GLMM support = whether power analysis can be performed for generalized linear mixed model (otherwise only linear mixed models are supported). Design limitations = whether only a limited selection of study designs can be specified (otherwise arbitrary designs within the model class are supported).}
 
-\end{table}
+
+\arrayrulecolor[HTML]{000000}
+
+\global\setlength{\arrayrulewidth}{\Oldarrayrulewidth}
+
+\global\setlength{\tabcolsep}{\Oldtabcolsep}
+
+\renewcommand*{\arraystretch}{1}
+
+\noindent \emph{Note.} GUI available = whether a graphical user
+interface is provided (usually a Shiny app that is available online or
+can be downloaded to run locally), GLMM support = whether power analysis
+can be performed for generalized linear mixed model (otherwise only
+linear mixed models are supported), Design limitations = whether only a
+limited selection of study designs can be specified (otherwise arbitrary
+designs within the model class are supported).
 
 \section{Reasons to use tailored data
 simulation}\label{reasons-to-use-tailored-data-simulation}
 
 Performing tailored simulation-based sample size planning is more
 complicated and time-consuming than using the existing software tools
-outlined in Table~\ref{tbl-rpackages}. Circumstances under which
-tailored simulation-based sample size planning is necessary include 1)
-complex study designs, 2) complex statistical hypotheses, 3) planning
-for precision, and 4) lack of prior studies or pilot data.
+outlined in Table 1. Circumstances under which tailored simulation-based
+sample size planning is necessary include 1) complex study designs, 2)
+complex statistical hypotheses, 3) planning for precision, and 4) lack
+of prior studies or pilot data.
 
 First, requirements of real-world studies are often more complex than
 the simplified designs assumed by many user-friendly software packages
@@ -781,24 +837,23 @@ single hypotheses must be corrected for multiple testing to avoid
 combined with \emph{AND}, a correction for multiple testing is not
 necessary but rather a mistake that unnecessarily reduces the power of
 the global HT. None of the software packages for sample size planning in
-Table~\ref{tbl-rpackages} can handle combined hypotheses and only some
-can handle directed hypotheses. In contrast, our case study will
-demonstrate how we can test directed combined hypotheses with tailored
-simulation-based sample size planning.
+Table 1 can handle combined hypotheses and only some can handle directed
+hypotheses. In contrast, our case study will demonstrate how we can test
+directed combined hypotheses with tailored simulation-based sample size
+planning.
 
 Third, all available software packages for sample size planning with
 GLMMs are based on power analysis and do not support planning for
 precision. Thus, researchers that want to apply an estimation strategy
 instead of testing statistical hypotheses
 (\citeproc{ref-cummingNewStatisticsWhy2014}{Cumming, 2014}), currently
-cannot use the software packages outlined in Table~\ref{tbl-rpackages}.
-However, tailored simulation-based sample size planning can easily
-handle the planning for precision approach
-(\citeproc{ref-maxwellSampleSizePlanning2008}{Maxwell et al., 2008}).
-The only change in procedure is that instead of computing HTs for each
-simulated dataset and estimating statistical power across repetitions,
-CIs are computed for each simulated dataset, and their expected width is
-estimated.
+cannot use the software packages outlined in Table 1. However, tailored
+simulation-based sample size planning can easily handle the planning for
+precision approach (\citeproc{ref-maxwellSampleSizePlanning2008}{Maxwell
+et al., 2008}). The only change in procedure is that instead of
+computing HTs for each simulated dataset and estimating statistical
+power across repetitions, CIs are computed for each simulated dataset,
+and their expected width is estimated.
 
 Fourth, all frameworks for sample size planning require the user to make
 assumptions about the expected effect size. Assuming the true effect is
@@ -833,9 +888,11 @@ planning}\label{general-steps-in-tailored-simulation-based-sample-size-planning}
 Although the details differ for each study, every tailored
 simulation-based sample size planning requires a series of steps and
 decisions. We will introduce each step in a theoretical section,
-followed by the practical application based on a case study. All code in
-this manuscript and simulation results are available on the Open Science
-Framework (\url{https://osf.io/dhwf4/}) and on our tutorial website
+followed by the practical application based on a case study. To keep the
+tutorial manageable, we focus on a binomial GLMM with two random
+intercepts and discrete predictor variables. All code in this manuscript
+and simulation results are available on the Open Science Framework
+(\url{https://osf.io/dhwf4/}) and on our tutorial website
 (\url{https://timo-ko.github.io/glmm_simulation_tutorial/}).
 
 \subsection{Step 1: Define the
@@ -930,7 +987,7 @@ of the expert or scan.\footnote{Note that a different estimand would be
   probability contrast is defined for each combination of expert and
   scan, and then these contrasts are averaged across all experts and
   scans from the target population
-  (\citeproc{ref-lundbergWhatYourEstimand2021}{Lundberg et al., 2021}).}.
+  (\citeproc{ref-lundbergWhatYourEstimand2021}{Lundberg et al., 2021}).}
 To complete our definition of the estimand, we have to define our target
 population that consists of persons, stimuli, and AI advice: With
 respect to persons, we are only interested in experts (i.e.,
@@ -1104,19 +1161,19 @@ to the design of our case study.
   \FunctionTok{require}\NormalTok{(dplyr)}
   \FunctionTok{require}\NormalTok{(faux)}
   \CommentTok{\# simulate design}
-\NormalTok{  dat }\OtherTok{\textless{}{-}} \FunctionTok{add\_random}\NormalTok{(}\AttributeTok{subject =}\NormalTok{ n\_subjects, }\AttributeTok{item =}\NormalTok{ n\_items) }\SpecialCharTok{|\textgreater{}}
-    \FunctionTok{add\_between}\NormalTok{(}\StringTok{"subject"}\NormalTok{, }\AttributeTok{expert =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{), }\AttributeTok{.prob =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.25}\NormalTok{, }\FloatTok{0.75}\NormalTok{)) }\SpecialCharTok{|\textgreater{}}
-    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{advice\_present =} \FunctionTok{rbinom}\NormalTok{(}\FunctionTok{n}\NormalTok{(), }\DecValTok{1}\NormalTok{, }\AttributeTok{prob =} \DecValTok{2}\SpecialCharTok{/}\DecValTok{3}\NormalTok{)) }\SpecialCharTok{|\textgreater{}}
+\NormalTok{  dat }\OtherTok{\textless{}{-}} \FunctionTok{add\_random}\NormalTok{(}\AttributeTok{subject =}\NormalTok{ n\_subjects, }\AttributeTok{item =}\NormalTok{ n\_items) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{add\_between}\NormalTok{(}\StringTok{"subject"}\NormalTok{, }\AttributeTok{expert =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{), }\AttributeTok{.prob =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.25}\NormalTok{, }\FloatTok{0.75}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{advice\_present =} \FunctionTok{rbinom}\NormalTok{(}\FunctionTok{n}\NormalTok{(), }\DecValTok{1}\NormalTok{, }\AttributeTok{prob =} \DecValTok{2}\SpecialCharTok{/}\DecValTok{3}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
     \FunctionTok{mutate}\NormalTok{(}\AttributeTok{advice\_correct =} \FunctionTok{if\_else}\NormalTok{(advice\_present }\SpecialCharTok{==} \DecValTok{1}\NormalTok{L, }
-                                    \FunctionTok{rbinom}\NormalTok{(}\FunctionTok{n}\NormalTok{(), }\DecValTok{1}\NormalTok{L, }\AttributeTok{prob =} \FloatTok{0.8}\NormalTok{), }\DecValTok{0}\NormalTok{L)) }\SpecialCharTok{|\textgreater{}}
+                                    \FunctionTok{rbinom}\NormalTok{(}\FunctionTok{n}\NormalTok{(), }\DecValTok{1}\NormalTok{L, }\AttributeTok{prob =} \FloatTok{0.8}\NormalTok{), }\DecValTok{0}\NormalTok{L)) }\SpecialCharTok{\%\textgreater{}\%}
     \CommentTok{\# add random effects}
-    \FunctionTok{add\_ranef}\NormalTok{(}\StringTok{"subject"}\NormalTok{, }\AttributeTok{u0s =}\NormalTok{ sd\_u0s) }\SpecialCharTok{|\textgreater{}}
-    \FunctionTok{add\_ranef}\NormalTok{(}\StringTok{"item"}\NormalTok{, }\AttributeTok{u0i =}\NormalTok{ sd\_u0i) }\SpecialCharTok{|\textgreater{}}
+    \FunctionTok{add\_ranef}\NormalTok{(}\StringTok{"subject"}\NormalTok{, }\AttributeTok{u0s =}\NormalTok{ sd\_u0s) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{add\_ranef}\NormalTok{(}\StringTok{"item"}\NormalTok{, }\AttributeTok{u0i =}\NormalTok{ sd\_u0i) }\SpecialCharTok{\%\textgreater{}\%}
     \CommentTok{\# compute dependent variable}
     \FunctionTok{mutate}\NormalTok{(}\AttributeTok{linpred =}\NormalTok{ b\_0 }\SpecialCharTok{+}\NormalTok{ u0i }\SpecialCharTok{+}\NormalTok{ u0s }\SpecialCharTok{+}
-\NormalTok{        b\_e }\SpecialCharTok{*}\NormalTok{ expert }\SpecialCharTok{+}\NormalTok{ b\_a }\SpecialCharTok{*}\NormalTok{ advice\_present }\SpecialCharTok{+}\NormalTok{ b\_c }\SpecialCharTok{*}\NormalTok{ advice\_correct }\SpecialCharTok{+}
-\NormalTok{        b\_ea }\SpecialCharTok{*}\NormalTok{ expert }\SpecialCharTok{*}\NormalTok{ advice\_present }\SpecialCharTok{+}\NormalTok{ b\_ec }\SpecialCharTok{*}\NormalTok{ expert }\SpecialCharTok{*}\NormalTok{ advice\_correct) }\SpecialCharTok{|\textgreater{}}
-    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{y\_prob =} \FunctionTok{plogis}\NormalTok{(linpred)) }\SpecialCharTok{|\textgreater{}}
+\NormalTok{      b\_e }\SpecialCharTok{*}\NormalTok{ expert }\SpecialCharTok{+}\NormalTok{ b\_a }\SpecialCharTok{*}\NormalTok{ advice\_present }\SpecialCharTok{+}\NormalTok{ b\_c }\SpecialCharTok{*}\NormalTok{ advice\_correct }\SpecialCharTok{+}
+\NormalTok{      b\_ea }\SpecialCharTok{*}\NormalTok{ expert }\SpecialCharTok{*}\NormalTok{ advice\_present }\SpecialCharTok{+}\NormalTok{ b\_ec }\SpecialCharTok{*}\NormalTok{ expert }\SpecialCharTok{*}\NormalTok{ advice\_correct) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{y\_prob =} \FunctionTok{plogis}\NormalTok{(linpred)) }\SpecialCharTok{\%\textgreater{}\%}
     \FunctionTok{mutate}\NormalTok{(}\AttributeTok{y\_bin =} \FunctionTok{rbinom}\NormalTok{(}\AttributeTok{n =} \FunctionTok{n}\NormalTok{(), }\AttributeTok{size =} \DecValTok{1}\NormalTok{, }\AttributeTok{prob =}\NormalTok{ y\_prob))}
 \NormalTok{  dat}
 \NormalTok{\}}
@@ -1225,16 +1282,22 @@ P(Y=1| advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} 
 values based on domain knowledge and deriving the parameter values
 implied by these probabilities for each experimental condition.
 
-\begin{table}
-
-{\caption{{Assumed probabilities that an average subject solves an
-average item in each experimental condition.}{\label{tbl-probtable}}}
-\vspace{-20pt}}
-
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1646}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3291}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5063}}@{}}
+\caption{Table 2. Assumed probabilities that an average subject solves
+an average item in each experimental condition.}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Experimental condition
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\(P(Y=1 \mid \mathbf{X=x}, \mathbf{U} = \mathbf{0})\)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Implied equation
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Experimental condition
@@ -1259,19 +1322,14 @@ correct advice, expert & 0.95 &
 \(logit(0.95) = \beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}\) \\
 \end{longtable}
 
-{\vspace{-20pt}
-\noindent \emph{Note.} Implied equations are derived based on the model equations and setting all random intercept terms to 0.}
-
-\end{table}
-
-Table~\ref{tbl-probtable} shows our set of assumptions concerning the
-probability that an average subject solves an average item for each
-experimental condition, as well as the corresponding equations implied
-by the model. The table can be used to compute the implied values for
-the \(\beta\) parameters, starting with the first equation and
-reinserting the computed \(\beta\) values in all following equations
-(\texttt{b\_0} stands for the intercept \(\beta_0\), \texttt{b\_e} for
-the slope \(\beta_e\), and so on):
+Table 2 shows our set of assumptions concerning the probability that an
+average subject solves an average item for each experimental condition,
+as well as the corresponding equations implied by the model. The table
+can be used to compute the implied values for the \(\beta\) parameters,
+starting with the first equation and reinserting the computed \(\beta\)
+values in all following equations (\texttt{b\_0} stands for the
+intercept \(\beta_0\), \texttt{b\_e} for the slope \(\beta_e\), and so
+on):
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1380,14 +1438,14 @@ experimental condition.
 \FunctionTok{set.seed}\NormalTok{(}\DecValTok{1}\NormalTok{)}
 \NormalTok{dat }\OtherTok{\textless{}{-}} \FunctionTok{simulate}\NormalTok{(}\AttributeTok{n\_subjects =} \DecValTok{3000}\NormalTok{, }\AttributeTok{n\_items =} \DecValTok{3000}\NormalTok{,}
   \AttributeTok{sd\_u0s =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{sd\_u0i =} \FloatTok{0.5}\NormalTok{)}
-\NormalTok{dat }\SpecialCharTok{|\textgreater{}} 
+\NormalTok{dat }\SpecialCharTok{\%\textgreater{}\%} 
   \FunctionTok{mutate}\NormalTok{(}\AttributeTok{condition =} \FunctionTok{fct\_cross}\NormalTok{(}
-    \FunctionTok{factor}\NormalTok{(expert), }\FunctionTok{factor}\NormalTok{(advice\_present), }\FunctionTok{factor}\NormalTok{(advice\_correct))) }\SpecialCharTok{|\textgreater{}}
+    \FunctionTok{factor}\NormalTok{(expert), }\FunctionTok{factor}\NormalTok{(advice\_present), }\FunctionTok{factor}\NormalTok{(advice\_correct))) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{mutate}\NormalTok{(}\AttributeTok{condition =} \FunctionTok{fct\_recode}\NormalTok{(condition,}
  \StringTok{"student, no advice"} \OtherTok{=} \StringTok{"0:0:0"}\NormalTok{, }\StringTok{"expert, no advice"} \OtherTok{=} \StringTok{"1:0:0"}\NormalTok{, }
  \StringTok{"student, incorrect advice"} \OtherTok{=} \StringTok{"0:1:0"}\NormalTok{, }\StringTok{"expert, incorrect advice"} \OtherTok{=} \StringTok{"1:1:0"}\NormalTok{,}
- \StringTok{"student, correct advice"} \OtherTok{=} \StringTok{"0:1:1"}\NormalTok{, }\StringTok{"expert, correct advice"} \OtherTok{=} \StringTok{"1:1:1"}\NormalTok{)) }\SpecialCharTok{|\textgreater{}} 
-  \FunctionTok{group\_by}\NormalTok{(condition) }\SpecialCharTok{|\textgreater{}}
+ \StringTok{"student, correct advice"} \OtherTok{=} \StringTok{"0:1:1"}\NormalTok{, }\StringTok{"expert, correct advice"} \OtherTok{=} \StringTok{"1:1:1"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(condition) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{summarize}\NormalTok{(}\AttributeTok{relative\_frequency =} \FunctionTok{sum}\NormalTok{(y\_bin) }\SpecialCharTok{/} \FunctionTok{n}\NormalTok{())}
 \end{Highlighting}
 \end{Shaded}
@@ -1460,13 +1518,13 @@ distribution of correct diagnoses for each experimental condition.
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(ggdist)}
-\NormalTok{dat }\SpecialCharTok{|\textgreater{}} 
+\NormalTok{dat }\SpecialCharTok{\%\textgreater{}\%} 
   \FunctionTok{mutate}\NormalTok{(}\AttributeTok{condition =} \FunctionTok{fct\_cross}\NormalTok{(}
-    \FunctionTok{factor}\NormalTok{(expert), }\FunctionTok{factor}\NormalTok{(advice\_present), }\FunctionTok{factor}\NormalTok{(advice\_correct))) }\SpecialCharTok{|\textgreater{}}
+    \FunctionTok{factor}\NormalTok{(expert), }\FunctionTok{factor}\NormalTok{(advice\_present), }\FunctionTok{factor}\NormalTok{(advice\_correct))) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{mutate}\NormalTok{(}\AttributeTok{condition =} \FunctionTok{fct\_recode}\NormalTok{(condition,}
 \StringTok{"student, no advice"} \OtherTok{=} \StringTok{"0:0:0"}\NormalTok{, }\StringTok{"expert, no advice"} \OtherTok{=} \StringTok{"1:0:0"}\NormalTok{, }
 \StringTok{"student, incorrect advice"} \OtherTok{=} \StringTok{"0:1:0"}\NormalTok{, }\StringTok{"expert, incorrect advice"} \OtherTok{=} \StringTok{"1:1:0"}\NormalTok{,}
-\StringTok{"student, correct advice"} \OtherTok{=} \StringTok{"0:1:1"}\NormalTok{, }\StringTok{"expert, correct advice"} \OtherTok{=} \StringTok{"1:1:1"}\NormalTok{)) }\SpecialCharTok{|\textgreater{}} 
+\StringTok{"student, correct advice"} \OtherTok{=} \StringTok{"0:1:1"}\NormalTok{, }\StringTok{"expert, correct advice"} \OtherTok{=} \StringTok{"1:1:1"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
   \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ y\_prob, }\AttributeTok{y =}\NormalTok{ condition)) }\SpecialCharTok{+}
   \FunctionTok{stat\_histinterval}\NormalTok{(}\AttributeTok{point\_interval =} \StringTok{"mean\_qi"}\NormalTok{, }\AttributeTok{slab\_color =} \StringTok{"gray45"}\NormalTok{,}
     \AttributeTok{breaks =} \StringTok{"Sturges"}\NormalTok{) }\SpecialCharTok{+}
@@ -1493,8 +1551,8 @@ that, indeed, the average probabilities (black dots) slightly differ
 from the probabilities of average subjects and items considered
 previously. This difference increases with the variability of the random
 effects. We can use plots like Figure~\ref{fig-margdist1} as a useful
-tool to decide whether the specified standard deviations of the subject
-and item random intercepts (\(\sigma_S\) and \(\sigma_I\)) are
+tool to determine whether the specified standard deviations of the
+subject and item random intercepts (\(\sigma_S\) and \(\sigma_I\)) are
 reasonable by comparing the ranges and overlap between conditions to
 domain knowledge.
 
@@ -1601,7 +1659,7 @@ the magnitude of these effects should be substantially greater for
 students, given their stronger reliance on advice compared to experts.
 We further validated the plausibility of our estimated gains and losses
 with the collaborating radiologists until we settled on the
-probabilities shown in Table~\ref{tbl-probtable}.
+probabilities shown in Table 2.
 
 \subsection{Step 4: Estimate the statistical
 model}\label{step-4-estimate-the-statistical-model}
@@ -1720,11 +1778,11 @@ Number of obs: 5000, groups:  subject, 100; item, 50
 Fixed effects:
                       Estimate Std. Error z value Pr(>|z|)    
 (Intercept)             1.0339     0.1103   9.374  < 2e-16 ***
-expert                  1.1849     0.2096   5.654 1.56e-08 ***
+expert                  1.1849     0.2096   5.654 1.57e-08 ***
 advice_present         -1.3436     0.1206 -11.143  < 2e-16 ***
 advice_correct          2.6154     0.1273  20.540  < 2e-16 ***
 expert:advice_present   1.0589     0.2940   3.601 0.000317 ***
-expert:advice_correct  -1.8104     0.2915  -6.210 5.29e-10 ***
+expert:advice_correct  -1.8104     0.2915  -6.210 5.28e-10 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -1894,7 +1952,7 @@ probabilities for all experimental conditions in our experiment with the
 \begin{Highlighting}[]
 \NormalTok{preds }\OtherTok{\textless{}{-}} \FunctionTok{predictions}\NormalTok{(fit, }\AttributeTok{newdata =}\NormalTok{ grid2, }
   \AttributeTok{type =} \StringTok{"response"}\NormalTok{, }\AttributeTok{re.form =} \ConstantTok{NA}\NormalTok{)}
-\FunctionTok{print}\NormalTok{(preds, }\AttributeTok{style =} \StringTok{"tinytable"}\NormalTok{) }\SpecialCharTok{|\textgreater{}} \FunctionTok{theme\_tt}\NormalTok{(}\AttributeTok{theme =} \StringTok{"resize"}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(preds, }\AttributeTok{style =} \StringTok{"tinytable"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{theme\_tt}\NormalTok{(}\AttributeTok{theme =} \StringTok{"resize"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1942,14 +2000,14 @@ approximate delta method.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{contrasts }\OtherTok{\textless{}{-}}\NormalTok{ preds }\SpecialCharTok{|\textgreater{}} 
+\NormalTok{contrasts }\OtherTok{\textless{}{-}}\NormalTok{ preds }\SpecialCharTok{\%\textgreater{}\%} 
   \FunctionTok{hypotheses}\NormalTok{(}\AttributeTok{hypothesis =} \FunctionTok{c}\NormalTok{(}
     \StringTok{"b8 = b2"}\NormalTok{,  }\CommentTok{\# (correct advice, expert) {-} (no advice, expert)}
     \StringTok{"b2 = b6"}\NormalTok{,  }\CommentTok{\# (no advice, expert) {-} (incorrect advice, expert) }
     \StringTok{"b7 = b1"}\NormalTok{,  }\CommentTok{\# (correct advice, student) {-} (no advice, student)}
     \StringTok{"b1 = b5"}\NormalTok{), }\CommentTok{\# (no advice, student) {-} (incorrect advice, student)}
     \AttributeTok{equivalence =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{))}
-\FunctionTok{print}\NormalTok{(contrasts, }\AttributeTok{style =} \StringTok{"tinytable"}\NormalTok{) }\SpecialCharTok{|\textgreater{}} \FunctionTok{theme\_tt}\NormalTok{(}\AttributeTok{theme =} \StringTok{"resize"}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(contrasts, }\AttributeTok{style =} \StringTok{"tinytable"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{theme\_tt}\NormalTok{(}\AttributeTok{theme =} \StringTok{"resize"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -2083,8 +2141,8 @@ command.
   \CommentTok{\# compute contrasts}
 \NormalTok{  contr\_df }\OtherTok{\textless{}{-}} \FunctionTok{expand\_grid}\NormalTok{(}\AttributeTok{advice\_present =} \DecValTok{0}\SpecialCharTok{:}\DecValTok{1}\NormalTok{, }\AttributeTok{advice\_correct =} \DecValTok{0}\SpecialCharTok{:}\DecValTok{1}\NormalTok{,}
     \AttributeTok{expert =} \DecValTok{0}\SpecialCharTok{:}\DecValTok{1}\NormalTok{)}
-  \FunctionTok{predictions}\NormalTok{(model, }\AttributeTok{newdata =}\NormalTok{ contr\_df, }\AttributeTok{type =} \StringTok{"response"}\NormalTok{, }\AttributeTok{re.form =} \ConstantTok{NA}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
-    \FunctionTok{hypotheses}\NormalTok{(}\AttributeTok{hypothesis =}\NormalTok{ contrasts, }\AttributeTok{equivalence =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{)) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{predictions}\NormalTok{(model, }\AttributeTok{newdata =}\NormalTok{ contr\_df, }\AttributeTok{type =} \StringTok{"response"}\NormalTok{, }\AttributeTok{re.form =} \ConstantTok{NA}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{hypotheses}\NormalTok{(}\AttributeTok{hypothesis =}\NormalTok{ contrasts, }\AttributeTok{equivalence =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
     \FunctionTok{data.frame}\NormalTok{()}
 \NormalTok{\}}
 \end{Highlighting}
@@ -2114,7 +2172,7 @@ times. The more repetitions, the more accurately power and precision can
 be estimated. We chose 300 repetitions for the data simulation at hand
 to strike a balance between achieving a robust estimate and remaining
 computationally feasible. With the current settings, this simulation
-takes about one hour on a MacBook Pro from 2020 with M1 chip and 16 GB
+takes several hours on a MacBook Pro from 2020 with M1 chip and 16 GB
 working memory. If you want to quickly experiment with the code
 yourself, a setting with \texttt{workers\ =\ 4} and \texttt{rep\ =\ 5}
 should finish in less than 5 minutes, even on smaller machines.
@@ -2123,12 +2181,12 @@ should finish in less than 5 minutes, even on smaller machines.
 \begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(furrr)}
 \NormalTok{sim\_result }\OtherTok{\textless{}{-}} \FunctionTok{crossing}\NormalTok{(}
-  \AttributeTok{rep =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{300}\NormalTok{,}
+  \AttributeTok{rep =} \DecValTok{1}\SpecialCharTok{:}\DecValTok{500}\NormalTok{,}
   \AttributeTok{n\_subjects =} \FunctionTok{c}\NormalTok{(}\DecValTok{100}\NormalTok{, }\DecValTok{150}\NormalTok{, }\DecValTok{200}\NormalTok{, }\DecValTok{250}\NormalTok{),}
   \AttributeTok{n\_items =} \FunctionTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{30}\NormalTok{, }\DecValTok{50}\NormalTok{, }\DecValTok{70}\NormalTok{)}
-\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{mutate}\NormalTok{(}\AttributeTok{res =} \FunctionTok{future\_pmap}\NormalTok{(., sim\_and\_analyse, }
-    \AttributeTok{.options =} \FunctionTok{furrr\_options}\NormalTok{(}\AttributeTok{seed =} \ConstantTok{TRUE}\NormalTok{))) }\SpecialCharTok{|\textgreater{}}
+    \AttributeTok{.options =} \FunctionTok{furrr\_options}\NormalTok{(}\AttributeTok{seed =} \ConstantTok{TRUE}\NormalTok{))) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{unnest}\NormalTok{(}\AttributeTok{col =}\NormalTok{ res)}
 \end{Highlighting}
 \end{Shaded}
@@ -2161,10 +2219,10 @@ code.\footnote{This code was inspired by the ``Mixed Design Simulation''
 \begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(binom)}
 \NormalTok{alpha }\OtherTok{\textless{}{-}} \FloatTok{0.05}
-\NormalTok{power }\OtherTok{\textless{}{-}}\NormalTok{ sim\_result }\SpecialCharTok{|\textgreater{}}
+\NormalTok{power }\OtherTok{\textless{}{-}}\NormalTok{ sim\_result }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ term, }\AttributeTok{names\_sep =} \StringTok{"\_"}\NormalTok{, }
-    \AttributeTok{values\_from =}\NormalTok{ estimate}\SpecialCharTok{:}\NormalTok{p.value.equiv) }\SpecialCharTok{|\textgreater{}}
-  \FunctionTok{group\_by}\NormalTok{(n\_subjects, n\_items) }\SpecialCharTok{|\textgreater{}} 
+    \AttributeTok{values\_from =}\NormalTok{ estimate}\SpecialCharTok{:}\NormalTok{p.value.equiv) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(n\_subjects, n\_items) }\SpecialCharTok{\%\textgreater{}\%} 
   \FunctionTok{summarise}\NormalTok{(}
     \AttributeTok{power =} \FunctionTok{mean}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{p.value.noninf\_b1=b5}\StringTok{\textasciigrave{}} \SpecialCharTok{\textless{}}\NormalTok{ alpha }\SpecialCharTok{\&} 
         \StringTok{\textasciigrave{}}\AttributeTok{p.value.noninf\_b8=b2}\StringTok{\textasciigrave{}} \SpecialCharTok{\textless{}}\NormalTok{ alpha }\SpecialCharTok{\&} \StringTok{\textasciigrave{}}\AttributeTok{p.value.noninf\_b2=b6}\StringTok{\textasciigrave{}} \SpecialCharTok{\textless{}}\NormalTok{ alpha }\SpecialCharTok{\&} 
@@ -2176,8 +2234,8 @@ code.\footnote{This code was inspired by the ``Mixed Design Simulation''
     \AttributeTok{ci.lwr =} \FunctionTok{binom.confint}\NormalTok{(n\_sig, n, }\AttributeTok{method =} \StringTok{"wilson"}\NormalTok{)}\SpecialCharTok{$}\NormalTok{lower,}
     \AttributeTok{ci.upr =} \FunctionTok{binom.confint}\NormalTok{(n\_sig, n, }\AttributeTok{method =} \StringTok{"wilson"}\NormalTok{)}\SpecialCharTok{$}\NormalTok{upper, }
     \AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{)}
-\NormalTok{power }\SpecialCharTok{|\textgreater{}}
-  \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{c}\NormalTok{(n\_subjects, n\_items), factor)) }\SpecialCharTok{|\textgreater{}}
+\NormalTok{power }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{c}\NormalTok{(n\_subjects, n\_items), factor)) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(n\_subjects, n\_items, }\AttributeTok{fill =}\NormalTok{ power)) }\SpecialCharTok{+}
   \FunctionTok{geom\_tile}\NormalTok{() }\SpecialCharTok{+}
   \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%.2f }\SpecialCharTok{\textbackslash{}n}\StringTok{ [\%.2f; \%.2f]"}\NormalTok{, }
@@ -2225,21 +2283,29 @@ based on practical considerations. Although it is recommended to justify
 the power (\citeproc{ref-lakensSampleSizeJustification2022}{Lakens,
 2022a}), we adopt the common heuristic to target a power of 0.8 to
 detect an effect of the expected size implied by our data simulation.
-This could be achieved by collecting data from 200 subjects (about 25\%
+This could be achieved by collecting data from 250 subjects (about 25\%
 of which will be experts), each completing the same 50 items (with
 advice present in about 67\% of cases, which is correct in about 80\% of
-cases with present advice). If collecting data from 200 subjects is not
-feasible, an alternative would be to recruit 150 subjects but increase
-the length of the experiment to over 70 items. However, 70 items might
-take too long to complete for the radiologists participating in the
-study, who have a busy schedule. The simulation suggests that it might
-also be possible to plan a shorter experiment with only 30 items if it
-is feasible to recruit an even higher number of subjects (\textgreater{}
-250, to be determined by additional rounds of power analysis). Design
-parameters that also affect power, and which could be investigated in
-the simulation to find a more optimal trade-off, are the ratio of
-experts to students, the frequency of whether advice is presented at
-all, and whether it is correct or incorrect.
+cases with present advice). If collecting data from 250 subjects is not
+feasible, an alternative would be to recruit 200 subjects but increase
+the length of the experiment to 70 items. However, 70 items might take
+too long to complete for the radiologists participating in the study,
+who have a busy schedule. The simulation suggests that it might also be
+possible to plan a shorter experiment with only 30 items if it is
+feasible to recruit an even higher number of subjects (to be determined
+by additional rounds of power analysis). Design parameters that also
+affect power, and which could be investigated in the simulation to find
+a more optimal trade-off, are the ratio of experts to students, the
+frequency of whether advice is presented at all, and whether it is
+correct or incorrect.\footnote{An advanced alternative to our heuristic
+  trade-off between subjects and items would be to explicitly optimize
+  for cost-efficient study designs using the \emph{mlpwr} package
+  (\citeproc{ref-zimmerSampleSizePlanning2023}{Zimmer et al., 2023}).
+  The package performs simulation based power analysis in a surrogate
+  modeling framework that can evaluate power for a large grid of design
+  combinations more efficiently. The framework also requires users to
+  write their own \texttt{sim\_and\_analyse} function and can be
+  considered a great extension on what we cover in our tutorial.}
 
 \paragraph{Precision results.}\label{precision-results}
 
@@ -2272,17 +2338,17 @@ results with the following code.
 \phantomsection\label{cell-fig-finalprecision}
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{precision }\OtherTok{\textless{}{-}}\NormalTok{ sim\_result }\SpecialCharTok{|\textgreater{}}
+\NormalTok{precision }\OtherTok{\textless{}{-}}\NormalTok{ sim\_result }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{pivot\_wider}\NormalTok{(}\AttributeTok{names\_from =}\NormalTok{ term, }\AttributeTok{names\_sep =} \StringTok{"\_"}\NormalTok{, }
-    \AttributeTok{values\_from =}\NormalTok{ estimate}\SpecialCharTok{:}\NormalTok{p.value.equiv) }\SpecialCharTok{|\textgreater{}}
-  \FunctionTok{group\_by}\NormalTok{(n\_subjects, n\_items) }\SpecialCharTok{|\textgreater{}}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{width =} \StringTok{\textasciigrave{}}\AttributeTok{conf.high\_b8=b2}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \StringTok{\textasciigrave{}}\AttributeTok{conf.low\_b8=b2}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+    \AttributeTok{values\_from =}\NormalTok{ estimate}\SpecialCharTok{:}\NormalTok{p.value.equiv) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(n\_subjects, n\_items) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{width =} \StringTok{\textasciigrave{}}\AttributeTok{conf.high\_b8=b2}\StringTok{\textasciigrave{}} \SpecialCharTok{{-}} \StringTok{\textasciigrave{}}\AttributeTok{conf.low\_b8=b2}\StringTok{\textasciigrave{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{summarise}\NormalTok{(}\AttributeTok{precision =} \FunctionTok{mean}\NormalTok{(width),}
     \AttributeTok{ci.lwr =} \FunctionTok{t.test}\NormalTok{(width)}\SpecialCharTok{$}\NormalTok{conf.int[}\DecValTok{1}\NormalTok{],}
     \AttributeTok{ci.upr =} \FunctionTok{t.test}\NormalTok{(width)}\SpecialCharTok{$}\NormalTok{conf.int[}\DecValTok{2}\NormalTok{], }
     \AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{)}
-\NormalTok{precision }\SpecialCharTok{|\textgreater{}}
-  \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{c}\NormalTok{(n\_subjects, n\_items), factor)) }\SpecialCharTok{|\textgreater{}}
+\NormalTok{precision }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{c}\NormalTok{(n\_subjects, n\_items), factor)) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(n\_subjects, n\_items, }\AttributeTok{fill =}\NormalTok{ precision)) }\SpecialCharTok{+}
   \FunctionTok{geom\_tile}\NormalTok{() }\SpecialCharTok{+}
   \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%.2f }\SpecialCharTok{\textbackslash{}n}\StringTok{ [\%.2f; \%.2f]"}\NormalTok{, }
@@ -2316,7 +2382,7 @@ our focal contrast was estimated by our simulation. Applying our simple
 heuristic of targeting an expected CI width that is smaller than 0.1, we
 see the same trade-off between the number of subjects and the number of
 items as with planning for power. We could either choose 100 subjects
-and 30 items or 200 subjects and 10 items. Note that our simple
+and 30 items or 250 subjects and 10 items. Note that our simple
 heuristic for determining sample size in the planning for precision
 scenario was quite liberal. This is reflected in the result that we
 would need a smaller sample size than in the planning for power
@@ -2395,7 +2461,7 @@ planning in experimental research:
   experimental designs and enhance the rigor of their studies. The need
   to reason about how to simulate plausible data that is in line with
   the research hypothesis, while not violating domain expertise on how
-  plausible data should look might also contribute to planning more
+  plausible data should look, might also contribute to planning more
   insightful studies that can answer more precise research questions
   (\citeproc{ref-yarkoniGeneralizabilityCrisis2022}{Yarkoni, 2022}).
 \item
@@ -2560,6 +2626,17 @@ Dmitrienko, A., \& D'Agostino, R. (2013). Traditional multiplicity
 adjustment methods in clinical trials. \emph{Statistics in Medicine},
 \emph{32}(29), 5172--5218. \url{https://doi.org/10.1002/sim.5990}
 
+\bibitem[\citeproctext]{ref-ebersoleManyLabsTesting2020}
+Ebersole, C. R., Mathur, M. B., Baranski, E., Bart-Plange, D.-J.,
+Buttrick, N. R., Chartier, C. R., Corker, K. S., Corley, M., Hartshorne,
+J. K., IJzerman, H., Lazarević, L. B., Rabagliati, H., Ropovik, I.,
+Aczel, B., Aeschbach, L. F., Andrighetto, L., Arnal, J. D., Arrow, H.,
+Babincak, P., \ldots{} Nosek, B. A. (2020). Many {Labs} 5: {Testing
+Pre-Data-Collection Peer Review} as an {Intervention} to {Increase
+Replicability}. \emph{Advances in Methods and Practices in Psychological
+Science}, \emph{3}(3), 309--331.
+\url{https://doi.org/10.1177/2515245920958687}
+
 \bibitem[\citeproctext]{ref-endersSimpleMonteCarlo2023}
 Enders, C. K., Keller, B. T., \& Woller, M. P. (2023). A simple {Monte
 Carlo} method for estimating power in multilevel designs.
@@ -2604,6 +2681,12 @@ Iddi, S., \& C Donohue, M. (2022). Power and {Sample Size} for
 {Longitudinal Models} in {R} -- {The} longpower {Package} and {Shiny
 App}. \emph{The R Journal}, \emph{14}(1), 264--282.
 \url{https://doi.org/10.32614/RJ-2022-022}
+
+\bibitem[\citeproctext]{ref-johnsonPowerAnalysisGeneralized2015}
+Johnson, P. C. D., Barry, S. J. E., Ferguson, H. M., \& Müller, P.
+(2015). Power analysis for generalized linear mixed models in ecology
+and evolution. \emph{Methods in Ecology and Evolution}, \emph{6}(2),
+133--142. \url{https://doi.org/10.1111/2041-210X.12306}
 
 \bibitem[\citeproctext]{ref-kainPracticalGuidePower2015}
 Kain, M. P., Bolker, B. M., \& McCoy, M. W. (2015). A practical guide
@@ -2682,10 +2765,9 @@ sample size for multilevel relationships research. \emph{Journal of
 Social and Personal Relationships}, \emph{35}(1), 7--31.
 \url{https://doi.org/10.1177/0265407517710342}
 
-\bibitem[\citeproctext]{ref-lebeauSimglmSimulateModels2017}
-LeBeau, B. (2017). \emph{Simglm: {Simulate Models Based} on the
-{Generalized Linear Model}} (p. 0.8.9). Comprehensive R Archive Network.
-\url{https://doi.org/10.32614/CRAN.package.simglm}
+\bibitem[\citeproctext]{ref-lebeauPowerAnalysisSimulation2019}
+LeBeau, B. (2019). \emph{Power {Analysis} by {Simulation} using {R} and
+simglm}. \url{https://doi.org/10.17077/f7kk-6w7f}
 
 \bibitem[\citeproctext]{ref-leeUsingTidyversePackage2020}
 Lee, S., Sriutaisuk, S., \& Kim, H. (2020). Using the {Tidyverse
@@ -2783,7 +2865,8 @@ tests. \emph{Theory \& Psychology}, \emph{33}(3), 403--423.
 
 \bibitem[\citeproctext]{ref-R-furrr}
 Vaughan, D., \& Dancho, M. (2022). \emph{Furrr: Apply mapping functions
-in parallel using futures}. \url{https://github.com/DavisVaughan/furrr}
+in parallel using futures}.
+\url{https://CRAN.R-project.org/package=furrr}
 
 \bibitem[\citeproctext]{ref-watsonGeneralisedLinearMixed2023}
 Watson, S. I. (2023). \emph{Generalised {Linear Mixed Model
@@ -2821,10 +2904,11 @@ Zhang, Z., \& Yuan, K.-H. (2018). \emph{Practical statistical power
 analysis using {Webpower} and {R}}. ISDSA Press.
 \url{https://doi.org/10.35566/power}
 
-\bibitem[\citeproctext]{ref-zimmerSampleSizePlanning2022}
-Zimmer, F., Henninger, M., \& Debelak, R. (2022). \emph{Sample {Size
-Planning} for {Complex Study Designs}: {A Tutorial} for the mlpwr
-{Package}}. PsyArXiv. \url{https://doi.org/10.31234/osf.io/r9w6t}
+\bibitem[\citeproctext]{ref-zimmerSampleSizePlanning2023}
+Zimmer, F., Henninger, M., \& Debelak, R. (2023). Sample size planning
+for complex study designs: {A} tutorial for the mlpwr package.
+\emph{Behavior Research Methods}.
+\url{https://doi.org/10.3758/s13428-023-02269-0}
 
 \end{CSLReferences}
 
