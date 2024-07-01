@@ -136,7 +136,7 @@ To our knowledge, existing approaches for sample size planning for GLMMs have ex
 Available formula-based and summary-statistics-based software packages for multilevel models often do not include GLMMs or are limited to simple designs [@westfallStatisticalPowerOptimal2014; @murayamaSummarystatisticsbasedPowerAnalysis2022], making it necessary to build data simulations tailored specifically to the study design. A number of tutorials have been published describing how to perform such simulation-based power analysis for multilevel models [@arendStatisticalPowerTwolevel2019; @lafitSelectionNumberParticipants2021; @zimmerSampleSizePlanning2023; @brysbaertPowerAnalysisEffect2018; @kumleEstimatingPowerGeneralized2021; @debruineUnderstandingMixedEffectsModels2021; @kainPracticalGuidePower2015; @greenSIMRPackagePower2016a; @johnsonPowerAnalysisGeneralized2015]. However, many of these tutorials focus on LMMs and the most common study designs [see @kumleEstimatingPowerGeneralized2021 for a tutorial that also covers more advanced settings]. This narrow focus provides limited guidance for researchers using more complex study designs, especially when little prior knowledge about plausible effect sizes is available [see the discussion in @kumleEstimatingPowerGeneralized2021]. Simulation-based power analysis with GLMMs requires making a range of assumptions about the model structure that should align with the characteristics of the data being analyzed. Existing tutorials often rely on heuristics for specifying variance components (e.g., the standard deviation of random intercepts) or assume that results from meta-analyses or data from pilot studies are available to determine plausible values for all model parameters. However, in practice, knowledge about those parameters from prior studies is often limited, which makes specifying assumptions a practical challenge (see the discussion in @maxwellSampleSizePlanning2008 and @kumleEstimatingPowerGeneralized2021). We will discuss a number of strategies on how to specify model parameters for application-specific, tailored data simulations in a later chapter.
 
 ```{r}
-#| tbl-cap: Overview of software packages for power analysis for (generalized) linear mixed models in R.
+#| tbl-cap: Table 1: Overview of software packages for power analysis for (generalized) linear mixed models in R.
 #| apa-note: GUI available = whether a graphical user interface is provided (usually a Shiny app that is available online or can be downloaded to run locally), GLMM support = whether power analysis can be performed for generalized linear mixed model (otherwise only linear mixed models are supported), Design limitations = whether only a limited selection of study designs can be specified (otherwise arbitrary designs within the model class are supported).  
 #| echo: false
 #| message: false
@@ -163,15 +163,15 @@ packagetable <- data.frame(
 )
 names(packagetable) <- c("Package name", "Summary", "GUI available", "GLMM support", "Design limitations", "Reference")
 
-flextable::flextable(packagetable) |>
-  flextable::width(j = "Package name", width = 3, unit = "cm") |>
-  flextable::width(j = "Summary", width = 4, unit = "cm") |>
-  flextable::width(j = "GUI available", width = 1.5, unit = "cm") |>
-  flextable::width(j = "GLMM support", width = 1.5, unit = "cm") |>
-  flextable::width(j = "Design limitations", width = 3, unit = "cm") |>
-  flextable::width(j = "Reference", width = 2, unit = "cm") |>
-  flextable::fontsize(size = 10, part = "all") |>
-  flextable::theme_apa() |>
+flextable::flextable(packagetable) %>%
+  flextable::width(j = "Package name", width = 3, unit = "cm") %>%
+  flextable::width(j = "Summary", width = 4, unit = "cm") %>%
+  flextable::width(j = "GUI available", width = 1.5, unit = "cm") %>%
+  flextable::width(j = "GLMM support", width = 1.5, unit = "cm") %>%
+  flextable::width(j = "Design limitations", width = 3, unit = "cm") %>%
+  flextable::width(j = "Reference", width = 2, unit = "cm") %>%
+  flextable::fontsize(size = 10, part = "all") %>%
+  flextable::theme_apa() %>%
   ftExtra::colformat_md()
 ```
 :::{.NoIndent}
@@ -220,7 +220,7 @@ Providing an informed standardized effect size can be an almost impossible chall
 
 # General steps in tailored simulation-based sample size planning
 
-Although the details differ for each study, every tailored simulation-based sample size planning requires a series of steps and decisions. We will introduce each step in a theoretical section, followed by the practical application based on a case study. To keep the tutorial manageable we focus on a binomial GLMM with two random intercepts and discrete predictor variables. All code in this manuscript and simulation results are available on the Open Science Framework (<https://osf.io/dhwf4/>) and on our tutorial website (<https://timo-ko.github.io/glmm_simulation_tutorial/>).
+Although the details differ for each study, every tailored simulation-based sample size planning requires a series of steps and decisions. We will introduce each step in a theoretical section, followed by the practical application based on a case study. To keep the tutorial manageable, we focus on a binomial GLMM with two random intercepts and discrete predictor variables. All code in this manuscript and simulation results are available on the Open Science Framework (<https://osf.io/dhwf4/>) and on our tutorial website (<https://timo-ko.github.io/glmm_simulation_tutorial/>).
 
 ## Step 1: Define the estimand
 
@@ -267,7 +267,7 @@ $$
 & \quad - P(\text{correct diagnosis} | \text{incorrect advice, average student, average scan})
 \end{aligned}
 $$
-For example, the first expression is concerned with the difference between the probability that a correct diagnosis is made if correct AI advice is presented and the probability that a correct diagnosis is made if no AI advice is presented. This contrast is quantified for a hypothetical *typical* expert and a *typical* scan, where *typical* is usually defined as an average score on all attributes of the expert or scan.^[Note that a different estimand would be the so-called average treatment effect (ATE). For the ATE, the probability contrast is defined for each combination of expert and scan, and then these contrasts are averaged across all experts and scans from the target population [@lundbergWhatYourEstimand2021].].
+For example, the first expression is concerned with the difference between the probability that a correct diagnosis is made if correct AI advice is presented and the probability that a correct diagnosis is made if no AI advice is presented. This contrast is quantified for a hypothetical *typical* expert and a *typical* scan, where *typical* is usually defined as an average score on all attributes of the expert or scan.^[Note that a different estimand would be the so-called average treatment effect (ATE). For the ATE, the probability contrast is defined for each combination of expert and scan, and then these contrasts are averaged across all experts and scans from the target population [@lundbergWhatYourEstimand2021].]
 To complete our definition of the estimand, we have to define our target population that consists of persons, stimuli, and AI advice: With respect to persons, we are only interested in experts (i.e., radiologists) and non-experts (i.e., medical students). With respect to stimuli, we are only interested in the head CT scans made from subjects that do or do not suffer from intracerebral hemorrhage. Lastly, we are only interested in AI advice given by a specific AI-enabled system.
 
 Although the estimand is initially defined outside of a statistical model, it is only useful if we find a way to estimate it based on observed data. For our exemplary research question, it is possible to construct an experimental study where all participants are confronted with the same set of head CT scans, but the kind of AI advice given for each scan is randomly assigned within participants. This random intervention allows us to produce an empirical estimate of our estimand, although, in reality, each person receives only one kind of AI advice (correct advice, incorrect advice, no advice at all) for each scan. We will see later how each of the probability expressions in our estimand can be modeled with the same GLMM. Estimating this GLMM based on the data observed in our planned study will produce an estimate for each probability, and these estimates can then be combined to compute an estimate for each of the four probability contrasts. For pedagogical reasons, we will skip the concrete definition of our estimate until we have discussed how to simulate data based on a concrete GLMM in the next section. 
@@ -363,19 +363,19 @@ simulate <- function(n_subjects = 100, n_items = 50,
   require(dplyr)
   require(faux)
   # simulate design
-  dat <- add_random(subject = n_subjects, item = n_items) |>
-    add_between("subject", expert = c(1, 0), .prob = c(0.25, 0.75)) |>
-    mutate(advice_present = rbinom(n(), 1, prob = 2/3)) |>
+  dat <- add_random(subject = n_subjects, item = n_items) %>%
+    add_between("subject", expert = c(1, 0), .prob = c(0.25, 0.75)) %>%
+    mutate(advice_present = rbinom(n(), 1, prob = 2/3)) %>%
     mutate(advice_correct = if_else(advice_present == 1L, 
-                                    rbinom(n(), 1L, prob = 0.8), 0L)) |>
+                                    rbinom(n(), 1L, prob = 0.8), 0L)) %>%
     # add random effects
-    add_ranef("subject", u0s = sd_u0s) |>
-    add_ranef("item", u0i = sd_u0i) |>
+    add_ranef("subject", u0s = sd_u0s) %>%
+    add_ranef("item", u0i = sd_u0i) %>%
     # compute dependent variable
     mutate(linpred = b_0 + u0i + u0s +
-        b_e * expert + b_a * advice_present + b_c * advice_correct +
-        b_ea * expert * advice_present + b_ec * expert * advice_correct) |>
-    mutate(y_prob = plogis(linpred)) |>
+      b_e * expert + b_a * advice_present + b_c * advice_correct +
+      b_ea * expert * advice_present + b_ec * expert * advice_correct) %>%
+    mutate(y_prob = plogis(linpred)) %>%
     mutate(y_bin = rbinom(n = n(), size = 1, prob = y_prob))
   dat
 }
@@ -426,8 +426,7 @@ $$
 We can revert this perspective by choosing plausible probability values based on domain knowledge and deriving the parameter values implied by these probabilities for each experimental condition.
 
 ```{r}
-#| label: tbl-probtable
-#| tbl-cap: Assumed probabilities that an average subject solves an average item in each experimental condition.
+#| tbl-cap: Table 2: Assumed probabilities that an average subject solves an average item in each experimental condition.
 #| apa-note: Implied equations are derived based on the model equations and setting all random intercept terms to 0.
 #| echo: false
 probtable <- data.frame(
@@ -502,14 +501,14 @@ library(tidyverse)
 set.seed(1)
 dat <- simulate(n_subjects = 3000, n_items = 3000,
   sd_u0s = 0.5, sd_u0i = 0.5)
-dat |> 
+dat %>% 
   mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) |>
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
   mutate(condition = fct_recode(condition,
  "student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
  "student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
- "student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
-  group_by(condition) |>
+ "student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
+  group_by(condition) %>%
   summarize(relative_frequency = sum(y_bin) / n())
 ```
 
@@ -540,13 +539,13 @@ We will now use the model-implied probability of each simulated data point (stor
 #| fig-cap: "Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions."
 #| echo: true
 library(ggdist)
-dat |> 
+dat %>% 
   mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) |>
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
   mutate(condition = fct_recode(condition,
 "student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
 "student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
-"student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
+"student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
     breaks = "Sturges") +
@@ -561,13 +560,13 @@ We can use plots like @fig-margdist1 as a useful tool to determine whether the s
 #| fig-cap: "Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions while setting the standard deviation of item random intercepts to 0.01."
 set.seed(1)
 dat <- simulate(n_subjects = 3000, n_items = 3000, sd_u0i = 0.01)
-dat |> 
+dat %>% 
   mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) |>
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
   mutate(condition = fct_recode(condition,
 "student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
 "student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
-"student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
+"student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
     breaks = "Sturges") +
@@ -579,13 +578,13 @@ We could also have a closer look at the variability between items by setting the
 #| include: false
 set.seed(1)
 dat <- simulate(n_subjects = 3000, n_items = 3000, sd_u0s = 0.01)
-dat |> 
+dat %>% 
   mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) |>
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
   mutate(condition = fct_recode(condition,
 "student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
 "student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
-"student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
+"student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
     breaks = "Sturges") +
@@ -599,13 +598,13 @@ The final plot demonstrates that these plots are also useful for spotting standa
 #| fig-cap: "Marginal distributions including means, 66% and 95% confidence intervals for all experimental conditions while setting the standard deviation of subject and item random intercepts to 3."
 set.seed(1)
 dat <- simulate(n_subjects = 3000, n_items = 3000, sd_u0s = 3, sd_u0i = 3)
-dat |> 
+dat %>% 
   mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) |>
+    factor(expert), factor(advice_present), factor(advice_correct))) %>%
   mutate(condition = fct_recode(condition,
-    "student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
-    "student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
-    "student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) |> 
+"student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
+"student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
+"student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
   ggplot(aes(x = y_prob, y = condition)) +
   stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
     breaks = "Sturges") +
@@ -757,7 +756,7 @@ grid2 <- expand_grid(advice_present = 0:1,
 grid2
 preds <- predictions(fit, newdata = grid2, 
   type = "response", re.form = NA)
-print(preds, style = "tinytable") |> theme_tt(theme = "resize")
+print(preds, style = "tinytable") %>% theme_tt(theme = "resize")
 ```
 
 The point estimates for all experimental conditions are reported in the `Estimate` column.
@@ -771,14 +770,14 @@ We use the default inference options of the *marginaleffects* package that compu
 ```{r}
 #| echo: true
 #| size: footnotesize
-contrasts <- preds |> 
+contrasts <- preds %>% 
   hypotheses(hypothesis = c(
     "b8 = b2",  # (correct advice, expert) - (no advice, expert)
     "b2 = b6",  # (no advice, expert) - (incorrect advice, expert) 
     "b7 = b1",  # (correct advice, student) - (no advice, student)
     "b1 = b5"), # (no advice, student) - (incorrect advice, student)
     equivalence = c(0, 0))
-print(contrasts, style = "tinytable") |> theme_tt(theme = "resize")
+print(contrasts, style = "tinytable") %>% theme_tt(theme = "resize")
 ```
 
 The expression `"b8 = b2"` is special syntax to subtract the estimate in row number 8 from the estimate in row number 2 in the `preds`-output.
@@ -841,8 +840,8 @@ sim_and_analyse <- function(
   # compute contrasts
   contr_df <- expand_grid(advice_present = 0:1, advice_correct = 0:1,
     expert = 0:1)
-  predictions(model, newdata = contr_df, type = "response", re.form = NA) |>
-    hypotheses(hypothesis = contrasts, equivalence = c(0, 0)) |>
+  predictions(model, newdata = contr_df, type = "response", re.form = NA) %>%
+    hypotheses(hypothesis = contrasts, equivalence = c(0, 0)) %>%
     data.frame()
 }
 ```
@@ -860,19 +859,19 @@ set.seed(2)
 
 The next code chunk specifies a simulation grid with different settings for both the number of subjects (`n_subjects`) and the number of items (`n_items`), each combination being repeated `rep` times.
 The more repetitions, the more accurately power and precision can be estimated. We chose 300 repetitions for the data simulation at hand to strike a balance between achieving a robust estimate and remaining computationally feasible.
-With the current settings, this simulation takes about one hour on a MacBook Pro from 2020 with M1 chip and 16 GB working memory. If you want to quickly experiment with the code yourself, a setting with `workers = 4` and `rep = 5` should finish in less than 5 minutes, even on smaller machines. 
+With the current settings, this simulation takes several hours on a MacBook Pro from 2020 with M1 chip and 16 GB working memory. If you want to quickly experiment with the code yourself, a setting with `workers = 4` and `rep = 5` should finish in less than 5 minutes, even on smaller machines. 
 
 ```{r}
 #| eval: false
 #| echo: true
 library(furrr)
 sim_result <- crossing(
-  rep = 1:300,
+  rep = 1:500,
   n_subjects = c(100, 150, 200, 250),
   n_items = c(10, 30, 50, 70)
-) |>
+) %>%
   mutate(res = future_pmap(., sim_and_analyse, 
-    .options = furrr_options(seed = TRUE))) |>
+    .options = furrr_options(seed = TRUE))) %>%
   unnest(col = res)
 ```
 
@@ -895,10 +894,10 @@ sim_result <- readRDS(file = "results.rds")
 #| echo: true
 library(binom)
 alpha <- 0.05
-power <- sim_result |>
+power <- sim_result %>%
   pivot_wider(names_from = term, names_sep = "_", 
-    values_from = estimate:p.value.equiv) |>
-  group_by(n_subjects, n_items) |> 
+    values_from = estimate:p.value.equiv) %>%
+  group_by(n_subjects, n_items) %>% 
   summarise(
     power = mean(`p.value.noninf_b1=b5` < alpha & 
         `p.value.noninf_b8=b2` < alpha & `p.value.noninf_b2=b6` < alpha & 
@@ -910,8 +909,8 @@ power <- sim_result |>
     ci.lwr = binom.confint(n_sig, n, method = "wilson")$lower,
     ci.upr = binom.confint(n_sig, n, method = "wilson")$upper, 
     .groups = "drop")
-power |>
-  mutate(across(c(n_subjects, n_items), factor)) |>
+power %>%
+  mutate(across(c(n_subjects, n_items), factor)) %>%
   ggplot(aes(n_subjects, n_items, fill = power)) +
   geom_tile() +
   geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 
@@ -923,7 +922,7 @@ power |>
 
 As should be the case, power estimates in @fig-finalpwr increase with both the number of subjects and the number of items. The CIs reported here indicate how precisely power was estimated by our simulation. Higher precision (which would be reflected in narrower CIs) could be obtained by increasing the number of repetitions (`rep`) in the simulation. In practice, data simulations are often run multiple times with adjusted combinations of sample sizes. When running for the first time, it might be revealed that power is way too low (or much higher than required) for some combinations of `n_subjects` and `n_items`. When narrowing down the best combination that achieves sufficient power while at the same time striking a good balance of how many subjects and items are practically feasible, later rounds of data simulation will typically include a smaller grid of sample sizes combined with a higher number of repetitions. This will assure high precision for the final power estimates, which are then used for the sample size justification of the planned study.
 
-When target power has been specified, the number of subjects and the number of items in our study design can be traded against each other based on practical considerations. Although it is recommended to justify the power [@lakensSampleSizeJustification2022], we adopt the common heuristic to target a power of 0.8 to detect an effect of the expected size implied by our data simulation. This could be achieved by collecting data from 200 subjects (about 25% of which will be experts), each completing the same 50 items (with advice present in about 67% of cases, which is correct in about 80% of cases with present advice). If collecting data from 200 subjects is not feasible, an alternative would be to recruit 150 subjects but increase the length of the experiment to over 70 items. However, 70 items might take too long to complete for the radiologists participating in the study, who have a busy schedule. The simulation suggests that it might also be possible to plan a shorter experiment with only 30 items if it is feasible to recruit an even higher number of subjects (\> 250, to be determined by additional rounds of power analysis). Design parameters that also affect power, and which could be investigated in the simulation to find a more optimal trade-off, are the ratio of experts to students, the frequency of whether advice is presented at all, and whether it is correct or incorrect.^[An advanced alternative to our heuristic trade-off between subjects and items would be to explicitly optimize for cost-efficient study designs using the *mlpwr* package [@zimmerSampleSizePlanning2023]. The package performs simulation based power analysis in a surrogate modeling framework that can evaluate power for a large grid of design combinations more efficiently. The framework also requires users to write their own `sim_and_analyse` function and can be considered a great extension on what we cover in our tutorial.]
+When target power has been specified, the number of subjects and the number of items in our study design can be traded against each other based on practical considerations. Although it is recommended to justify the power [@lakensSampleSizeJustification2022], we adopt the common heuristic to target a power of 0.8 to detect an effect of the expected size implied by our data simulation. This could be achieved by collecting data from 250 subjects (about 25% of which will be experts), each completing the same 50 items (with advice present in about 67% of cases, which is correct in about 80% of cases with present advice). If collecting data from 250 subjects is not feasible, an alternative would be to recruit 200 subjects but increase the length of the experiment to 70 items. However, 70 items might take too long to complete for the radiologists participating in the study, who have a busy schedule. The simulation suggests that it might also be possible to plan a shorter experiment with only 30 items if it is feasible to recruit an even higher number of subjects (to be determined by additional rounds of power analysis). Design parameters that also affect power, and which could be investigated in the simulation to find a more optimal trade-off, are the ratio of experts to students, the frequency of whether advice is presented at all, and whether it is correct or incorrect.^[An advanced alternative to our heuristic trade-off between subjects and items would be to explicitly optimize for cost-efficient study designs using the *mlpwr* package [@zimmerSampleSizePlanning2023]. The package performs simulation based power analysis in a surrogate modeling framework that can evaluate power for a large grid of design combinations more efficiently. The framework also requires users to write their own `sim_and_analyse` function and can be considered a great extension on what we cover in our tutorial.]
 
 #### Precision results
 
@@ -943,17 +942,17 @@ Based on our simulation outcomes, we compute the precision estimate for each com
 #| label: fig-finalprecision
 #| fig-cap: "Simulation-based precision estimates (expected width of confidence intervals) including 95% confidence interval of the case study for different numbers of subjects and items, based on a confidence level of 0.95."
 #| echo: true
-precision <- sim_result |>
+precision <- sim_result %>%
   pivot_wider(names_from = term, names_sep = "_", 
-    values_from = estimate:p.value.equiv) |>
-  group_by(n_subjects, n_items) |>
-  mutate(width = `conf.high_b8=b2` - `conf.low_b8=b2`) |>
+    values_from = estimate:p.value.equiv) %>%
+  group_by(n_subjects, n_items) %>%
+  mutate(width = `conf.high_b8=b2` - `conf.low_b8=b2`) %>%
   summarise(precision = mean(width),
     ci.lwr = t.test(width)$conf.int[1],
     ci.upr = t.test(width)$conf.int[2], 
     .groups = "drop")
-precision |>
-  mutate(across(c(n_subjects, n_items), factor)) |>
+precision %>%
+  mutate(across(c(n_subjects, n_items), factor)) %>%
   ggplot(aes(n_subjects, n_items, fill = precision)) +
   geom_tile() +
   geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 
@@ -963,7 +962,7 @@ precision |>
   guides(fill = guide_legend(reverse=FALSE))
 ```
 As should be the case, precision estimates in @fig-finalprecision increase  (i.e., average width of CI decreases) with the number of included subjects and items.
-The CIs reported here indicate how precisely the expected width of the CI for our focal contrast was estimated by our simulation. Applying our simple heuristic of targeting an expected CI width that is smaller than 0.1, we see the same trade-off between the number of subjects and the number of items as with planning for power. We could either choose 100 subjects and 30 items or 200 subjects and 10 items. Note that our simple heuristic for determining sample size in the planning for precision scenario was quite liberal. This is reflected in the result that we would need a smaller sample size than in the planning for power scenario.
+The CIs reported here indicate how precisely the expected width of the CI for our focal contrast was estimated by our simulation. Applying our simple heuristic of targeting an expected CI width that is smaller than 0.1, we see the same trade-off between the number of subjects and the number of items as with planning for power. We could either choose 100 subjects and 30 items or 250 subjects and 10 items. Note that our simple heuristic for determining sample size in the planning for precision scenario was quite liberal. This is reflected in the result that we would need a smaller sample size than in the planning for power scenario.
 With a more conservative precision target, the result is generally the opposite: As a rule, precise parameter estimates usually require bigger samples than null hypothesis testing.
 
 ## Step 7 (optional): Sensitivity analysis
