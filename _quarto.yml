@@ -25,6 +25,7 @@ format:
   apaquarto-pdf:
     documentmode: man
     a4paper: true
+    keep-tex: true
   apaquarto-docx:
     a4paper: true
 

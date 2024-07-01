@@ -133,7 +133,7 @@ GLMMs extend the LMM framework to accommodate non-normally distributed continuou
 <!-- However, these software packages are often not flexible enough to perform sample size planning for complex designs. -->
 
 To our knowledge, existing approaches for sample size planning for GLMMs have exclusively focused on planning for power. In Table 1, we review available software packages that can be used to perform power analysis for multilevel models in `r cite_r()`. Power analysis methods can be categorized into formula-based, summary-statistics-based and simulation-based methods [@murayamaSummarystatisticsbasedPowerAnalysis2022]. Formula-based methods rely on exact formulas to calculate power directly. Summary-statistics-based methods use statistical theory to approximate power based on formula-based methods developed for simple t-tests. Simulation-based methods rely on repeatedly simulating data with a known true effect size and estimating power empirically, that is what percentage of simulated datasets produces a significant p-value.
-Available formula-based and summary-statistics-based software packages for multilevel models often do not include GLMMs or are limited to simple designs [@westfallStatisticalPowerOptimal2014; @murayamaSummarystatisticsbasedPowerAnalysis2022], making it necessary to build data simulations tailored specifically to the study design. A number of tutorials have been published describing how to perform such simulation-based power analysis for multilevel models [@arendStatisticalPowerTwolevel2019; @lafitSelectionNumberParticipants2021; @zimmerSampleSizePlanning2023; @brysbaertPowerAnalysisEffect2018; @kumleEstimatingPowerGeneralized2021; @debruineUnderstandingMixedEffectsModels2021; @kainPracticalGuidePower2015; @greenSIMRPackagePower2016a; @johnsonPowerAnalysisGeneralized2015]. However, many of these tutorials focus on LMMs and the most common study designs [see @kumleEstimatingPowerGeneralized2021 for a tutorial that also covers more advanced settings]. This narrow focus provides limited guidance for researchers using more complex study designs, especially when little prior knowledge about plausible effect sizes is available [see the discussion in @kumleEstimatingPowerGeneralized2021]. Simulation-based power analysis with GLMMs requires making a range of assumptions about the model structure that should align with the characteristics of the data being analyzed. Existing tutorials often rely on heuristics for specifying variance components (e.g., the standard deviation of random intercepts) or assume that results from meta-analyses or data from pilot studies are available to determine plausible values for all model parameters. However, in practice, knowledge about those parameters from prior studies is often limited, which makes specifying assumptions a practical challenge (see the discussion in @maxwellSampleSizePlanning2008 and @kumleEstimatingPowerGeneralized2021). We will discuss a number of strategies on how to specify model parameters for application-specific, tailored data simulations in a later chapter.
+Available formula-based and summary-statistics-based software packages for multilevel models often do not include GLMMs or are limited to simple designs [@westfallStatisticalPowerOptimal2014; @murayamaSummarystatisticsbasedPowerAnalysis2022], making it necessary to build data simulations tailored specifically to the study design. A number of tutorials have been published describing how to perform such simulation-based power analysis for multilevel models [@arendStatisticalPowerTwolevel2019; @lafitSelectionNumberParticipants2021; @zimmerSampleSizePlanning2023; @brysbaertPowerAnalysisEffect2018; @kumleEstimatingPowerGeneralized2021; @debruineUnderstandingMixedEffectsModels2021; @kainPracticalGuidePower2015; @greenSIMRPackagePower2016; @johnsonPowerAnalysisGeneralized2015]. However, many of these tutorials focus on LMMs and the most common study designs [see @kumleEstimatingPowerGeneralized2021 for a tutorial that also covers more advanced settings]. This narrow focus provides limited guidance for researchers using more complex study designs, especially when little prior knowledge about plausible effect sizes is available [see the discussion in @kumleEstimatingPowerGeneralized2021]. Simulation-based power analysis with GLMMs requires making a range of assumptions about the model structure that should align with the characteristics of the data being analyzed. Existing tutorials often rely on heuristics for specifying variance components (e.g., the standard deviation of random intercepts) or assume that results from meta-analyses or data from pilot studies are available to determine plausible values for all model parameters. However, in practice, knowledge about those parameters from prior studies is often limited, which makes specifying assumptions a practical challenge (see the discussion in @maxwellSampleSizePlanning2008 and @kumleEstimatingPowerGeneralized2021). We will discuss a number of strategies on how to specify model parameters for application-specific, tailored data simulations in a later chapter.
 
 ```{r}
 #| tbl-cap: Table 1. Overview of software packages for power analysis for (generalized) linear mixed models in R.
@@ -159,7 +159,7 @@ packagetable <- data.frame(
   col3 = c("no", "[yes](https://atrihub.shinyapps.io/power/)", "no", "no", "no", "no", "[yes](https://github.com/ginettelafit/PowerAnalysisIL?tab=readme-ov-file#shiny-app-and-r-package-to-perform-power-analysis-to-select-the-number-of-participants-in-intensive-longitudinal-studies)", "[yes](https://github.com/rpsychologist/powerlmm?tab=readme-ov-file#launch-interactive-web-application)", "[yes](https://simglm.brandonlebeau.org/reference/run_shiny.html)", "no", "[yes](https://koumurayama.shinyapps.io/summary_statistics_based_power/)", "[yes](https://webpower.psychstat.org/wiki/start)"),
   col4 = c("yes", "no", "yes", "no", "no", "no", "no", "no", "yes", "yes", "yes", "no"),
   col5 = c("none", "limited set of study designs with two levels", "none", "limited to two levels", "none", "none", "limited set of study designs with two levels", "limited set of study designs with two or three levels", "limited to two or three levels", "none", "limited set of study designs with two levels", "limited set of study designs with two levels"),
-  col6 = c("@watsonGeneralisedLinearMixed2023", "@iddiPowerSampleSize2022", "@kumleEstimatingPowerGeneralized2021", "@endersSimpleMonteCarlo2023", "@martinMeasuringIndividualDifferences2011", "@marcochakyanyuPassLmePower2019", "@lafitSelectionNumberParticipants2021", "@magnussonConsequencesIgnoringTherapist2018", "@lebeauPowerAnalysisSimulation2019", "@greenSIMRPackagePower2016", "@murayamaSummarystatisticsbasedPowerAnalysis2022", "@zhangPracticalStatisticalPower2018")
+  col6 = c("@watsonGeneralisedLinearMixed2023", "@iddiPowerSampleSize2022", "@kumleEstimatingPowerGeneralized2021", "@endersSimpleMonteCarlo2023", "@martinMeasuringIndividualDifferences2011", "@yumarcoPassLmePower2019", "@lafitSelectionNumberParticipants2021", "@magnussonConsequencesIgnoringTherapist2018", "@lebeauPowerAnalysisSimulation2019", "@greenSIMRPackagePower2016", "@murayamaSummarystatisticsbasedPowerAnalysis2022", "@zhangPracticalStatisticalPower2018")
 )
 names(packagetable) <- c("Package name", "Summary", "GUI available", "GLMM support", "Design limitations", "Reference")
 
@@ -274,17 +274,15 @@ Although the estimand is initially defined outside of a statistical model, it is
 
 ## Step 2: Simulate the data-generating process
 
-#### THEORY
+### THEORY
 
 When the estimand has been defined, the next step in the research process is to write code that simulates the data-generating process of the planned study. This requires specifying a generative process for all predictor variables used in the final data analysis. Realistic assumptions can be quite challenging for observational studies or continuous predictor variables, which is beyond the scope of this tutorial. However, this step is much easier for experimental studies with only categorical predictor variables because the distribution of predictors is fixed by the study design. When all predictor variables have been simulated, one can use the structure of a suitable GLMM to simulate the dependent variable. To simulate the GLMM, one requires plausible values for all model parameters. We will discuss strategies on how these values can be obtained later. Because we have full control over the data-generating process in a tailored simulation, it is possible to model specific aspects of the planned study, like data missing by design or assuming that some subjects might drop out. The quality of the results of the sample size planning crucially depends on the plausibility of the simulated data-generating process. However, we argue that even a strongly simplified data-generating process (e.g., only a small number of interaction effects; only random intercepts, and no random slopes; assuming that data is missing completely at random) can yield informative results.
 
-#### PRACTICE
+### PRACTICE
 
 In our case study, radiologists and students review a series of head CT scans to assess the presence of a bleeding. An AI model provides initial diagnostic advice to assist their decision-making. In the control condition, no AI advice is presented. When AI advice is given, this advice can be either correct or incorrect. The type of advice (no advice, incorrect advice, correct advice) is randomized within subjects across CT scans. After reviewing a CT scan, participants deliver a diagnosis (bleeding or no bleeding), which may be either accurate or inaccurate. This experimental design introduces some missing values by design since the advice is neither correct nor incorrect when no advice is present, which must be taken into account when simulating and analyzing the data. In this example, recruiting task experts (i.e., radiologists) is more challenging due to their limited availability, while non-experts (i.e., students) are more readily accessible. The goal of simulation-based sample size planning is to determine how many task experts and non-experts must be recruited to achieve sufficient statistical power or precision in the planned experiment.
 
-##### Our specific GLMM
-
-In a GLMM, the expected value of the dependent variable $Y$ conditioned on the vector of predictor variables $\mathbf{X}$ and random effects $\mathbf{U}$, transformed by a link function $g()$ is modeled as a linear combination $\eta$ of the predictor variables $\mathbf{X}$, the random effects $\mathbf{U}$, and the model parameters $\mathbf{\beta}$ [@fahrmeirRegressionModelsMethods2021]: 
+**Our specific GLMM.** In a GLMM, the expected value of the dependent variable $Y$ conditioned on the vector of predictor variables $\mathbf{X}$ and random effects $\mathbf{U}$, transformed by a link function $g()$ is modeled as a linear combination $\eta$ of the predictor variables $\mathbf{X}$, the random effects $\mathbf{U}$, and the model parameters $\mathbf{\beta}$ [@fahrmeirRegressionModelsMethods2021]: 
 $$
 g(E(Y|\mathbf{X}=\mathbf{x},\mathbf{U}=\mathbf{u})) = \eta
 $$
@@ -340,9 +338,7 @@ with model parameters $\beta_0$, $\beta_e$, $\beta_a$, $\beta_c$, $\beta_{ea}$, 
 In the GLMM literature, this would be called a binomial GLMM with two random intercepts (for subjects and items), two level-1 predictors ($advice\_present$, $advice\_correct$), one level-2 predictor ($expert$) and two cross-level interactions ($expert \cdot advice\_present$, $expert \cdot advice\_correct$).
 To limit complexity, we do not consider random slopes, additional predictors, or higher-level interactions.
 
-##### Simulation function in R
-
-The following R function simulates a full dataset structured according to the design of our case study.
+**Simulation function in R.** The following R function simulates a full dataset structured according to the design of our case study.
 
 ```{r}
 #| echo: false
@@ -425,6 +421,8 @@ P(Y=1| advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} 
 $$
 We can revert this perspective by choosing plausible probability values based on domain knowledge and deriving the parameter values implied by these probabilities for each experimental condition.
 
+\newpage
+
 ```{r}
 #| tbl-cap: Table 2. Assumed probabilities that an average subject solves an average item in each experimental condition.
 #| apa-note: Implied equations are derived based on the model equations and setting all random intercept terms to 0.
@@ -481,11 +479,11 @@ For this, we introduce two more strategies in the following sections.
 
 ### Examine insightful descriptive statistics
 
-#### THEORY
+### THEORY
 
 The mathematical structure of GLMMs determines which patterns in data would be produced by the model, if a specific set of values for the population parameters is specified. The knowledge of how to simulate from a GLMM enables us to compute *insightful descriptive statistics* that can be compared to available domain knowledge much more easily than the opaque values of model parameters. For example, domain experts might not be able to directly choose plausible values for the  coefficients in a logistic regression model (which are measured on the log-odds scale). However, they should be able to reason about the expected ratio of the binary dependent variable in different experimental conditions, i.e., which relative frequency they expect to observe. The job of the analyst who is familiar with the mathematical structure of the GLMM is to produce the model-implied value of the insightful descriptive statistic that is expected by the domain expert. Although insightful descriptive statistics usually depend on the model parameters in a non-linear way, it is not necessary to solve the exact relationship mathematically. Instead, one can simply adjust the population parameters by trial and error until the model-implied quantities produce the desired result.
 
-#### PRACTICE
+### PRACTICE
 
 In the last section, we showed how we can derive the model-implied probability that a subject with average ability solves an item with average difficulty for each experimental condition. Although these derivations are straightforward, it is important not to misinterpret their implications: In binomial GLMMs, the average probability to solve an item (averaged across persons of varying ability and items of varying difficulty) is **not** equal to the probability that a person with average ability solves an item with average difficulty [@fahrmeirRegressionModelsMethods2021]. The first perspective implies a so-called *marginal interpretation*, while the second one implies a *conditional interpretation*.
 
@@ -516,7 +514,7 @@ We tried using these descriptive statistics to judge together with domain expert
 
 ### Examine insightful model-based quantities
 
-#### THEORY
+### THEORY
 
 Because GLMMs are complicated models, descriptive statistics alone are usually not enough to specify plausible values for all model parameters.
 This is especially true for the standard deviation of random effects that have non-linear (and often unexpected) effects on the model-implied results.
@@ -525,7 +523,7 @@ For example, in a logistic model with random intercepts for participants, one ca
 Although domain knowledge will probably not suffice to specify this distribution completely, it should be possible to rule out implausible boundary conditions.
 For example, the domain expert might deem it implausible that the 5% most able participants have a probability of more than 0.99 to solve the difficult cognitive task.
 
-#### PRACTICE
+### PRACTICE
 
 The discussed inequality of conditional and marginal effects in GLMMs [@fahrmeirRegressionModelsMethods2021] makes their interpretation more difficult.
 One must be careful when specifying parameter values based on previous studies or pilot data that use the marginal interpretation (e.g., a pilot study providing an estimate of how often radiologists make an accurate diagnosis based on brain scans). 
@@ -572,25 +570,7 @@ dat %>%
     breaks = "Sturges") +
   scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
 ```
-For the next plot, we have set the item standard deviation to almost zero ($\sigma_I = 0.01$). This gives us a better way to see the variability between persons. As an example, @fig-margdist2 reveals a number of implicit assumptions about the comparison between experts and students: With incorrect advice, virtually all experts have a higher probability of making a correct diagnosis compared to students when considering only items with average difficulty. In contrast, there is considerable overlap in probability between experts and students with no advice and even higher overlap with correct advice. Patterns like these should be considered carefully and discussed with the domain experts. Parameter values ($\beta$ parameters, and $\sigma_S$) should be adjusted if the implications do not seem reasonable.
-We could also have a closer look at the variability between items by setting the subject standard deviation to almost zero ($\sigma_S = 0.01$).
-```{r}
-#| include: false
-set.seed(1)
-dat <- simulate(n_subjects = 3000, n_items = 3000, sd_u0s = 0.01)
-dat %>% 
-  mutate(condition = fct_cross(
-    factor(expert), factor(advice_present), factor(advice_correct))) %>%
-  mutate(condition = fct_recode(condition,
-"student, no advice" = "0:0:0", "expert, no advice" = "1:0:0", 
-"student, incorrect advice" = "0:1:0", "expert, incorrect advice" = "1:1:0",
-"student, correct advice" = "0:1:1", "expert, correct advice" = "1:1:1")) %>% 
-  ggplot(aes(x = y_prob, y = condition)) +
-  stat_histinterval(point_interval = "mean_qi", slab_color = "gray45",
-    breaks = "Sturges") +
-  scale_x_continuous(breaks = seq(0, 1, 0.1), limits = c(0, 1))
-```
-
+For the next plot, we have set the item standard deviation to almost zero ($\sigma_I = 0.01$). This gives us a better way to see the variability between persons. As an example, @fig-margdist2 reveals a number of implicit assumptions about the comparison between experts and students: With incorrect advice, virtually all experts have a higher probability of making a correct diagnosis compared to students when considering only items with average difficulty. In contrast, there is considerable overlap in probability between experts and students with no advice and even higher overlap with correct advice. Patterns like these should be considered carefully and discussed with the domain experts. Parameter values ($\beta$ parameters, and $\sigma_S$) should be adjusted if the implications do not seem reasonable.  
 The final plot demonstrates that these plots are also useful for spotting standard deviations that were specified too high. For @fig-margdist3 we have set $\sigma_S = 3$ and $\sigma_I = 3$. This implies that in each experimental condition, the probabilities that a subject solves an item are overwhelmingly close to either 0 or 1 and nothing in between, which is not a plausible assumption. These high standard deviations do not account for the inherent variability and complexity of human performance. For example, the expectation that an expert with low ability and incorrect advice would solve a difficult item with a probability close to zero is not convincing.
 ```{r}
 #| label: fig-margdist3
@@ -613,11 +593,11 @@ dat %>%
 
 ### Iterate with domain experts
 
-#### THEORY
+### THEORY
 
 Gathering domain knowledge and the specification of population parameter values is an iterative process, in which domain experts repeatedly assess the plausibility of simulated data. As a first step, domain experts can be interviewed to “elicit” their domain knowledge about how the data of the planned study is expected to look. As most domain experts are no experts in statistical modeling and GLMMs, they often struggle without further guidance to communicate their knowledge in a way that is useful when specifying the parameters for data simulation. For this reason, we suggest that after an initial interview, the analyst who is familiar with the structure of the GLMM selects an initial set of insightful descriptive statistics and model-based quantities. Then they reenter into an iterative discussion with the domain experts where some set of population values are selected, and the plausibility of resulting implied quantities is evaluated. Then, the population parameters are updated until the domain experts are satisfied with the result. During this process, the monitored descriptive statistics and model-based quantities can be updated or extended to capture as much available domain knowledge as possible.
 
-##### PRACTICE
+### PRACTICE
 
 All parameter values in our present case study have been determined based on repeated discussions with domain experts in radiology to validate our assumptions.
 Initially, we reviewed the literature to establish a reasonable baseline performance rate for examining head CT scans for intracranial hemorrhage.
@@ -785,9 +765,7 @@ The argument `equivalence = c(0, 0)` can be used to compute one-sided p-values, 
 The point estimates for four contrasts are reported in the `Estimate` column.
 Note that to facilitate interpretation, we arranged the contrasts in a way that we theoretically expect positive values for all four of them.
 
-#### Hypothesis testing
-
-If we chose hypothesis testing for our case study, we would test a combined null hypothesis $H_0$ that consists of four separate null hypotheses:
+**Hypothesis testing.** If we chose hypothesis testing for our case study, we would test a combined null hypothesis $H_0$ that consists of four separate null hypotheses:
 $$
 \begin{aligned}
 H_{01}:\ & P(Y=1|advice\_present = 1, advice\_correct = 1, expert = 1, u_{0s} = 0, u_{0i} = 0) \leq \\
@@ -806,9 +784,7 @@ In such cases, the error probabilities do not accumulate, and we would waste pow
 With a standard significance level of $\alpha = 0.05$, we would not reject all four null hypotheses (the p-value in the `p (NonInf)` column for the second hypothesis is not significant) and therefore also not reject the combined null hypothesis for this particular (simulated) dataset.
 Note that this decision would be wrong because we have simulated the data such that the combined alternative hypothesis $H_1$ is actually true in the population.
 
-#### Interval estimation
-
-If we chose parameter estimation for our case study, we would focus on the two-sided CIs of the four contrasts of interest.
+**Interval estimation.** If we chose parameter estimation for our case study, we would focus on the two-sided CIs of the four contrasts of interest.
 With a standard confidence level of $1 - \alpha = 0.95$ plausible values are clearly in the positive range for the first, third, and fourth contrast, while both negative and positive values seem plausible for the second contrast.
 Note that due to the constrained range of the probability scale, the width of the CI differs between the four contrasts (which is the expected behavior for binomial GLMMs).
 The smallest width is observed for the first contrast (expert with correct advice vs. expert without advice), where both underlying probabilities are close to 1.
@@ -878,9 +854,7 @@ sim_result <- crossing(
 The result of this computation is a data frame that contains the p-values and CIs of all specified contrasts for each simulated dataset.
 In some iterations (predominantly in conditions with small sample sizes), model estimation did not converge with the *lme4* package. When the model fails to converge, it means that the statistical model being fitted to the data failed to reach a stable or valid solution during the estimation process. We do not remove these results because non-convergence can also happen when analyzing the real data we plan to collect, thus, we want to factor in this possibility to keep our simulation more realistic.
 
-#### Power results
-
-For our exemplary combined hypothesis, power is defined as the (long-run) percentage of simulations in which all four p-values of our individual hypotheses are significant at the $\alpha = 0.05$ level. Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% CIs) and visualize the results with the following code.^[This code was inspired by the "Mixed Design Simulation" vignette of the *faux* package at <https://debruine.github.io/faux/articles/sim_mixed.html>.]
+**Power results.** For our exemplary combined hypothesis, power is defined as the (long-run) percentage of simulations in which all four p-values of our individual hypotheses are significant at the $\alpha = 0.05$ level. Based on our simulation outcomes, we compute a power estimate for each combination of `n_subjects` $\times$ `n_items` (including 95% CIs) and visualize the results with the following code.^[This code was inspired by the "Mixed Design Simulation" vignette of the *faux* package at <https://debruine.github.io/faux/articles/sim_mixed.html>.]
 
 ```{r}
 #| echo: false
@@ -924,9 +898,7 @@ As should be the case, power estimates in @fig-finalpwr increase with both the n
 
 When target power has been specified, the number of subjects and the number of items in our study design can be traded against each other based on practical considerations. Although it is recommended to justify the power [@lakensSampleSizeJustification2022], we adopt the common heuristic to target a power of 0.8 to detect an effect of the expected size implied by our data simulation. This could be achieved by collecting data from 250 subjects (about 25% of which will be experts), each completing the same 50 items (with advice present in about 67% of cases, which is correct in about 80% of cases with present advice). If collecting data from 250 subjects is not feasible, an alternative would be to recruit 200 subjects but increase the length of the experiment to 70 items. However, 70 items might take too long to complete for the radiologists participating in the study, who have a busy schedule. The simulation suggests that it might also be possible to plan a shorter experiment with only 30 items if it is feasible to recruit an even higher number of subjects (to be determined by additional rounds of power analysis). Design parameters that also affect power, and which could be investigated in the simulation to find a more optimal trade-off, are the ratio of experts to students, the frequency of whether advice is presented at all, and whether it is correct or incorrect.^[An advanced alternative to our heuristic trade-off between subjects and items would be to explicitly optimize for cost-efficient study designs using the *mlpwr* package [@zimmerSampleSizePlanning2023]. The package performs simulation based power analysis in a surrogate modeling framework that can evaluate power for a large grid of design combinations more efficiently. The framework also requires users to write their own `sim_and_analyse` function and can be considered a great extension on what we cover in our tutorial.]
 
-#### Precision results
-
-When planning for precision, one could monitor the width of all four CIs at the same time.
+**Precision results.** When planning for precision, one could monitor the width of all four CIs at the same time.
 However, because the CIs of the four contrasts strongly differ in width, it is not trivial to decide which width one should target when deciding on the appropriate sample size.
 In contrast to planning for power, there are no common standards on how to specify the targeted precision [@lakensSampleSizeJustification2022].
 For our example, we use a simple heuristic but we strongly encourage readers to think about better alternatives that are appropriate in their own applications.
@@ -965,7 +937,7 @@ As should be the case, precision estimates in @fig-finalprecision increase  (i.e
 The CIs reported here indicate how precisely the expected width of the CI for our focal contrast was estimated by our simulation. Applying our simple heuristic of targeting an expected CI width that is smaller than 0.1, we see the same trade-off between the number of subjects and the number of items as with planning for power. We could either choose 100 subjects and 30 items or 250 subjects and 10 items. Note that our simple heuristic for determining sample size in the planning for precision scenario was quite liberal. This is reflected in the result that we would need a smaller sample size than in the planning for power scenario.
 With a more conservative precision target, the result is generally the opposite: As a rule, precise parameter estimates usually require bigger samples than null hypothesis testing.
 
-## Step 7 (optional): Sensitivity analysis
+## Step 7 (optional): Conduct sensitivity analysis
 
 In our case study, we have performed simulation-based sample size planning from a single set of parameter values that reflect our assumptions of an expected effect size. Instead of extracting this expected effect size from meta-analyses or pilot data, which has been the main focus of previous tutorials [e.g., @kumleEstimatingPowerGeneralized2021], we have demonstrated some strategies to determine plausible parameter values in GLMMs based on domain knowledge. When sample sizes are chosen based on the results of our simulation-based power analysis, a future study will be informative to reject the null hypothesis if an effect of our *expected size* is present (or estimate the effect with satisfying precision). However, if the true effect is indeed smaller, power (or precision) will be lower, and the study might not be sufficiently informative. A common, more conservative strategy for sample size justification is to perform sample size planning for the smallest effect size of interest (SESOI). An effect smaller than the SESOI would be considered too small to be interesting or practically meaningful, even if the effect is not actually zero [@kingPointMinimalImportant2011; @lakensEquivalenceTestingPsychological2018]. Unfortunately, specifying a plausible SESOI is a challenging task (for strategies on how to specify a SESOI, see @lakensSampleSizeJustification2022, @riesthuisSimulationBasedPowerAnalyses2024, or @lakensImprovingYourStatistical2022). When domain knowledge or formal theories about the research topic of interest are too vague to specify a meaningful SESOI, it is still recommended to demonstrate power or precision for different effect sizes in a *sensitivity power analysis* [@lakensSampleSizeJustification2022]. By simulating power (or precision) for different effect sizes (in addition to the different number of subjects and items), one can make sure that power (or precision) would still be sufficient to detect smaller effect sizes than our expected effect or at least get an impression of how strongly power (or precision) depends on the size of the true effect. For our case study that investigates combined hypotheses in a GLMM modeling framework, sensitivity analysis would require manually specifying additional sets of plausible parameter values that reflect scenarios with smaller or larger differences between groups with respect to our specific research question. Power (or precision) could then be simulated for several of these scenarios (across different numbers of subjects and items, as considered earlier). Although recommended, we do not present a sensitivity analysis for our case study to keep the length of the tutorial manageable.
 
