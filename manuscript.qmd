@@ -146,7 +146,7 @@ packagetable <- data.frame(
   col1 = c("glmmrBase", "longpower", "mixedpower", "mlmpower", "pamm", "pass.lme", "PowerAnalysisIL", "powerlmm", "simglm", "simr", "summary_statistics based_power", "WebPower"),
   col2 = c("Formula- and simulation-based power analysis; non-linear fixed effects and flexible covariance functions",
               "Formula-based power analysis; focus on longitudinal data",
-              "Simulation-based power analysis; based on 'simr' package",
+              "Simulation-based power analysis; based on 'lme4' package",
               "Simulation-based power analysis; missing data mechanisms",
               "Simulation-based power analysis; based on 'lme4' package",
               "Formula-based power analysis; limited documentation",
