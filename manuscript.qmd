@@ -64,7 +64,7 @@ author:
         department: UCL Global Business School for Health
 author-note:
   disclosures:
-    data-sharing: This is version 3 of our preprint published at <https://doi.org/10.31234/osf.io/rpjem>. All materials (reproducible manuscript, including R code and all simulation results) are available in the project's repository on the Open Science Framework (OSF) at <https://osf.io/dhwf4/>. A Quarto Manuscripts website is hosted at <https://Timo-Ko.github.io/glmm_simulation_tutorial/>.
+    data-sharing: This is version 3.5 of our preprint published at <https://doi.org/10.31234/osf.io/rpjem>. All materials (reproducible manuscript, including R code and all simulation results) are available in the project's repository on the Open Science Framework (OSF) at <https://osf.io/dhwf4/>. A Quarto Manuscripts website is hosted at <https://Timo-Ko.github.io/glmm_simulation_tutorial/>.
     conflict-of-interest: The authors declare that there were no conflicts of interest concerning the authorship or the publication of this article.
     financial-support: This research was funded by a grant from the Volkswagen Foundation (Grant No. 98525).
     gratitude: ~
