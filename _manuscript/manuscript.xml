@@ -138,13 +138,15 @@ statistical framework to analyze experimental data with complex (e.g.,
 dependent and hierarchical) data structures. However, available methods
 and software for a priori sample size planning for GLMMs are often
 limited to specific designs. Tailored data simulation approaches offer a
-more flexible alternative. Based on a practical case study, the current
-tutorial equips researchers with a step-by-step guide and corresponding
-code for conducting tailored a priori sample size planning with GLMMs.
-We not only focus on power analysis but also explain how to use the
-precision of parameter estimates to determine appropriate sample sizes.
-We conclude with an outlook on the increasing importance of
-simulation-based sample size planning.
+more flexible alternative. Based on a practical case study where we
+focus on a binomial GLMM with two random intercepts and discrete
+predictor variables, the current tutorial equips researchers with a
+step-by-step guide and corresponding code for conducting tailored a
+priori sample size planning with GLMMs. We not only focus on power
+analysis but also explain how to use the precision of parameter
+estimates to determine appropriate sample sizes. We conclude with an
+outlook on the increasing importance of simulation-based sample size
+planning.
 </abstract>
       <kwd-group kwd-group-type="author">
         <kwd>tutorial</kwd>
@@ -185,7 +187,8 @@ simulation-based sample size planning.
   existing software solutions in R and discuss under which circumstances
   tailored data simulations are necessary. We proceed by describing the
   relevant steps and decisions involved in tailored data simulation,
-  illustrated in a case study.</p>
+  illustrated in a case study where we focus on a binomial GLMM with two
+  random intercepts and discrete predictor variables.</p>
       <p>To benefit most of this tutorial paper, we recommend readers to
   familiarize themselves with basic statistical concepts like hypothesis
   tests (HTs) and their statistical power as well as confidence
@@ -904,11 +907,25 @@ simulation-based sample size planning.
       the planned study, like data missing by design or assuming that
       some subjects might drop out. The quality of the results of the
       sample size planning crucially depends on the plausibility of the
-      simulated data-generating process. However, we argue that even a
-      strongly simplified data-generating process (e.g., only a small
-      number of interaction effects; only random intercepts, and no
-      random slopes; assuming that data is missing completely at random)
-      can yield informative results.</p>
+      simulated data-generating process. If the simulated data
+      generating process is less complex than the true process, one can
+      expect that sample size planning underestimates the required
+      sample size and the planned analysis has inflated type I error
+      rates
+      (<xref alt="Matuschek et al., 2017" rid="ref-matuschekBalancingTypeError2017" ref-type="bibr">Matuschek
+      et al., 2017</xref>). However, Matuschek et al.
+      (<xref alt="2017" rid="ref-matuschekBalancingTypeError2017" ref-type="bibr">2017</xref>)
+      have also shown in simulations with LMMs that while fitting
+      <italic>maximal models</italic> (i.e. that include all possible
+      random effects) safeguards against inflated type I error rates,
+      this can lead to a great loss in power if the variance in the
+      random effects is actually small. Thus, we argue that even a
+      simplified data-generating process (e.g., only a small number of
+      interaction effects; only random intercepts, and no random slopes;
+      assuming that data is missing completely at random) that is only
+      plausible under idealized circumstances, can yield informative
+      results and is preferred over performing no systematic sample size
+      planning.</p>
         </sec>
         <sec id="practice-1">
           <title>PRACTICE</title>
@@ -1119,8 +1136,17 @@ simulation-based sample size planning.
       effects and the standard deviation of the random effects (and the
       correlation between random effects in more complicated models). In
       the absence of previous studies with the same design or pilot
-      data, strategies to specify population parameters require access
-      to domain knowledge from domain experts. Because most domain
+      data, strategies to specify population parameters will always
+      require access to some domain knowledge. In our experience,
+      research teams for projects where tailored simulation-based sample
+      size planning is necessary typically consist of
+      <italic>analysts</italic> (who are primarily responsible for study
+      design and statistical analysis), and <italic>domain
+      experts</italic> (who often provide the original research question
+      and are responsible for data collection). In smaller projects,
+      analysts and domain experts might be the same persons. In these
+      research settings, a broad review of the available literature
+      typically plays a more important role. Because most domain
       knowledge can only be expressed in unstandardized measurement
       units of a specific application, we argue that unstandardized
       effect sizes are usually preferable over standardized effect sizes
@@ -1128,13 +1154,22 @@ simulation-based sample size planning.
       of all strategies is to quantify or visualize the data-generating
       process implied by certain values of population parameters in an
       intuitive way that enables calibration of population parameters
-      based on the available knowledge of domain experts. Although we
-      use frequentist model estimation in our tutorial, many strategies
+      based on the available domain knowledge. Although we use
+      frequentist model estimation in our tutorial, many strategies
       demonstrated in this chapter are inspired by research on
-      monitoring the plausibility of model assumptions in applied
-      Bayesian statistics
+      monitoring the plausibility of model assumptions
       (<xref alt="Gelman et al., 2020" rid="ref-gelmanBayesianWorkflow2020" ref-type="bibr">Gelman
-      et al., 2020</xref>).</p>
+      et al., 2020</xref>;
+      <xref alt="Schad et al., 2021" rid="ref-schadPrincipledBayesianWorkflow2021" ref-type="bibr">Schad
+      et al., 2021</xref>) and eliciting prior information
+      (<xref alt="Bockting et al., 2024" rid="ref-bocktingSimulationbasedPriorKnowledge2024" ref-type="bibr">Bockting
+      et al., 2024</xref>;
+      <xref alt="Hartmann et al., 2020" rid="ref-hartmannFlexiblePriorElicitation2020" ref-type="bibr">Hartmann
+      et al., 2020</xref>;
+      <xref alt="Mikkola et al., 2023" rid="ref-mikkolaPriorKnowledgeElicitation2023" ref-type="bibr">Mikkola
+      et al., 2023</xref>;
+      <xref alt="Stefan et al., 2022" rid="ref-stefanPracticalChallengesMethodological2022" ref-type="bibr">Stefan
+      et al., 2022</xref>) in applied Bayesian statistics.</p>
         </sec>
         <sec id="practice-2">
           <title>PRACTICE</title>
@@ -1756,31 +1791,42 @@ dat %&gt;%
             <graphic mimetype="image" mime-subtype="png" xlink:href="manuscript_files/figure-jats/fig-margdist3-1.png"/>
           </fig>
         </sec>
-        <sec id="iterate-with-domain-experts">
-          <title>Iterate with domain experts</title>
+        <sec id="iterate-with-domain-expertise">
+          <title>Iterate with domain expertise</title>
         </sec>
         <sec id="theory-5">
           <title>THEORY</title>
-          <p>Gathering domain knowledge and the specification of population
-      parameter values is an iterative process, in which domain experts
-      repeatedly assess the plausibility of simulated data. As a first
-      step, domain experts can be interviewed to “elicit” their domain
-      knowledge about how the data of the planned study is expected to
-      look. As most domain experts are no experts in statistical
-      modeling and GLMMs, they often struggle without further guidance
-      to communicate their knowledge in a way that is useful when
-      specifying the parameters for data simulation. For this reason, we
-      suggest that after an initial interview, the analyst who is
-      familiar with the structure of the GLMM selects an initial set of
-      insightful descriptive statistics and model-based quantities. Then
-      they reenter into an iterative discussion with the domain experts
-      where some set of population values are selected, and the
-      plausibility of resulting implied quantities is evaluated. Then,
-      the population parameters are updated until the domain experts are
-      satisfied with the result. During this process, the monitored
-      descriptive statistics and model-based quantities can be updated
-      or extended to capture as much available domain knowledge as
-      possible.</p>
+          <p>Tailored simulation-based sample size planning always requires
+      access to domain knowledge. However, gathering domain knowledge
+      and the specification of population parameter values is not always
+      straightforward and can be better described as an iterative
+      process, in which the plausibility of simulated data is repeatedly
+      compared with the available domain expertise. As a first step,
+      dedicated domain experts (if available) can be interviewed to
+      <italic>elicit</italic> their domain knowledge about how the data
+      of the planned study is expected to look. Because most domain
+      experts are no experts in statistical modeling and GLMMs, they
+      often struggle without further guidance to communicate their
+      knowledge in a way that is useful when specifying the parameters
+      for data simulation. For this reason, we suggest that after an
+      initial interview, the analyst who is familiar with the structure
+      of the GLMM selects an initial set of insightful descriptive
+      statistics and model-based quantities. Then, they reenter into an
+      iterative discussion with the domain experts where some set of
+      population values are selected, and the plausibility of resulting
+      implied quantities is evaluated. The population parameters are
+      updated until the domain experts are satisfied with the result.
+      During this process, the monitored descriptive statistics and
+      model-based quantities can be updated or extended to capture as
+      much available domain knowledge as possible. Even if no dedicated
+      domain experts are available, the basic principles stay the same
+      except that initial parameter values are often derived from a more
+      extensive literature review. Descriptive statistics and
+      model-based quantities are still used to evaluate whether the
+      implied assumptions about the data generating process are
+      plausible. Often, this judgment evolves over several iterations as
+      the analyst becomes more familiar with the model and the study
+      design.<xref ref-type="fn" rid="fn4">4</xref></p>
         </sec>
         <sec id="practice-5">
           <title>PRACTICE</title>
@@ -1825,19 +1871,27 @@ dat %&gt;%
       process. On the one hand, using a simpler model for data
       simulation than for model estimation can be a useful strategy in
       scenarios where making plausible assumptions for complicated
-      random effect structures and interactions is not feasible. On the
-      other hand, using a more complex model for data simulation than
-      for model estimation can be a useful strategy in scenarios where
-      one has specific domain knowledge about aspects of the
-      data-generating process that are still difficult to estimate with
-      the current state-of-the-art in multilevel modeling.</p>
+      random effect structures and interactions is not feasible, or the
+      omitted components are expected to have small effects
+      (<xref alt="Matuschek et al., 2017" rid="ref-matuschekBalancingTypeError2017" ref-type="bibr">Matuschek
+      et al., 2017</xref>). On the other hand, using a more complex
+      model for data simulation than for model estimation can be a
+      useful strategy in scenarios where one has specific domain
+      knowledge about aspects of the data-generating process that are
+      still difficult to estimate with the current state-of-the-art in
+      multilevel modeling. In fact, applying models that are more
+      parsimonious than the true data generating process can provide a
+      better trade-off between type I error rates (or bias) and power
+      (or precision) in many scenarios
+      (<xref alt="Matuschek et al., 2017" rid="ref-matuschekBalancingTypeError2017" ref-type="bibr">Matuschek
+      et al., 2017</xref>).</p>
         </sec>
         <sec id="practice-6">
           <title>PRACTICE</title>
           <p>In our case study, we use the <italic>lme4</italic> R package
       (<xref alt="Bates et al., 2015" rid="ref-batesFittingLinearMixedEffects2015" ref-type="bibr">Bates
       et al., 2015</xref>), which is a state-of-the-art tool for fitting
-      frequentist GLMMs.<xref ref-type="fn" rid="fn4">4</xref> For the
+      frequentist GLMMs.<xref ref-type="fn" rid="fn5">5</xref> For the
       current example, we simulate data according to our model, in which
       100 subjects respond to 50 items (we use
       <monospace>set.seed</monospace> to make the simulation
@@ -2967,7 +3021,7 @@ sim_result &lt;- crossing(
       <inline-formula><alternatives><tex-math><![CDATA[\times]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mi>×</mml:mi></mml:math></alternatives></inline-formula>
       <monospace>n_items</monospace> (including 95% CIs) and visualize
       the results with the following
-      code.<xref ref-type="fn" rid="fn5">5</xref></p>
+      code.<xref ref-type="fn" rid="fn6">6</xref></p>
           <code language="r script">library(binom)
 alpha &lt;- 0.05
 power &lt;- sim_result %&gt;%
@@ -3046,7 +3100,7 @@ power %&gt;%
       find a more optimal trade-off, are the ratio of experts to
       students, the frequency of whether advice is presented at all, and
       whether it is correct or
-      incorrect.<xref ref-type="fn" rid="fn6">6</xref></p>
+      incorrect.<xref ref-type="fn" rid="fn7">7</xref></p>
           <p><bold>Precision results.</bold> When planning for precision,
       one could monitor the width of all four CIs at the same time.
       However, because the CIs of the four contrasts strongly differ in
@@ -3173,9 +3227,17 @@ precision %&gt;%
     smaller or larger differences between groups with respect to our
     specific research question. Power (or precision) could then be
     simulated for several of these scenarios (across different numbers
-    of subjects and items, as considered earlier). Although recommended,
-    we do not present a sensitivity analysis for our case study to keep
-    the length of the tutorial manageable.</p>
+    of subjects and items, as considered earlier). In steps 2 and 4 of
+    the tutorial, we have briefly discussed scenarios where the applied
+    statistical model is more (or less) parsimonious than the
+    data-generating process. Sensitivity analysis can be used to assess
+    the consequences of a mismatch by investigating different
+    combinations of data-generating processes and statistical models.
+    Such extended simulations can be a great resource to make an
+    informed decision about the concrete model to estimate for the
+    planned study where the true data-generating process is unknown.
+    Although recommended, we do not present a sensitivity analysis for
+    our case study to keep the length of the tutorial manageable.</p>
       </sec>
     </sec>
     <sec id="conclusion-and-outlook">
@@ -3645,6 +3707,39 @@ precision %&gt;%
           <pub-id pub-id-type="doi">10.1038/s41562-017-0189-z</pub-id>
           <fpage>6</fpage>
           <lpage>10</lpage>
+        </element-citation>
+      </ref>
+      <ref id="ref-bocktingSimulationbasedPriorKnowledge2024">
+        <element-citation publication-type="article-journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Bockting</surname>
+              <given-names>Florence</given-names>
+            </name>
+            <name>
+              <surname>Radev</surname>
+              <given-names>Stefan T.</given-names>
+            </name>
+            <name>
+              <surname>Bürkner</surname>
+              <given-names>Paul-Christian</given-names>
+            </name>
+          </person-group>
+          <article-title>Simulation-based prior knowledge elicitation for parametric Bayesian models</article-title>
+          <source>Scientific Reports</source>
+          <year iso-8601-date="2024-07">2024</year>
+          <month>07</month>
+          <date-in-citation content-type="access-date">
+            <year iso-8601-date="2024-07-31">2024</year>
+            <month>07</month>
+            <day>31</day>
+          </date-in-citation>
+          <volume>14</volume>
+          <issue>1</issue>
+          <issn>2045-2322</issn>
+          <pub-id pub-id-type="doi">10.1038/s41598-024-68090-7</pub-id>
+          <fpage>17330</fpage>
+          <lpage/>
         </element-citation>
       </ref>
       <ref id="ref-bolkerLinearGeneralizedLinear2015">
@@ -5096,6 +5191,45 @@ precision %&gt;%
           <lpage>60</lpage>
         </element-citation>
       </ref>
+      <ref id="ref-hartmannFlexiblePriorElicitation2020">
+        <element-citation publication-type="paper-conference">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Hartmann</surname>
+              <given-names>Marcelo</given-names>
+            </name>
+            <name>
+              <surname>Agiashvili</surname>
+              <given-names>Georgi</given-names>
+            </name>
+            <name>
+              <surname>Bürkner</surname>
+              <given-names>Paul</given-names>
+            </name>
+            <name>
+              <surname>Klami</surname>
+              <given-names>Arto</given-names>
+            </name>
+          </person-group>
+          <article-title>Flexible prior elicitation via the prior predictive distribution</article-title>
+          <source>Proceedings of the 36th conference on uncertainty in artificial intelligence (UAI)</source>
+          <person-group person-group-type="editor">
+            <name>
+              <surname>Peters</surname>
+              <given-names>Jonas</given-names>
+            </name>
+            <name>
+              <surname>Sontag</surname>
+              <given-names>David</given-names>
+            </name>
+          </person-group>
+          <publisher-name>PMLR</publisher-name>
+          <year iso-8601-date="2020">2020</year>
+          <volume>124</volume>
+          <fpage>1129</fpage>
+          <lpage>1138</lpage>
+        </element-citation>
+      </ref>
       <ref id="ref-iddiPowerSampleSize2022">
         <element-citation publication-type="article-journal">
           <person-group person-group-type="author">
@@ -6160,6 +6294,73 @@ precision %&gt;%
           <lpage/>
         </element-citation>
       </ref>
+      <ref id="ref-mikkolaPriorKnowledgeElicitation2023">
+        <element-citation publication-type="article-journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Mikkola</surname>
+              <given-names>Petrus</given-names>
+            </name>
+            <name>
+              <surname>Martin</surname>
+              <given-names>Osvaldo A.</given-names>
+            </name>
+            <name>
+              <surname>Chandramouli</surname>
+              <given-names>Suyog</given-names>
+            </name>
+            <name>
+              <surname>Hartmann</surname>
+              <given-names>Marcelo</given-names>
+            </name>
+            <name>
+              <surname>Abril Pla</surname>
+              <given-names>Oriol</given-names>
+            </name>
+            <name>
+              <surname>Thomas</surname>
+              <given-names>Owen</given-names>
+            </name>
+            <name>
+              <surname>Pesonen</surname>
+              <given-names>Henri</given-names>
+            </name>
+            <name>
+              <surname>Corander</surname>
+              <given-names>Jukka</given-names>
+            </name>
+            <name>
+              <surname>Vehtari</surname>
+              <given-names>Aki</given-names>
+            </name>
+            <name>
+              <surname>Kaski</surname>
+              <given-names>Samuel</given-names>
+            </name>
+            <name>
+              <surname>Bürkner</surname>
+              <given-names>Paul-Christian</given-names>
+            </name>
+            <name>
+              <surname>Klami</surname>
+              <given-names>Arto</given-names>
+            </name>
+          </person-group>
+          <article-title>Prior Knowledge Elicitation: The Past, Present, and Future</article-title>
+          <source>Bayesian Analysis</source>
+          <year iso-8601-date="2023-01">2023</year>
+          <month>01</month>
+          <date-in-citation content-type="access-date">
+            <year iso-8601-date="2024-07-29">2024</year>
+            <month>07</month>
+            <day>29</day>
+          </date-in-citation>
+          <volume>-1</volume>
+          <issue>-1</issue>
+          <issn>1936-0975</issn>
+          <pub-id pub-id-type="doi">10.1214/23-BA1381</pub-id>
+        </element-citation>
+      </ref>
       <ref id="ref-murayamaSummarystatisticsbasedPowerAnalysis2022">
         <element-citation publication-type="article-journal">
           <person-group person-group-type="author">
@@ -6282,6 +6483,72 @@ precision %&gt;%
           <pub-id pub-id-type="doi">10.1016/j.jml.2019.104038</pub-id>
           <fpage>104038</fpage>
           <lpage/>
+        </element-citation>
+      </ref>
+      <ref id="ref-schadPrincipledBayesianWorkflow2021">
+        <element-citation publication-type="article-journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Schad</surname>
+              <given-names>Daniel J.</given-names>
+            </name>
+            <name>
+              <surname>Betancourt</surname>
+              <given-names>Michael</given-names>
+            </name>
+            <name>
+              <surname>Vasishth</surname>
+              <given-names>Shravan</given-names>
+            </name>
+          </person-group>
+          <article-title>Toward a principled Bayesian workflow in cognitive science.</article-title>
+          <source>Psychological Methods</source>
+          <year iso-8601-date="2021-02">2021</year>
+          <month>02</month>
+          <date-in-citation content-type="access-date">
+            <year iso-8601-date="2024-07-26">2024</year>
+            <month>07</month>
+            <day>26</day>
+          </date-in-citation>
+          <volume>26</volume>
+          <issue>1</issue>
+          <issn>1939-1463, 1082-989X</issn>
+          <pub-id pub-id-type="doi">10.1037/met0000275</pub-id>
+          <fpage>103</fpage>
+          <lpage>126</lpage>
+        </element-citation>
+      </ref>
+      <ref id="ref-stefanPracticalChallengesMethodological2022">
+        <element-citation publication-type="article-journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Stefan</surname>
+              <given-names>Angelika M.</given-names>
+            </name>
+            <name>
+              <surname>Evans</surname>
+              <given-names>Nathan J.</given-names>
+            </name>
+            <name>
+              <surname>Wagenmakers</surname>
+              <given-names>Eric-Jan</given-names>
+            </name>
+          </person-group>
+          <article-title>Practical challenges and methodological flexibility in prior elicitation.</article-title>
+          <source>Psychological Methods</source>
+          <year iso-8601-date="2022-04">2022</year>
+          <month>04</month>
+          <date-in-citation content-type="access-date">
+            <year iso-8601-date="2024-07-29">2024</year>
+            <month>07</month>
+            <day>29</day>
+          </date-in-citation>
+          <volume>27</volume>
+          <issue>2</issue>
+          <issn>1939-1463, 1082-989X</issn>
+          <pub-id pub-id-type="doi">10.1037/met0000354</pub-id>
+          <fpage>177</fpage>
+          <lpage>197</lpage>
         </element-citation>
       </ref>
       <ref id="ref-uyguntuncEpistemicPragmaticFunction2023">
@@ -6731,25 +6998,41 @@ precision %&gt;%
       </fn>
       <fn id="fn4">
         <label>4</label>
+        <p>Developing more effective strategies on how to
+    elicit and visualize domain knowledge is currently an active area of
+    research, primarily in the context of Bayesian modeling
+    (<xref alt="Bockting et al., 2024" rid="ref-bocktingSimulationbasedPriorKnowledge2024" ref-type="bibr">Bockting
+    et al., 2024</xref>;
+    <xref alt="Hartmann et al., 2020" rid="ref-hartmannFlexiblePriorElicitation2020" ref-type="bibr">Hartmann
+    et al., 2020</xref>;
+    <xref alt="Mikkola et al., 2023" rid="ref-mikkolaPriorKnowledgeElicitation2023" ref-type="bibr">Mikkola
+    et al., 2023</xref>;
+    <xref alt="Stefan et al., 2022" rid="ref-stefanPracticalChallengesMethodological2022" ref-type="bibr">Stefan
+    et al., 2022</xref>). We expect that future advances in this field
+    will also be highly relevant for tailored simulation-based sample
+    size planning with frequentist models.</p>
+      </fn>
+      <fn id="fn5">
+        <label>5</label>
         <p>For Bayesian GLMMs, the <italic>brms</italic> R
     package is currently the most prominent option
     (<xref alt="Bürkner, 2017" rid="ref-burknerBrmsPackageBayesian2017" ref-type="bibr">Bürkner,
     2017</xref>).</p>
       </fn>
-      <fn id="fn5">
-        <label>5</label>
+      <fn id="fn6">
+        <label>6</label>
         <p>This code was inspired by the “Mixed Design
     Simulation” vignette of the <italic>faux</italic> package at
     <ext-link ext-link-type="uri" xlink:href="https://debruine.github.io/faux/articles/sim_mixed.html">https://debruine.github.io/faux/articles/sim_mixed.html</ext-link>.</p>
       </fn>
-      <fn id="fn6">
-        <label>6</label>
+      <fn id="fn7">
+        <label>7</label>
         <p>An advanced alternative to our heuristic
     trade-off between subjects and items would be to explicitly optimize
     for cost-efficient study designs using the <italic>mlpwr</italic>
     package
     (<xref alt="Zimmer et al., 2023" rid="ref-zimmerSampleSizePlanning2023" ref-type="bibr">Zimmer
-    et al., 2023</xref>). The package performs simulation based power
+    et al., 2023</xref>). The package performs simulation-based power
     analysis in a surrogate modeling framework that can evaluate power
     for a large grid of design combinations more efficiently. The
     framework also requires users to write their own
@@ -6893,13 +7176,15 @@ statistical framework to analyze experimental data with complex (e.g.,
 dependent and hierarchical) data structures. However, available methods
 and software for a priori sample size planning for GLMMs are often
 limited to specific designs. Tailored data simulation approaches offer a
-more flexible alternative. Based on a practical case study, the current
-tutorial equips researchers with a step-by-step guide and corresponding
-code for conducting tailored a priori sample size planning with GLMMs.
-We not only focus on power analysis but also explain how to use the
-precision of parameter estimates to determine appropriate sample sizes.
-We conclude with an outlook on the increasing importance of
-simulation-based sample size planning.
+more flexible alternative. Based on a practical case study where we
+focus on a binomial GLMM with two random intercepts and discrete
+predictor variables, the current tutorial equips researchers with a
+step-by-step guide and corresponding code for conducting tailored a
+priori sample size planning with GLMMs. We not only focus on power
+analysis but also explain how to use the precision of parameter
+estimates to determine appropriate sample sizes. We conclude with an
+outlook on the increasing importance of simulation-based sample size
+planning.
 </abstract>
     </front-stub>
     <body>
@@ -7004,7 +7289,8 @@ r_refs("r-references.bib", append = FALSE)</code>
   existing software solutions in R and discuss under which circumstances
   tailored data simulations are necessary. We proceed by describing the
   relevant steps and decisions involved in tailored data simulation,
-  illustrated in a case study.</p>
+  illustrated in a case study where we focus on a binomial GLMM with two
+  random intercepts and discrete predictor variables.</p>
         <p>To benefit most of this tutorial paper, we recommend readers to
   familiarize themselves with basic statistical concepts like hypothesis
   tests (HTs) and their statistical power as well as confidence
@@ -7274,7 +7560,7 @@ packagetable &lt;- data.frame(
   col1 = c("glmmrBase", "longpower", "mixedpower", "mlmpower", "pamm", "pass.lme", "PowerAnalysisIL", "powerlmm", "simglm", "simr", "summary_statistics based_power", "WebPower"),
   col2 = c("Formula- and simulation-based power analysis; non-linear fixed effects and flexible covariance functions",
               "Formula-based power analysis; focus on longitudinal data",
-              "Simulation-based power analysis; based on 'simr' package",
+              "Simulation-based power analysis; based on 'lme4' package",
               "Simulation-based power analysis; missing data mechanisms",
               "Simulation-based power analysis; based on 'lme4' package",
               "Formula-based power analysis; limited documentation",
@@ -7763,11 +8049,25 @@ flextable::flextable(packagetable) %&gt;%
       the planned study, like data missing by design or assuming that
       some subjects might drop out. The quality of the results of the
       sample size planning crucially depends on the plausibility of the
-      simulated data-generating process. However, we argue that even a
-      strongly simplified data-generating process (e.g., only a small
-      number of interaction effects; only random intercepts, and no
-      random slopes; assuming that data is missing completely at random)
-      can yield informative results.</p>
+      simulated data-generating process. If the simulated data
+      generating process is less complex than the true process, one can
+      expect that sample size planning underestimates the required
+      sample size and the planned analysis has inflated type I error
+      rates
+      (<xref alt="Matuschek et al., 2017" rid="ref-matuschekBalancingTypeError2017-nb-article" ref-type="bibr">Matuschek
+      et al., 2017</xref>). However, Matuschek et al.
+      (<xref alt="2017" rid="ref-matuschekBalancingTypeError2017-nb-article" ref-type="bibr">2017</xref>)
+      have also shown in simulations with LMMs that while fitting
+      <italic>maximal models</italic> (i.e. that include all possible
+      random effects) safeguards against inflated type I error rates,
+      this can lead to a great loss in power if the variance in the
+      random effects is actually small. Thus, we argue that even a
+      simplified data-generating process (e.g., only a small number of
+      interaction effects; only random intercepts, and no random slopes;
+      assuming that data is missing completely at random) that is only
+      plausible under idealized circumstances, can yield informative
+      results and is preferred over performing no systematic sample size
+      planning.</p>
           </sec>
           <sec id="practice-1-nb-article">
             <title>PRACTICE</title>
@@ -7988,8 +8288,17 @@ b_ec = -1.393</code>
       effects and the standard deviation of the random effects (and the
       correlation between random effects in more complicated models). In
       the absence of previous studies with the same design or pilot
-      data, strategies to specify population parameters require access
-      to domain knowledge from domain experts. Because most domain
+      data, strategies to specify population parameters will always
+      require access to some domain knowledge. In our experience,
+      research teams for projects where tailored simulation-based sample
+      size planning is necessary typically consist of
+      <italic>analysts</italic> (who are primarily responsible for study
+      design and statistical analysis), and <italic>domain
+      experts</italic> (who often provide the original research question
+      and are responsible for data collection). In smaller projects,
+      analysts and domain experts might be the same persons. In these
+      research settings, a broad review of the available literature
+      typically plays a more important role. Because most domain
       knowledge can only be expressed in unstandardized measurement
       units of a specific application, we argue that unstandardized
       effect sizes are usually preferable over standardized effect sizes
@@ -7997,13 +8306,22 @@ b_ec = -1.393</code>
       of all strategies is to quantify or visualize the data-generating
       process implied by certain values of population parameters in an
       intuitive way that enables calibration of population parameters
-      based on the available knowledge of domain experts. Although we
-      use frequentist model estimation in our tutorial, many strategies
+      based on the available domain knowledge. Although we use
+      frequentist model estimation in our tutorial, many strategies
       demonstrated in this chapter are inspired by research on
-      monitoring the plausibility of model assumptions in applied
-      Bayesian statistics
+      monitoring the plausibility of model assumptions
       (<xref alt="Gelman et al., 2020" rid="ref-gelmanBayesianWorkflow2020-nb-article" ref-type="bibr">Gelman
-      et al., 2020</xref>).</p>
+      et al., 2020</xref>;
+      <xref alt="Schad et al., 2021" rid="ref-schadPrincipledBayesianWorkflow2021-nb-article" ref-type="bibr">Schad
+      et al., 2021</xref>) and eliciting prior information
+      (<xref alt="Bockting et al., 2024" rid="ref-bocktingSimulationbasedPriorKnowledge2024-nb-article" ref-type="bibr">Bockting
+      et al., 2024</xref>;
+      <xref alt="Hartmann et al., 2020" rid="ref-hartmannFlexiblePriorElicitation2020-nb-article" ref-type="bibr">Hartmann
+      et al., 2020</xref>;
+      <xref alt="Mikkola et al., 2023" rid="ref-mikkolaPriorKnowledgeElicitation2023-nb-article" ref-type="bibr">Mikkola
+      et al., 2023</xref>;
+      <xref alt="Stefan et al., 2022" rid="ref-stefanPracticalChallengesMethodological2022-nb-article" ref-type="bibr">Stefan
+      et al., 2022</xref>) in applied Bayesian statistics.</p>
           </sec>
           <sec id="practice-2-nb-article">
             <title>PRACTICE</title>
@@ -8687,31 +9005,42 @@ dat %&gt;%
               </fig>
             </sec>
           </sec>
-          <sec id="iterate-with-domain-experts-nb-article">
-            <title>Iterate with domain experts</title>
+          <sec id="iterate-with-domain-expertise-nb-article">
+            <title>Iterate with domain expertise</title>
           </sec>
           <sec id="theory-5-nb-article">
             <title>THEORY</title>
-            <p>Gathering domain knowledge and the specification of population
-      parameter values is an iterative process, in which domain experts
-      repeatedly assess the plausibility of simulated data. As a first
-      step, domain experts can be interviewed to “elicit” their domain
-      knowledge about how the data of the planned study is expected to
-      look. As most domain experts are no experts in statistical
-      modeling and GLMMs, they often struggle without further guidance
-      to communicate their knowledge in a way that is useful when
-      specifying the parameters for data simulation. For this reason, we
-      suggest that after an initial interview, the analyst who is
-      familiar with the structure of the GLMM selects an initial set of
-      insightful descriptive statistics and model-based quantities. Then
-      they reenter into an iterative discussion with the domain experts
-      where some set of population values are selected, and the
-      plausibility of resulting implied quantities is evaluated. Then,
-      the population parameters are updated until the domain experts are
-      satisfied with the result. During this process, the monitored
-      descriptive statistics and model-based quantities can be updated
-      or extended to capture as much available domain knowledge as
-      possible.</p>
+            <p>Tailored simulation-based sample size planning always requires
+      access to domain knowledge. However, gathering domain knowledge
+      and the specification of population parameter values is not always
+      straightforward and can be better described as an iterative
+      process, in which the plausibility of simulated data is repeatedly
+      compared with the available domain expertise. As a first step,
+      dedicated domain experts (if available) can be interviewed to
+      <italic>elicit</italic> their domain knowledge about how the data
+      of the planned study is expected to look. Because most domain
+      experts are no experts in statistical modeling and GLMMs, they
+      often struggle without further guidance to communicate their
+      knowledge in a way that is useful when specifying the parameters
+      for data simulation. For this reason, we suggest that after an
+      initial interview, the analyst who is familiar with the structure
+      of the GLMM selects an initial set of insightful descriptive
+      statistics and model-based quantities. Then, they reenter into an
+      iterative discussion with the domain experts where some set of
+      population values are selected, and the plausibility of resulting
+      implied quantities is evaluated. The population parameters are
+      updated until the domain experts are satisfied with the result.
+      During this process, the monitored descriptive statistics and
+      model-based quantities can be updated or extended to capture as
+      much available domain knowledge as possible. Even if no dedicated
+      domain experts are available, the basic principles stay the same
+      except that initial parameter values are often derived from a more
+      extensive literature review. Descriptive statistics and
+      model-based quantities are still used to evaluate whether the
+      implied assumptions about the data generating process are
+      plausible. Often, this judgment evolves over several iterations as
+      the analyst becomes more familiar with the model and the study
+      design.<xref ref-type="fn" rid="fn4-nb-article">4</xref></p>
           </sec>
           <sec id="practice-5-nb-article">
             <title>PRACTICE</title>
@@ -8756,19 +9085,27 @@ dat %&gt;%
       process. On the one hand, using a simpler model for data
       simulation than for model estimation can be a useful strategy in
       scenarios where making plausible assumptions for complicated
-      random effect structures and interactions is not feasible. On the
-      other hand, using a more complex model for data simulation than
-      for model estimation can be a useful strategy in scenarios where
-      one has specific domain knowledge about aspects of the
-      data-generating process that are still difficult to estimate with
-      the current state-of-the-art in multilevel modeling.</p>
+      random effect structures and interactions is not feasible, or the
+      omitted components are expected to have small effects
+      (<xref alt="Matuschek et al., 2017" rid="ref-matuschekBalancingTypeError2017-nb-article" ref-type="bibr">Matuschek
+      et al., 2017</xref>). On the other hand, using a more complex
+      model for data simulation than for model estimation can be a
+      useful strategy in scenarios where one has specific domain
+      knowledge about aspects of the data-generating process that are
+      still difficult to estimate with the current state-of-the-art in
+      multilevel modeling. In fact, applying models that are more
+      parsimonious than the true data generating process can provide a
+      better trade-off between type I error rates (or bias) and power
+      (or precision) in many scenarios
+      (<xref alt="Matuschek et al., 2017" rid="ref-matuschekBalancingTypeError2017-nb-article" ref-type="bibr">Matuschek
+      et al., 2017</xref>).</p>
           </sec>
           <sec id="practice-6-nb-article">
             <title>PRACTICE</title>
             <p>In our case study, we use the <italic>lme4</italic> R package
       (<xref alt="Bates et al., 2015" rid="ref-batesFittingLinearMixedEffects2015-nb-article" ref-type="bibr">Bates
       et al., 2015</xref>), which is a state-of-the-art tool for fitting
-      frequentist GLMMs.<xref ref-type="fn" rid="fn4-nb-article">4</xref> For the
+      frequentist GLMMs.<xref ref-type="fn" rid="fn5-nb-article">5</xref> For the
       current example, we simulate data according to our model, in which
       100 subjects respond to 50 items (we use
       <monospace>set.seed</monospace> to make the simulation
@@ -9928,7 +10265,7 @@ sim_result &lt;- crossing(
       <inline-formula><alternatives><tex-math><![CDATA[\times]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mi>×</mml:mi></mml:math></alternatives></inline-formula>
       <monospace>n_items</monospace> (including 95% CIs) and visualize
       the results with the following
-      code.<xref ref-type="fn" rid="fn5-nb-article">5</xref></p>
+      code.<xref ref-type="fn" rid="fn6-nb-article">6</xref></p>
             <sec specific-use="notebook-content">
               <code language="r script"># The simulation results were computed in the full_simulation.qmd notebook
 sim_result &lt;- readRDS(file = "results.rds")</code>
@@ -10013,7 +10350,7 @@ power %&gt;%
       find a more optimal trade-off, are the ratio of experts to
       students, the frequency of whether advice is presented at all, and
       whether it is correct or
-      incorrect.<xref ref-type="fn" rid="fn6-nb-article">6</xref></p>
+      incorrect.<xref ref-type="fn" rid="fn7-nb-article">7</xref></p>
             <p><bold>Precision results.</bold> When planning for precision,
       one could monitor the width of all four CIs at the same time.
       However, because the CIs of the four contrasts strongly differ in
@@ -10142,9 +10479,17 @@ precision %&gt;%
     smaller or larger differences between groups with respect to our
     specific research question. Power (or precision) could then be
     simulated for several of these scenarios (across different numbers
-    of subjects and items, as considered earlier). Although recommended,
-    we do not present a sensitivity analysis for our case study to keep
-    the length of the tutorial manageable.</p>
+    of subjects and items, as considered earlier). In steps 2 and 4 of
+    the tutorial, we have briefly discussed scenarios where the applied
+    statistical model is more (or less) parsimonious than the
+    data-generating process. Sensitivity analysis can be used to assess
+    the consequences of a mismatch by investigating different
+    combinations of data-generating processes and statistical models.
+    Such extended simulations can be a great resource to make an
+    informed decision about the concrete model to estimate for the
+    planned study where the true data-generating process is unknown.
+    Although recommended, we do not present a sensitivity analysis for
+    our case study to keep the length of the tutorial manageable.</p>
         </sec>
       </sec>
       <sec id="conclusion-and-outlook-nb-article">
@@ -10614,6 +10959,39 @@ precision %&gt;%
             <pub-id pub-id-type="doi">10.1038/s41562-017-0189-z</pub-id>
             <fpage>6</fpage>
             <lpage>10</lpage>
+          </element-citation>
+        </ref>
+        <ref id="ref-bocktingSimulationbasedPriorKnowledge2024-nb-article">
+          <element-citation publication-type="article-journal">
+            <person-group person-group-type="author">
+              <name>
+                <surname>Bockting</surname>
+                <given-names>Florence</given-names>
+              </name>
+              <name>
+                <surname>Radev</surname>
+                <given-names>Stefan T.</given-names>
+              </name>
+              <name>
+                <surname>Bürkner</surname>
+                <given-names>Paul-Christian</given-names>
+              </name>
+            </person-group>
+            <article-title>Simulation-based prior knowledge elicitation for parametric Bayesian models</article-title>
+            <source>Scientific Reports</source>
+            <year iso-8601-date="2024-07">2024</year>
+            <month>07</month>
+            <date-in-citation content-type="access-date">
+              <year iso-8601-date="2024-07-31">2024</year>
+              <month>07</month>
+              <day>31</day>
+            </date-in-citation>
+            <volume>14</volume>
+            <issue>1</issue>
+            <issn>2045-2322</issn>
+            <pub-id pub-id-type="doi">10.1038/s41598-024-68090-7</pub-id>
+            <fpage>17330</fpage>
+            <lpage/>
           </element-citation>
         </ref>
         <ref id="ref-bolkerLinearGeneralizedLinear2015-nb-article">
@@ -12065,6 +12443,45 @@ precision %&gt;%
             <lpage>60</lpage>
           </element-citation>
         </ref>
+        <ref id="ref-hartmannFlexiblePriorElicitation2020-nb-article">
+          <element-citation publication-type="paper-conference">
+            <person-group person-group-type="author">
+              <name>
+                <surname>Hartmann</surname>
+                <given-names>Marcelo</given-names>
+              </name>
+              <name>
+                <surname>Agiashvili</surname>
+                <given-names>Georgi</given-names>
+              </name>
+              <name>
+                <surname>Bürkner</surname>
+                <given-names>Paul</given-names>
+              </name>
+              <name>
+                <surname>Klami</surname>
+                <given-names>Arto</given-names>
+              </name>
+            </person-group>
+            <article-title>Flexible prior elicitation via the prior predictive distribution</article-title>
+            <source>Proceedings of the 36th conference on uncertainty in artificial intelligence (UAI)</source>
+            <person-group person-group-type="editor">
+              <name>
+                <surname>Peters</surname>
+                <given-names>Jonas</given-names>
+              </name>
+              <name>
+                <surname>Sontag</surname>
+                <given-names>David</given-names>
+              </name>
+            </person-group>
+            <publisher-name>PMLR</publisher-name>
+            <year iso-8601-date="2020">2020</year>
+            <volume>124</volume>
+            <fpage>1129</fpage>
+            <lpage>1138</lpage>
+          </element-citation>
+        </ref>
         <ref id="ref-iddiPowerSampleSize2022-nb-article">
           <element-citation publication-type="article-journal">
             <person-group person-group-type="author">
@@ -13129,6 +13546,73 @@ precision %&gt;%
             <lpage/>
           </element-citation>
         </ref>
+        <ref id="ref-mikkolaPriorKnowledgeElicitation2023-nb-article">
+          <element-citation publication-type="article-journal">
+            <person-group person-group-type="author">
+              <name>
+                <surname>Mikkola</surname>
+                <given-names>Petrus</given-names>
+              </name>
+              <name>
+                <surname>Martin</surname>
+                <given-names>Osvaldo A.</given-names>
+              </name>
+              <name>
+                <surname>Chandramouli</surname>
+                <given-names>Suyog</given-names>
+              </name>
+              <name>
+                <surname>Hartmann</surname>
+                <given-names>Marcelo</given-names>
+              </name>
+              <name>
+                <surname>Abril Pla</surname>
+                <given-names>Oriol</given-names>
+              </name>
+              <name>
+                <surname>Thomas</surname>
+                <given-names>Owen</given-names>
+              </name>
+              <name>
+                <surname>Pesonen</surname>
+                <given-names>Henri</given-names>
+              </name>
+              <name>
+                <surname>Corander</surname>
+                <given-names>Jukka</given-names>
+              </name>
+              <name>
+                <surname>Vehtari</surname>
+                <given-names>Aki</given-names>
+              </name>
+              <name>
+                <surname>Kaski</surname>
+                <given-names>Samuel</given-names>
+              </name>
+              <name>
+                <surname>Bürkner</surname>
+                <given-names>Paul-Christian</given-names>
+              </name>
+              <name>
+                <surname>Klami</surname>
+                <given-names>Arto</given-names>
+              </name>
+            </person-group>
+            <article-title>Prior Knowledge Elicitation: The Past, Present, and Future</article-title>
+            <source>Bayesian Analysis</source>
+            <year iso-8601-date="2023-01">2023</year>
+            <month>01</month>
+            <date-in-citation content-type="access-date">
+              <year iso-8601-date="2024-07-29">2024</year>
+              <month>07</month>
+              <day>29</day>
+            </date-in-citation>
+            <volume>-1</volume>
+            <issue>-1</issue>
+            <issn>1936-0975</issn>
+            <pub-id pub-id-type="doi">10.1214/23-BA1381</pub-id>
+          </element-citation>
+        </ref>
         <ref id="ref-murayamaSummarystatisticsbasedPowerAnalysis2022-nb-article">
           <element-citation publication-type="article-journal">
             <person-group person-group-type="author">
@@ -13251,6 +13735,72 @@ precision %&gt;%
             <pub-id pub-id-type="doi">10.1016/j.jml.2019.104038</pub-id>
             <fpage>104038</fpage>
             <lpage/>
+          </element-citation>
+        </ref>
+        <ref id="ref-schadPrincipledBayesianWorkflow2021-nb-article">
+          <element-citation publication-type="article-journal">
+            <person-group person-group-type="author">
+              <name>
+                <surname>Schad</surname>
+                <given-names>Daniel J.</given-names>
+              </name>
+              <name>
+                <surname>Betancourt</surname>
+                <given-names>Michael</given-names>
+              </name>
+              <name>
+                <surname>Vasishth</surname>
+                <given-names>Shravan</given-names>
+              </name>
+            </person-group>
+            <article-title>Toward a principled Bayesian workflow in cognitive science.</article-title>
+            <source>Psychological Methods</source>
+            <year iso-8601-date="2021-02">2021</year>
+            <month>02</month>
+            <date-in-citation content-type="access-date">
+              <year iso-8601-date="2024-07-26">2024</year>
+              <month>07</month>
+              <day>26</day>
+            </date-in-citation>
+            <volume>26</volume>
+            <issue>1</issue>
+            <issn>1939-1463, 1082-989X</issn>
+            <pub-id pub-id-type="doi">10.1037/met0000275</pub-id>
+            <fpage>103</fpage>
+            <lpage>126</lpage>
+          </element-citation>
+        </ref>
+        <ref id="ref-stefanPracticalChallengesMethodological2022-nb-article">
+          <element-citation publication-type="article-journal">
+            <person-group person-group-type="author">
+              <name>
+                <surname>Stefan</surname>
+                <given-names>Angelika M.</given-names>
+              </name>
+              <name>
+                <surname>Evans</surname>
+                <given-names>Nathan J.</given-names>
+              </name>
+              <name>
+                <surname>Wagenmakers</surname>
+                <given-names>Eric-Jan</given-names>
+              </name>
+            </person-group>
+            <article-title>Practical challenges and methodological flexibility in prior elicitation.</article-title>
+            <source>Psychological Methods</source>
+            <year iso-8601-date="2022-04">2022</year>
+            <month>04</month>
+            <date-in-citation content-type="access-date">
+              <year iso-8601-date="2024-07-29">2024</year>
+              <month>07</month>
+              <day>29</day>
+            </date-in-citation>
+            <volume>27</volume>
+            <issue>2</issue>
+            <issn>1939-1463, 1082-989X</issn>
+            <pub-id pub-id-type="doi">10.1037/met0000354</pub-id>
+            <fpage>177</fpage>
+            <lpage>197</lpage>
           </element-citation>
         </ref>
         <ref id="ref-uyguntuncEpistemicPragmaticFunction2023-nb-article">
@@ -13700,25 +14250,41 @@ precision %&gt;%
         </fn>
         <fn id="fn4-nb-article">
           <label>4</label>
+          <p>Developing more effective strategies on how to
+    elicit and visualize domain knowledge is currently an active area of
+    research, primarily in the context of Bayesian modeling
+    (<xref alt="Bockting et al., 2024" rid="ref-bocktingSimulationbasedPriorKnowledge2024-nb-article" ref-type="bibr">Bockting
+    et al., 2024</xref>;
+    <xref alt="Hartmann et al., 2020" rid="ref-hartmannFlexiblePriorElicitation2020-nb-article" ref-type="bibr">Hartmann
+    et al., 2020</xref>;
+    <xref alt="Mikkola et al., 2023" rid="ref-mikkolaPriorKnowledgeElicitation2023-nb-article" ref-type="bibr">Mikkola
+    et al., 2023</xref>;
+    <xref alt="Stefan et al., 2022" rid="ref-stefanPracticalChallengesMethodological2022-nb-article" ref-type="bibr">Stefan
+    et al., 2022</xref>). We expect that future advances in this field
+    will also be highly relevant for tailored simulation-based sample
+    size planning with frequentist models.</p>
+        </fn>
+        <fn id="fn5-nb-article">
+          <label>5</label>
           <p>For Bayesian GLMMs, the <italic>brms</italic> R
     package is currently the most prominent option
     (<xref alt="Bürkner, 2017" rid="ref-burknerBrmsPackageBayesian2017-nb-article" ref-type="bibr">Bürkner,
     2017</xref>).</p>
         </fn>
-        <fn id="fn5-nb-article">
-          <label>5</label>
+        <fn id="fn6-nb-article">
+          <label>6</label>
           <p>This code was inspired by the “Mixed Design
     Simulation” vignette of the <italic>faux</italic> package at
     <ext-link ext-link-type="uri" xlink:href="https://debruine.github.io/faux/articles/sim_mixed.html">https://debruine.github.io/faux/articles/sim_mixed.html</ext-link>.</p>
         </fn>
-        <fn id="fn6-nb-article">
-          <label>6</label>
+        <fn id="fn7-nb-article">
+          <label>7</label>
           <p>An advanced alternative to our heuristic
     trade-off between subjects and items would be to explicitly optimize
     for cost-efficient study designs using the <italic>mlpwr</italic>
     package
     (<xref alt="Zimmer et al., 2023" rid="ref-zimmerSampleSizePlanning2023-nb-article" ref-type="bibr">Zimmer
-    et al., 2023</xref>). The package performs simulation based power
+    et al., 2023</xref>). The package performs simulation-based power
     analysis in a surrogate modeling framework that can evaluate power
     for a large grid of design combinations more efficiently. The
     framework also requires users to write their own
