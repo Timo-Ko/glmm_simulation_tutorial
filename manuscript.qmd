@@ -2,6 +2,7 @@
 title: "A Tutorial on Tailored Simulation-Based Sample Size Planning for Experimental Designs with Generalized Linear Mixed Models"
 shorttitle: "Simulation-Based Sample Size Planning for GLMMs"
 date: 2024-07-01
+date-modified: 2024-07-31
 date-format: iso
 author:
   - name: Florian Pargent
