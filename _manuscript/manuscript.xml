@@ -464,7 +464,7 @@ Science</italic>, 7(4).
   (<xref alt="2021" rid="ref-kumleEstimatingPowerGeneralized2021" ref-type="bibr">2021</xref>)).
   We will discuss a number of strategies on how to specify model
   parameters for application-specific, tailored data simulations in a
-  later chapter.</p>
+  later section.</p>
       <p>![](— ftExtra-cite-unnamed-chunk-2: “Watson
   (<xref alt="2023" rid="ref-watsonGeneralisedLinearMixed2023" ref-type="bibr">2023</xref>)
   Iddi &amp; Donohue
@@ -3139,7 +3139,8 @@ precision %&gt;%
                                 precision, ci.lwr, ci.upr)), 
     color = "white", size = 4) +
   scale_fill_viridis_c(limits = c(0, 0.2), direction = -1) +
-  guides(fill = guide_colourbar(reverse = TRUE))</code>
+  guides(fill = guide_colourbar(reverse = TRUE)) +
+  xlab("number of subjects") + ylab("number of items")</code>
           <fig id="fig-finalprecision">
             <caption>
               <p>Figure 5: Simulation-based precision estimates
@@ -7559,7 +7560,7 @@ r_refs("r-references.bib", append = FALSE)</code>
   (<xref alt="2021" rid="ref-kumleEstimatingPowerGeneralized2021-nb-article" ref-type="bibr">2021</xref>)).
   We will discuss a number of strategies on how to specify model
   parameters for application-specific, tailored data simulations in a
-  later chapter.</p>
+  later section.</p>
         <sec specific-use="notebook-content">
           <code language="r script"># label: tbl-rpackages # There is currently a bug in apaquarto that prevents referencing for multipage tables (https://github.com/wjschne/apaquarto/issues/71)
 
@@ -10383,7 +10384,8 @@ precision %&gt;%
                                 precision, ci.lwr, ci.upr)), 
     color = "white", size = 4) +
   scale_fill_viridis_c(limits = c(0, 0.2), direction = -1) +
-  guides(fill = guide_colourbar(reverse = TRUE))</code>
+  guides(fill = guide_colourbar(reverse = TRUE)) +
+  xlab("number of subjects") + ylab("number of items")</code>
               <fig id="fig-finalprecision-nb-article">
                 <caption>
                   <p>Figure 5: Simulation-based precision estimates
