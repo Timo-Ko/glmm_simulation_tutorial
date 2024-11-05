@@ -251,7 +251,7 @@ Kleine}{0000-0003-1919-2834}}\par{\addORCIDlink{Eva
 Lermer}{0000-0002-6600-9580}}\par{\addORCIDlink{Susanne
 Gaube}{0000-0002-1633-4772}} 
 
-\par{ This is version 3.5 of our preprint published at
+\par{ This is version 4 of our preprint published at
 \url{https://doi.org/10.31234/osf.io/rpjem}. All materials (reproducible
 manuscript, including R code and all simulation results) are available
 in the project's repository on the Open Science Framework (OSF) at
@@ -307,6 +307,22 @@ St.~Gallen, Torstrasse
 \NewTableCommand{\tinytableDefineColor}[3]{\definecolor{#1}{#2}{#3}}
 \newcommand{\tinytableTabularrayUnderline}[1]{\underline{#1}}
 \newcommand{\tinytableTabularrayStrikeout}[1]{\sout{#1}}
+\makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
+\@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
+\definecolor{quarto-callout-color}{HTML}{909090}
+\definecolor{quarto-callout-note-color}{HTML}{0758E5}
+\definecolor{quarto-callout-important-color}{HTML}{CC1914}
+\definecolor{quarto-callout-warning-color}{HTML}{EB9113}
+\definecolor{quarto-callout-tip-color}{HTML}{00A047}
+\definecolor{quarto-callout-caution-color}{HTML}{FC5300}
+\definecolor{quarto-callout-color-frame}{HTML}{acacac}
+\definecolor{quarto-callout-note-color-frame}{HTML}{4582ec}
+\definecolor{quarto-callout-important-color-frame}{HTML}{d9534f}
+\definecolor{quarto-callout-warning-color-frame}{HTML}{f0ad4e}
+\definecolor{quarto-callout-tip-color-frame}{HTML}{02b875}
+\definecolor{quarto-callout-caution-color-frame}{HTML}{fd7e14}
+\makeatother
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -368,6 +384,20 @@ St.~Gallen, Torstrasse
 
 \setlength\LTleft{0pt}
 
+
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, bottomrule=.15mm, bottomtitle=1mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, coltitle=black, left=2mm, colback=white, breakable, toptitle=1mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{Important}, arc=.35mm, rightrule=.15mm, toprule=.15mm, leftrule=.75mm, colframe=quarto-callout-important-color-frame]
+
+This manuscript has been accepted by the journal \emph{Advances in
+Methods and Practices in Psychological Science (AMPPS)}. Please cite the
+official version of record as:
+
+Pargent, F., K. Koch, T., Kleine, A.-K., Lermer, E., \& Gaube, S.
+(2024). A tutorial on tailored simulation-based sample-size planning for
+experimental designs with generalized linear mixed models.
+\emph{Advances in Methods and Practices in Psychological Science}, 7(4).
+\url{https://doi.org/10.1177/25152459241287132}
+
+\end{tcolorbox}
 
 \section{Introduction}\label{introduction}
 
@@ -784,7 +814,7 @@ include the assumed process of how data become missing in the data
 simulation, thereby determining the required sample size based on
 simulated datasets that contain missing values (for example, see
 \citeproc{ref-lanePowerStrugglesEstimating2018}{Lane \& Hennes, 2018}).
-As a byproduct, the simulated datasets can also be used to test whether
+As a by-product, the simulated datasets can also be used to test whether
 the intended data analysis provides the expected (unbiased) results,
 despite the missing data. Although GLMMs can handle a large variety of
 outcome variables, researchers are becoming increasingly aware that many
@@ -832,18 +862,18 @@ combined null hypothesis \(H_0\) would be rejected if both \(H_{01}\)
 \emph{AND} \(H_{02}\) are rejected. For other research questions, the
 combined null hypothesis \(H_0\) would be rejected if \(H_{01}\)
 \emph{OR} \(H_{02}\) \emph{OR} both are rejected. If the global
-hypothesis \(H_0\) is combined with \emph{OR}, the p-values of the
-single hypotheses must be corrected for multiple testing to avoid
+hypothesis \(H_0\) is combined with a logical \emph{OR}, the p-values of
+the single hypotheses must be corrected for multiple testing to avoid
 \(\alpha\)-inflation for the global hypothesis
 (\citeproc{ref-dmitrienkoTraditionalMultiplicityAdjustment2013}{Dmitrienko
 \& D'Agostino, 2013}). However, if the global hypothesis \(H_0\) is
-combined with \emph{AND}, a correction for multiple testing is not
-necessary but rather a mistake that unnecessarily reduces the power of
-the global HT. None of the software packages for sample size planning in
-Table 1 can handle combined hypotheses and only some can handle directed
-hypotheses. In contrast, our case study will demonstrate how we can test
-directed combined hypotheses with tailored simulation-based sample size
-planning.
+combined with a logical \emph{AND}, a correction for multiple testing is
+not necessary but rather a mistake that unnecessarily reduces the power
+of the global HT. None of the software packages for sample size planning
+in Table 1 can handle combined hypotheses and only some can handle
+directed hypotheses. In contrast, our case study will demonstrate how we
+can test directed combined hypotheses with tailored simulation-based
+sample size planning.
 
 Third, all available software packages for sample size planning with
 GLMMs are based on power analysis and do not support planning for
@@ -1100,7 +1130,7 @@ subject \(s\) gives the correct response to item (i.e., CT scan) \(i\).
 In such a setting, we model this probability as \[
 P_{si} = \text{inverse\_logit}(\eta_{si})
 \] with the inverse-logit link
-\(g^{-1}(\eta_{si}) = inverse\_logit(\eta_{si}) = \frac{exp(\eta_{si})}{1 + exp(\eta_{si})}\)
+\(g^{-1}(\eta_{si}) = \text{inverse\_logit}(\eta_{si}) = \frac{\text{exp}(\eta_{si})}{1 + \text{exp}(\eta_{si})}\)
 or equivalently \[
 \text{logit}(P_{si}) = \eta_{si}
 \] with the logit link
@@ -1137,15 +1167,15 @@ and the random effects:
 
 In total, we assume the model \[
 \begin{aligned}
-\text{logit}[P_{si}] =\ (&\beta_0 + u_{0s} + u_{0i}) + \\
-&\beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
-&\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}
+\text{logit}[P_{si}] =\ (&\beta_0 + u_{0s} + u_{0i})\\
+&+ \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s\\
+&+\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}
 \end{aligned}
 \] or equivalently \[
 \begin{aligned}
-P_{si} = \text{inverse\_logit}[&(\beta_0 + u_{0s} + u_{0i}) + \\
-&\beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
-&\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
+P_{si} = \text{inverse\_logit}[&(\beta_0 + u_{0s} + u_{0i})\\
+&+ \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s\\
+&+ \beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
 \end{aligned}
 \] with model parameters \(\beta_0\), \(\beta_e\), \(\beta_a\),
 \(\beta_c\), \(\beta_{ea}\), \(\beta_{ec}\), \(\sigma_S\), and
@@ -1289,9 +1319,9 @@ by:
 
 \[
 \begin{aligned}
-P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0}) = \\
-= \text{inverse\_logit}[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
-&\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
+P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0})\\
+= \text{inverse\_logit}[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} +  \beta_e \cdot expert_s\\
+&+ \beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
 \end{aligned}
 \] In fact, we would only need the full equation if the subject is an
 expert and correct advice is presented. In all other experimental
@@ -1300,7 +1330,7 @@ multiplied by \(0\). For example, the probability that a student with
 average ability solves an item with average difficulty when no advice is
 presented only requires the intercept: \[
 \begin{aligned}
-P(Y=1| advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0) = \\
+P(Y=1| advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0)\\
 = \text{inverse\_logit}[\beta_0]
 \end{aligned}
 \] We can revert this perspective by choosing plausible probability
@@ -1310,9 +1340,9 @@ implied by these probabilities for each experimental condition.
 \newpage
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1646}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3291}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5063}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1576}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3152}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5273}}@{}}
 \caption{Table 2. Assumed probabilities that an average subject solves
 an average item in each experimental condition.}\tabularnewline
 \toprule\noalign{}
@@ -1337,16 +1367,16 @@ Implied equation
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-no advice, student & 0.70 & \(logit(0.70) = \beta_0\) \\
-no advice, expert & 0.90 & \(logit(0.90) = \beta_0 + \beta_e\) \\
+no advice, student & 0.70 & \(\text{logit}(0.70) = \beta_0\) \\
+no advice, expert & 0.90 & \(\text{logit}(0.90) = \beta_0 + \beta_e\) \\
 incorrect advice, student & 0.40 &
-\(logit(0.40) = \beta_0 + \beta_a\) \\
+\(\text{logit}(0.40) = \beta_0 + \beta_a\) \\
 incorrect advice, expert & 0.85 &
-\(logit(0.85) = \beta_0 + \beta_e + \beta_{a} + \beta_{ea}\) \\
+\(\text{logit}(0.85) = \beta_0 + \beta_e + \beta_{a} + \beta_{ea}\) \\
 correct advice, student & 0.90 &
-\(logit(0.90) = \beta_0 + \beta_a + \beta_c\) \\
+\(\text{logit}(0.90) = \beta_0 + \beta_a + \beta_c\) \\
 correct advice, expert & 0.95 &
-\(logit(0.95) = \beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}\) \\
+\(\text{logit}(0.95) = \beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}\) \\
 \end{longtable}
 
 Table 2 shows our set of assumptions concerning the probability that an
@@ -1378,8 +1408,8 @@ on):
 It is always possible to double-check these computations by transforming
 the parameter values back to probabilities, e.g.~ \[
 \begin{aligned}
-P(Y=1|expert = 1, advice\_present = 1, advice\_correct = 1, u_{0s} = 0, u_{0i} = 0) = \\
-= inverse\_logit[\beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}]
+P(Y=1|expert = 1, advice\_present = 1, advice\_correct = 1, u_{0s} = 0, u_{0i} = 0)\\
+= \text{inverse\_logit}[\beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}]
 \end{aligned}
 \]
 
@@ -1444,20 +1474,20 @@ For example, we determined the \(\beta\) parameters in a way that
 corresponds to a desired conditional probability of \(0.95\), that an
 expert with average ability solves an item with average difficulty when
 presented with correct advice (the conditional perspective). However,
-even if the model assumptions were true, we would not observe that 95\%
-of experts responding to items presented with correct advice from a big
-sample of subjects drawn from their natural distribution of ability and
-items drawn from their natural distribution of difficulty (the marginal
-perspective). How much the two probabilities differ depends on the
-standard deviations of the random intercepts (the two probabilities are
-only equal if both standard deviations are be zero). We want to use the
-model-implied observed proportion of correct diagnoses in each
-experimental condition as an insightful descriptive statistic to
-determine plausible values for the random effect standard deviations. We
-will simulate a large dataset (for which the observed values of the
-descriptive statistic will be close to their model-implied true values)
-and simply compute the relative frequency of correct diagnoses for each
-experimental condition.
+even if the model assumptions were true, the relative frequency of
+experts that solve items presented with correct advice would not be
+\(0.95\) in a large sample of subjects drawn from their natural
+distribution of ability and items drawn from their natural distribution
+of difficulty (the marginal perspective). How much the two probabilities
+differ depends on the standard deviations of the random intercepts (the
+two probabilities are only equal if both standard deviations are be
+zero). We want to use the model-implied observed proportion of correct
+diagnoses in each experimental condition as an insightful descriptive
+statistic to determine plausible values for the random effect standard
+deviations. We will simulate a large dataset (for which the observed
+values of the descriptive statistic will be close to their model-implied
+true values) and simply compute the relative frequency of correct
+diagnoses for each experimental condition.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2399,8 +2429,8 @@ results with the following code.
   \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%.2f }\SpecialCharTok{\textbackslash{}n}\StringTok{ [\%.2f; \%.2f]"}\NormalTok{, }
 \NormalTok{                                precision, ci.lwr, ci.upr)), }
     \AttributeTok{color =} \StringTok{"white"}\NormalTok{, }\AttributeTok{size =} \DecValTok{4}\NormalTok{) }\SpecialCharTok{+}
-  \FunctionTok{scale\_fill\_viridis\_c}\NormalTok{(}\AttributeTok{limits =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.3}\NormalTok{), }\AttributeTok{direction =} \SpecialCharTok{{-}}\DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
-  \FunctionTok{guides}\NormalTok{(}\AttributeTok{fill =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{reverse=}\ConstantTok{FALSE}\NormalTok{))}
+  \FunctionTok{scale\_fill\_viridis\_c}\NormalTok{(}\AttributeTok{limits =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.2}\NormalTok{), }\AttributeTok{direction =} \SpecialCharTok{{-}}\DecValTok{1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{guides}\NormalTok{(}\AttributeTok{fill =} \FunctionTok{guide\_colourbar}\NormalTok{(}\AttributeTok{reverse =} \ConstantTok{TRUE}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
