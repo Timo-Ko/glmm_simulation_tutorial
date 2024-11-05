@@ -2,7 +2,7 @@
 title: "A Tutorial on Tailored Simulation-Based Sample Size Planning for Experimental Designs with Generalized Linear Mixed Models"
 shorttitle: "Simulation-Based Sample Size Planning for GLMMs"
 date: 2024-07-01
-date-modified: 2024-07-31
+date-modified: 2024-11-05
 date-format: iso
 author:
   - name: Florian Pargent
@@ -65,7 +65,7 @@ author:
         department: UCL Global Business School for Health
 author-note:
   disclosures:
-    data-sharing: This is version 3.5 of our preprint published at <https://doi.org/10.31234/osf.io/rpjem>. All materials (reproducible manuscript, including R code and all simulation results) are available in the project's repository on the Open Science Framework (OSF) at <https://osf.io/dhwf4/>. A Quarto Manuscripts website is hosted at <https://Timo-Ko.github.io/glmm_simulation_tutorial/>.
+    data-sharing: This is version 4 of our preprint published at <https://doi.org/10.31234/osf.io/rpjem>. All materials (reproducible manuscript, including R code and all simulation results) are available in the project's repository on the Open Science Framework (OSF) at <https://osf.io/dhwf4/>. A Quarto Manuscripts website is hosted at <https://Timo-Ko.github.io/glmm_simulation_tutorial/>.
     conflict-of-interest: The authors declare that there were no conflicts of interest concerning the authorship or the publication of this article.
     financial-support: This research was funded by a grant from the Volkswagen Foundation (Grant No. 98525).
     gratitude: ~
@@ -96,6 +96,13 @@ library("papaja")
 library("pwr")
 r_refs("r-references.bib", append = FALSE)
 ```
+
+:::{.callout-important}
+This manuscript has been accepted by the journal *Advances in Methods and Practices in Psychological Science (AMPPS)*.
+Please cite the official version of record as:
+
+Pargent, F., K. Koch, T., Kleine, A.-K., Lermer, E., & Gaube, S. (2024). A tutorial on tailored simulation-based sample-size planning for experimental designs with generalized linear mixed models. *Advances in Methods and Practices in Psychological Science*, 7(4). <https://doi.org/10.1177/25152459241287132>
+:::
 
 # Introduction
 
@@ -190,7 +197,7 @@ One frequent issue in applied data analysis is missing data [@littleStatisticalA
 Missings can be completely random (e.g., an electronic measurement device randomly failed for technical reasons), depend on some attributes also measured in the dataset (e.g., older subjects refuse answering a question on income), or be caused by the measured attribute itself (e.g., wealthy people refuse to report their income).
 Moreover, many experimental designs contain conditions in which values of the predictor variables are missing by design. This can make data analysis more complicated because predictors have to be coded in specific ways that prevent the estimated GLMM from becoming unidentified. Whether missing data has an effect on the sample size planning depends on our theoretical assumptions on how the missingness is caused.
 However, it is often challenging to decide whether missing data can be safely ignored in the data analysis and sample size planning process based on a merely theoretical approach [@gomilaMissingDataExperiments2022].
-Tailored simulation-based approaches offer the possibility to include the assumed process of how data become missing in the data simulation, thereby determining the required sample size based on simulated datasets that contain missing values [for example, see @lanePowerStrugglesEstimating2018]. As a byproduct, the simulated datasets can also be used to test whether the intended data analysis provides the expected (unbiased) results, despite the missing data.
+Tailored simulation-based approaches offer the possibility to include the assumed process of how data become missing in the data simulation, thereby determining the required sample size based on simulated datasets that contain missing values [for example, see @lanePowerStrugglesEstimating2018]. As a by-product, the simulated datasets can also be used to test whether the intended data analysis provides the expected (unbiased) results, despite the missing data.
 Although GLMMs can handle a large variety of outcome variables, researchers are becoming increasingly aware that many datasets might profit from even more sophisticated models. Common examples are zero-inflated outcomes, censoring, and nonlinear predictor effects that can be modeled with the R packages *glmmTMB* [@brooksGlmmTMBBalancesSpeed2017] or *brms* [@burknerAdvancedBayesianMultilevel2018]. 
 Tailored simulation-based approaches do not share the same limitations as the existing software solutions for power analysis that focus exclusively on GLMMs.
 As long as there is a software package available to estimate the model of interest, it is always possible to perform tailored simulation-based sample size planning.
@@ -204,8 +211,8 @@ More elaborate research questions often require testing hypotheses that consist 
 If the research question consists only of a single hypothesis of this sort, it might be possible to reduce the hypothesis to a single regression coefficient by clever coding and/or centering of predictor variables. However, research questions often consist of combined hypotheses that consist of more than one separate statistical hypothesis [for a tutorial on contrast analysis in GLMMs, see @schadHowCapitalizePriori2020]. For example, a combined null hypothesis $H_0$ might consist of two single null hypotheses $H_{01}: \beta_1 \leq 0$ and $H_{02}: \beta_0 + \beta_1 \leq 0$.
 For some research questions, the combined null hypothesis $H_0$ would be rejected if both $H_{01}$ *AND* $H_{02}$ are rejected.
 For other research questions, the combined null hypothesis $H_0$ would be rejected if $H_{01}$ *OR* $H_{02}$ *OR* both are rejected.
-If the global hypothesis $H_0$ is combined with *OR*, the p-values of the single hypotheses must be corrected for multiple testing to avoid $\alpha$-inflation for the global hypothesis [@dmitrienkoTraditionalMultiplicityAdjustment2013].
-However, if the global hypothesis $H_0$ is combined with *AND*, a correction for multiple testing is not necessary but rather a mistake that unnecessarily reduces the power of the global HT.
+If the global hypothesis $H_0$ is combined with a logical *OR*, the p-values of the single hypotheses must be corrected for multiple testing to avoid $\alpha$-inflation for the global hypothesis [@dmitrienkoTraditionalMultiplicityAdjustment2013].
+However, if the global hypothesis $H_0$ is combined with a logical *AND*, a correction for multiple testing is not necessary but rather a mistake that unnecessarily reduces the power of the global HT.
 None of the software packages for sample size planning in Table 1 can handle combined hypotheses and only some can handle directed hypotheses. In contrast, our case study will demonstrate how we can test directed combined hypotheses with tailored simulation-based sample size planning. 
 
 <!-- ## Planning for precision -->
@@ -301,7 +308,7 @@ In such a setting, we model this probability as
 $$
 P_{si} = \text{inverse\_logit}(\eta_{si})
 $$
-with the inverse-logit link $g^{-1}(\eta_{si}) = inverse\_logit(\eta_{si}) = \frac{exp(\eta_{si})}{1 + exp(\eta_{si})}$ or equivalently
+with the inverse-logit link $g^{-1}(\eta_{si}) = \text{inverse\_logit}(\eta_{si}) = \frac{\text{exp}(\eta_{si})}{1 + \text{exp}(\eta_{si})}$ or equivalently
 $$
 \text{logit}(P_{si}) = \eta_{si}
 $$
@@ -321,17 +328,17 @@ and the random effects:
 In total, we assume the model
 $$
 \begin{aligned}
-\text{logit}[P_{si}] =\ (&\beta_0 + u_{0s} + u_{0i}) + \\
-&\beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
-&\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}
+\text{logit}[P_{si}] =\ (&\beta_0 + u_{0s} + u_{0i})\\
+&+ \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s\\
+&+\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}
 \end{aligned}
 $$
 or equivalently
 $$
 \begin{aligned}
-P_{si} = \text{inverse\_logit}[&(\beta_0 + u_{0s} + u_{0i}) + \\
-&\beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
-&\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
+P_{si} = \text{inverse\_logit}[&(\beta_0 + u_{0s} + u_{0i})\\
+&+ \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s\\
+&+ \beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
 \end{aligned}
 $$
 with model parameters $\beta_0$, $\beta_e$, $\beta_a$, $\beta_c$, $\beta_{ea}$, $\beta_{ec}$, $\sigma_S$, and $\sigma_I$.
@@ -408,9 +415,9 @@ Then the model-implied probability that such a person solves such an item accura
 
 $$
 \begin{aligned}
-P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0}) = \\
-= \text{inverse\_logit}[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
-&\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
+P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0})\\
+= \text{inverse\_logit}[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} +  \beta_e \cdot expert_s\\
+&+ \beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
 \end{aligned}
 $$
 In fact, we would only need the full equation if the subject is an expert and correct advice is presented.
@@ -418,7 +425,7 @@ In all other experimental conditions, some terms drop from the equation because 
 For example, the probability that a student with average ability solves an item with average difficulty when no advice is presented only requires the intercept:
 $$
 \begin{aligned}
-P(Y=1| advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0) = \\
+P(Y=1| advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0)\\
 = \text{inverse\_logit}[\beta_0]
 \end{aligned}
 $$
@@ -437,12 +444,12 @@ probtable <- data.frame(
   col2 =
     c("0.70", "0.90", "0.40", "0.85", "0.90", "0.95"),
   col3 = 
-    c("$logit(0.70) = \\beta_0$",
-      "$logit(0.90) = \\beta_0 + \\beta_e$", 
-      "$logit(0.40) = \\beta_0 + \\beta_a$",
-      "$logit(0.85) = \\beta_0 + \\beta_e + \\beta_{a} + \\beta_{ea}$",
-      "$logit(0.90) = \\beta_0 + \\beta_a + \\beta_c$",
-      "$logit(0.95) = \\beta_0 + \\beta_e + \\beta_a + \\beta_c + \\beta_{ea} + \\beta_{ec}$"))
+    c("$\\text{logit}(0.70) = \\beta_0$",
+      "$\\text{logit}(0.90) = \\beta_0 + \\beta_e$", 
+      "$\\text{logit}(0.40) = \\beta_0 + \\beta_a$",
+      "$\\text{logit}(0.85) = \\beta_0 + \\beta_e + \\beta_{a} + \\beta_{ea}$",
+      "$\\text{logit}(0.90) = \\beta_0 + \\beta_a + \\beta_c$",
+      "$\\text{logit}(0.95) = \\beta_0 + \\beta_e + \\beta_a + \\beta_c + \\beta_{ea} + \\beta_{ec}$"))
 knitr::kable(probtable, col.names = c("Experimental condition",
     "$P(Y=1 \\mid \\mathbf{X=x}, \\mathbf{U} = \\mathbf{0})$",
     "Implied equation"), escape = FALSE)
@@ -465,8 +472,8 @@ c(b_0 = b_0, b_e = b_e, b_a = b_a, b_c = b_c, b_ea = b_ea, b_ec = b_ec)
 It is always possible to double-check these computations by transforming the parameter values back to probabilities, e.g. 
 $$
 \begin{aligned}
-P(Y=1|expert = 1, advice\_present = 1, advice\_correct = 1, u_{0s} = 0, u_{0i} = 0) = \\
-= inverse\_logit[\beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}]
+P(Y=1|expert = 1, advice\_present = 1, advice\_correct = 1, u_{0s} = 0, u_{0i} = 0)\\
+= \text{inverse\_logit}[\beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}]
 \end{aligned}
 $$
 
@@ -491,7 +498,7 @@ The mathematical structure of GLMMs determines which patterns in data would be p
 In the last section, we showed how we can derive the model-implied probability that a subject with average ability solves an item with average difficulty for each experimental condition. Although these derivations are straightforward, it is important not to misinterpret their implications: In binomial GLMMs, the average probability to solve an item (averaged across persons of varying ability and items of varying difficulty) is **not** equal to the probability that a person with average ability solves an item with average difficulty [@fahrmeirRegressionModelsMethods2021]. The first perspective implies a so-called *marginal interpretation*, while the second one implies a *conditional interpretation*.
 
 For example, we determined the $\beta$ parameters in a way that corresponds to a desired conditional probability of $0.95$, that an expert with average ability solves an item with average difficulty when presented with correct advice (the conditional perspective).
-However, even if the model assumptions were true, we would not observe that 95% of experts responding to items presented with correct advice from a big sample of subjects drawn from their natural distribution of ability and items drawn from their natural distribution of difficulty (the marginal perspective).
+However, even if the model assumptions were true, the relative frequency of experts that solve items presented with correct advice would not be $0.95$ in a large sample of subjects drawn from their natural distribution of ability and items drawn from their natural distribution of difficulty (the marginal perspective).
 How much the two probabilities differ depends on the standard deviations of the random intercepts (the two probabilities are only equal if both standard deviations are be zero).
 We want to use the model-implied observed proportion of correct diagnoses in each experimental condition as an insightful descriptive statistic to determine plausible values for the random effect standard deviations.
 We will simulate a large dataset (for which the observed values of the descriptive statistic will be close to their model-implied true values) and simply compute the relative frequency of correct diagnoses for each experimental condition.
@@ -934,8 +941,8 @@ precision %>%
   geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 
                                 precision, ci.lwr, ci.upr)), 
     color = "white", size = 4) +
-  scale_fill_viridis_c(limits = c(0, 0.3), direction = -1) +
-  guides(fill = guide_legend(reverse=FALSE))
+  scale_fill_viridis_c(limits = c(0, 0.2), direction = -1) +
+  guides(fill = guide_colourbar(reverse = TRUE))
 ```
 As should be the case, precision estimates in @fig-finalprecision increase  (i.e., average width of CI decreases) with the number of included subjects and items.
 The CIs reported here indicate how precisely the expected width of the CI for our focal contrast was estimated by our simulation. Applying our simple heuristic of targeting an expected CI width that is smaller than 0.1, we see the same trade-off between the number of subjects and the number of items as with planning for power. We could either choose 100 subjects and 30 items or 250 subjects and 10 items. Note that our simple heuristic for determining sample size in the planning for precision scenario was quite liberal. This is reflected in the result that we would need a smaller sample size than in the planning for power scenario.

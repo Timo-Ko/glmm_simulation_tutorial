@@ -159,6 +159,20 @@ planning.
     </article-meta>
   </front>
   <body>
+    <boxed-text>
+      <p>
+        <bold>Important</bold>
+      </p>
+      <p>This manuscript has been accepted by the journal <italic>Advances in
+Methods and Practices in Psychological Science (AMPPS)</italic>. Please
+cite the official version of record as:</p>
+      <p>Pargent, F., K. Koch, T., Kleine, A.-K., Lermer, E., &amp; Gaube, S.
+(2024). A tutorial on tailored simulation-based sample-size planning for
+experimental designs with generalized linear mixed models.
+<italic>Advances in Methods and Practices in Psychological
+Science</italic>, 7(4).
+<ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1177/25152459241287132">https://doi.org/10.1177/25152459241287132</ext-link></p>
+    </boxed-text>
     <sec id="introduction">
       <title>Introduction</title>
       <p>When planning experimental research, it is essential to determine
@@ -518,10 +532,10 @@ planning.
   sample size based on simulated datasets that contain missing values
   (for example, see
   <xref alt="Lane &amp; Hennes, 2018" rid="ref-lanePowerStrugglesEstimating2018" ref-type="bibr">Lane
-  &amp; Hennes, 2018</xref>). As a byproduct, the simulated datasets can
-  also be used to test whether the intended data analysis provides the
-  expected (unbiased) results, despite the missing data. Although GLMMs
-  can handle a large variety of outcome variables, researchers are
+  &amp; Hennes, 2018</xref>). As a by-product, the simulated datasets
+  can also be used to test whether the intended data analysis provides
+  the expected (unbiased) results, despite the missing data. Although
+  GLMMs can handle a large variety of outcome variables, researchers are
   becoming increasingly aware that many datasets might profit from even
   more sophisticated models. Common examples are zero-inflated outcomes,
   censoring, and nonlinear predictor effects that can be modeled with
@@ -580,20 +594,20 @@ planning.
   <italic>OR</italic> <inline-formula><alternatives><tex-math><![CDATA[H_{02}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>H</mml:mi><mml:mn>02</mml:mn></mml:msub></mml:math></alternatives></inline-formula>
   <italic>OR</italic> both are rejected. If the global hypothesis
   <inline-formula><alternatives><tex-math><![CDATA[H_0]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>H</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></alternatives></inline-formula>
-  is combined with <italic>OR</italic>, the p-values of the single
-  hypotheses must be corrected for multiple testing to avoid
+  is combined with a logical <italic>OR</italic>, the p-values of the
+  single hypotheses must be corrected for multiple testing to avoid
   <inline-formula><alternatives><tex-math><![CDATA[\alpha]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mi>α</mml:mi></mml:math></alternatives></inline-formula>-inflation
   for the global hypothesis
   (<xref alt="Dmitrienko &amp; D’Agostino, 2013" rid="ref-dmitrienkoTraditionalMultiplicityAdjustment2013" ref-type="bibr">Dmitrienko
   &amp; D’Agostino, 2013</xref>). However, if the global hypothesis
   <inline-formula><alternatives><tex-math><![CDATA[H_0]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>H</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></alternatives></inline-formula>
-  is combined with <italic>AND</italic>, a correction for multiple
-  testing is not necessary but rather a mistake that unnecessarily
-  reduces the power of the global HT. None of the software packages for
-  sample size planning in Table 1 can handle combined hypotheses and
-  only some can handle directed hypotheses. In contrast, our case study
-  will demonstrate how we can test directed combined hypotheses with
-  tailored simulation-based sample size planning.</p>
+  is combined with a logical <italic>AND</italic>, a correction for
+  multiple testing is not necessary but rather a mistake that
+  unnecessarily reduces the power of the global HT. None of the software
+  packages for sample size planning in Table 1 can handle combined
+  hypotheses and only some can handle directed hypotheses. In contrast,
+  our case study will demonstrate how we can test directed combined
+  hypotheses with tailored simulation-based sample size planning.</p>
       <p>Third, all available software packages for sample size planning
   with GLMMs are based on power analysis and do not support planning for
   precision. Thus, researchers that want to apply an estimation strategy
@@ -986,7 +1000,7 @@ planning.
       <disp-formula><alternatives><tex-math><![CDATA[
       P_{si} = \text{inverse\_logit}(\eta_{si})
       ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mrow><mml:msub><mml:mi>P</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mrow></mml:math></alternatives></disp-formula>
-      with the inverse-logit link <inline-formula><alternatives><tex-math><![CDATA[g^{-1}(\eta_{si}) = inverse\_logit(\eta_{si}) = \frac{exp(\eta_{si})}{1 + exp(\eta_{si})}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:msup><mml:mi>g</mml:mi><mml:mrow><mml:mi>−</mml:mi><mml:mn>1</mml:mn></mml:mrow></mml:msup><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mi>i</mml:mi><mml:mi>n</mml:mi><mml:mi>v</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>l</mml:mi><mml:mi>o</mml:mi><mml:mi>g</mml:mi><mml:mi>i</mml:mi><mml:mi>t</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mfrac><mml:mrow><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mrow><mml:mrow><mml:mn>1</mml:mn><mml:mo>+</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mrow></mml:mfrac></mml:mrow></mml:math></alternatives></inline-formula>
+      with the inverse-logit link <inline-formula><alternatives><tex-math><![CDATA[g^{-1}(\eta_{si}) = \text{inverse\_logit}(\eta_{si}) = \frac{\text{exp}(\eta_{si})}{1 + \text{exp}(\eta_{si})}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:msup><mml:mi>g</mml:mi><mml:mrow><mml:mi>−</mml:mi><mml:mn>1</mml:mn></mml:mrow></mml:msup><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mfrac><mml:mrow><mml:mtext mathvariant="normal">exp</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mrow><mml:mrow><mml:mn>1</mml:mn><mml:mo>+</mml:mo><mml:mtext mathvariant="normal">exp</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mrow></mml:mfrac></mml:mrow></mml:math></alternatives></inline-formula>
       or equivalently <disp-formula><alternatives><tex-math><![CDATA[
       \text{logit}(P_{si}) = \eta_{si}
       ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mrow><mml:mtext mathvariant="normal">logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>P</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub></mml:mrow></mml:math></alternatives></disp-formula>
@@ -1030,18 +1044,18 @@ planning.
           </list>
           <p>In total, we assume the model <disp-formula><alternatives><tex-math><![CDATA[
       \begin{aligned}
-      \text{logit}[P_{si}] =\ (&\beta_0 + u_{0s} + u_{0i}) + \\
-      &\beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
-      &\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}
+      \text{logit}[P_{si}] =\ (&\beta_0 + u_{0s} + u_{0i})\\
+      &+ \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s\\
+      &+\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}
       \end{aligned}
-      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mtext mathvariant="normal">logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">[</mml:mo><mml:msub><mml:mi>P</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">]</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mspace width="0.222em"/><mml:mo stretchy="false" form="prefix">(</mml:mo></mml:mtd><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="false" form="postfix">)</mml:mo><mml:mo>+</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>+</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
+      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mtext mathvariant="normal">logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">[</mml:mo><mml:msub><mml:mi>P</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">]</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mspace width="0.222em"/><mml:mo stretchy="false" form="prefix">(</mml:mo></mml:mtd><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="false" form="postfix">)</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:mi>+</mml:mi><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:mi>+</mml:mi><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
       or equivalently <disp-formula><alternatives><tex-math><![CDATA[
       \begin{aligned}
-      P_{si} = \text{inverse\_logit}[&(\beta_0 + u_{0s} + u_{0i}) + \\
-      &\beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
-      &\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
+      P_{si} = \text{inverse\_logit}[&(\beta_0 + u_{0s} + u_{0i})\\
+      &+ \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s\\
+      &+ \beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
       \end{aligned}
-      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:msub><mml:mi>P</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mo stretchy="false" form="prefix">[</mml:mo></mml:mtd><mml:mtd columnalign="left" style="text-align: left"><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>+</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>+</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="false" form="postfix">]</mml:mo></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
+      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:msub><mml:mi>P</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mo stretchy="false" form="prefix">[</mml:mo></mml:mtd><mml:mtd columnalign="left" style="text-align: left"><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:mi>+</mml:mi><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:mi>+</mml:mi><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="false" form="postfix">]</mml:mo></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
       with model parameters <inline-formula><alternatives><tex-math><![CDATA[\beta_0]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></alternatives></inline-formula>,
       <inline-formula><alternatives><tex-math><![CDATA[\beta_e]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub></mml:math></alternatives></inline-formula>,
       <inline-formula><alternatives><tex-math><![CDATA[\beta_a]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub></mml:math></alternatives></inline-formula>,
@@ -1205,11 +1219,11 @@ planning.
       an item accurately is given by:</p>
           <p><disp-formula><alternatives><tex-math><![CDATA[
       \begin{aligned}
-      P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0}) = \\
-      = \text{inverse\_logit}[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
-      &\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
+      P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0})\\
+      = \text{inverse\_logit}[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} +  \beta_e \cdot expert_s\\
+      &+ \beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
       \end{aligned}
-      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mi>P</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:mi>Y</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo stretchy="false" form="prefix">|</mml:mo><mml:mrow><mml:mi>𝐗</mml:mi><mml:mo mathvariant="bold">=</mml:mo><mml:mi>𝐱</mml:mi></mml:mrow><mml:mo>,</mml:mo><mml:mi>𝐔</mml:mi><mml:mo>=</mml:mo><mml:mn>𝟎</mml:mn><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mo stretchy="false" form="prefix">[</mml:mo></mml:mtd><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>+</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="false" form="postfix">]</mml:mo></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
+      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mi>P</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:mi>Y</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo stretchy="false" form="prefix">|</mml:mo><mml:mrow><mml:mi>𝐗</mml:mi><mml:mo mathvariant="bold">=</mml:mo><mml:mi>𝐱</mml:mi></mml:mrow><mml:mo>,</mml:mo><mml:mi>𝐔</mml:mi><mml:mo>=</mml:mo><mml:mn>𝟎</mml:mn><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mo stretchy="false" form="prefix">[</mml:mo></mml:mtd><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:mi>+</mml:mi><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="false" form="postfix">]</mml:mo></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
       In fact, we would only need the full equation if the subject is an
       expert and correct advice is presented. In all other experimental
       conditions, some terms drop from the equation because they are
@@ -1218,10 +1232,10 @@ planning.
       solves an item with average difficulty when no advice is presented
       only requires the intercept: <disp-formula><alternatives><tex-math><![CDATA[
       \begin{aligned}
-      P(Y=1| advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0) = \\
+      P(Y=1| advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0)\\
       = \text{inverse\_logit}[\beta_0]
       \end{aligned}
-      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mi>P</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:mi>Y</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo stretchy="false" form="prefix">|</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">[</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo stretchy="true" form="postfix">]</mml:mo></mml:mrow></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
+      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mi>P</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:mi>Y</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo stretchy="false" form="prefix">|</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">[</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo stretchy="true" form="postfix">]</mml:mo></mml:mrow></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
       We can revert this perspective by choosing plausible probability
       values based on domain knowledge and deriving the parameter values
       implied by these probabilities for each experimental
@@ -1235,8 +1249,8 @@ planning.
             <table>
               <colgroup>
                 <col width="16%"/>
-                <col width="33%"/>
-                <col width="51%"/>
+                <col width="32%"/>
+                <col width="53%"/>
               </colgroup>
               <thead>
                 <tr>
@@ -1280,14 +1294,10 @@ planning.
                   <td align="left">
                     <inline-formula>
                       <alternatives>
-                        <tex-math><![CDATA[logit(0.70) = \beta_0]]></tex-math>
+                        <tex-math><![CDATA[\text{logit}(0.70) = \beta_0]]></tex-math>
                         <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline">
                           <mml:mrow>
-                            <mml:mi>l</mml:mi>
-                            <mml:mi>o</mml:mi>
-                            <mml:mi>g</mml:mi>
-                            <mml:mi>i</mml:mi>
-                            <mml:mi>t</mml:mi>
+                            <mml:mtext mathvariant="normal">logit</mml:mtext>
                             <mml:mrow>
                               <mml:mo stretchy="true" form="prefix">(</mml:mo>
                               <mml:mn>0.70</mml:mn>
@@ -1310,14 +1320,10 @@ planning.
                   <td align="left">
                     <inline-formula>
                       <alternatives>
-                        <tex-math><![CDATA[logit(0.90) = \beta_0 + \beta_e]]></tex-math>
+                        <tex-math><![CDATA[\text{logit}(0.90) = \beta_0 + \beta_e]]></tex-math>
                         <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline">
                           <mml:mrow>
-                            <mml:mi>l</mml:mi>
-                            <mml:mi>o</mml:mi>
-                            <mml:mi>g</mml:mi>
-                            <mml:mi>i</mml:mi>
-                            <mml:mi>t</mml:mi>
+                            <mml:mtext mathvariant="normal">logit</mml:mtext>
                             <mml:mrow>
                               <mml:mo stretchy="true" form="prefix">(</mml:mo>
                               <mml:mn>0.90</mml:mn>
@@ -1345,14 +1351,10 @@ planning.
                   <td align="left">
                     <inline-formula>
                       <alternatives>
-                        <tex-math><![CDATA[logit(0.40) = \beta_0 + \beta_a]]></tex-math>
+                        <tex-math><![CDATA[\text{logit}(0.40) = \beta_0 + \beta_a]]></tex-math>
                         <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline">
                           <mml:mrow>
-                            <mml:mi>l</mml:mi>
-                            <mml:mi>o</mml:mi>
-                            <mml:mi>g</mml:mi>
-                            <mml:mi>i</mml:mi>
-                            <mml:mi>t</mml:mi>
+                            <mml:mtext mathvariant="normal">logit</mml:mtext>
                             <mml:mrow>
                               <mml:mo stretchy="true" form="prefix">(</mml:mo>
                               <mml:mn>0.40</mml:mn>
@@ -1380,14 +1382,10 @@ planning.
                   <td align="left">
                     <inline-formula>
                       <alternatives>
-                        <tex-math><![CDATA[logit(0.85) = \beta_0 + \beta_e + \beta_{a} + \beta_{ea}]]></tex-math>
+                        <tex-math><![CDATA[\text{logit}(0.85) = \beta_0 + \beta_e + \beta_{a} + \beta_{ea}]]></tex-math>
                         <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline">
                           <mml:mrow>
-                            <mml:mi>l</mml:mi>
-                            <mml:mi>o</mml:mi>
-                            <mml:mi>g</mml:mi>
-                            <mml:mi>i</mml:mi>
-                            <mml:mi>t</mml:mi>
+                            <mml:mtext mathvariant="normal">logit</mml:mtext>
                             <mml:mrow>
                               <mml:mo stretchy="true" form="prefix">(</mml:mo>
                               <mml:mn>0.85</mml:mn>
@@ -1428,14 +1426,10 @@ planning.
                   <td align="left">
                     <inline-formula>
                       <alternatives>
-                        <tex-math><![CDATA[logit(0.90) = \beta_0 + \beta_a + \beta_c]]></tex-math>
+                        <tex-math><![CDATA[\text{logit}(0.90) = \beta_0 + \beta_a + \beta_c]]></tex-math>
                         <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline">
                           <mml:mrow>
-                            <mml:mi>l</mml:mi>
-                            <mml:mi>o</mml:mi>
-                            <mml:mi>g</mml:mi>
-                            <mml:mi>i</mml:mi>
-                            <mml:mi>t</mml:mi>
+                            <mml:mtext mathvariant="normal">logit</mml:mtext>
                             <mml:mrow>
                               <mml:mo stretchy="true" form="prefix">(</mml:mo>
                               <mml:mn>0.90</mml:mn>
@@ -1468,14 +1462,10 @@ planning.
                   <td align="left">
                     <inline-formula>
                       <alternatives>
-                        <tex-math><![CDATA[logit(0.95) = \beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}]]></tex-math>
+                        <tex-math><![CDATA[\text{logit}(0.95) = \beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}]]></tex-math>
                         <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline">
                           <mml:mrow>
-                            <mml:mi>l</mml:mi>
-                            <mml:mi>o</mml:mi>
-                            <mml:mi>g</mml:mi>
-                            <mml:mi>i</mml:mi>
-                            <mml:mi>t</mml:mi>
+                            <mml:mtext mathvariant="normal">logit</mml:mtext>
                             <mml:mrow>
                               <mml:mo stretchy="true" form="prefix">(</mml:mo>
                               <mml:mn>0.95</mml:mn>
@@ -1551,10 +1541,10 @@ c(b_0 = b_0, b_e = b_e, b_a = b_a, b_c = b_c, b_ea = b_ea, b_ec = b_ec)</code>
       transforming the parameter values back to probabilities, e.g. 
       <disp-formula><alternatives><tex-math><![CDATA[
       \begin{aligned}
-      P(Y=1|expert = 1, advice\_present = 1, advice\_correct = 1, u_{0s} = 0, u_{0i} = 0) = \\
-      = inverse\_logit[\beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}]
+      P(Y=1|expert = 1, advice\_present = 1, advice\_correct = 1, u_{0s} = 0, u_{0i} = 0)\\
+      = \text{inverse\_logit}[\beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}]
       \end{aligned}
-      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mi>P</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:mi>Y</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo stretchy="false" form="prefix">|</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mo>=</mml:mo><mml:mi>i</mml:mi><mml:mi>n</mml:mi><mml:mi>v</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>l</mml:mi><mml:mi>o</mml:mi><mml:mi>g</mml:mi><mml:mi>i</mml:mi><mml:mi>t</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">[</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">]</mml:mo></mml:mrow></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula></p>
+      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mi>P</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:mi>Y</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo stretchy="false" form="prefix">|</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">[</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">]</mml:mo></mml:mrow></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula></p>
           <p>which we compute in R as:</p>
           <code language="r script">plogis(b_0 + b_e + b_a + b_c + b_ea + b_ec)</code>
           <preformat>[1] 0.95</preformat>
@@ -1613,21 +1603,22 @@ c(b_0 = b_0, b_e = b_e, b_a = b_a, b_c = b_c, b_ea = b_ea, b_ec = b_ec)</code>
       probability of <inline-formula><alternatives><tex-math><![CDATA[0.95]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mn>0.95</mml:mn></mml:math></alternatives></inline-formula>,
       that an expert with average ability solves an item with average
       difficulty when presented with correct advice (the conditional
-      perspective). However, even if the model assumptions were true, we
-      would not observe that 95% of experts responding to items
-      presented with correct advice from a big sample of subjects drawn
-      from their natural distribution of ability and items drawn from
-      their natural distribution of difficulty (the marginal
-      perspective). How much the two probabilities differ depends on the
-      standard deviations of the random intercepts (the two
-      probabilities are only equal if both standard deviations are be
-      zero). We want to use the model-implied observed proportion of
-      correct diagnoses in each experimental condition as an insightful
-      descriptive statistic to determine plausible values for the random
-      effect standard deviations. We will simulate a large dataset (for
-      which the observed values of the descriptive statistic will be
-      close to their model-implied true values) and simply compute the
-      relative frequency of correct diagnoses for each experimental
+      perspective). However, even if the model assumptions were true,
+      the relative frequency of experts that solve items presented with
+      correct advice would not be <inline-formula><alternatives><tex-math><![CDATA[0.95]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mn>0.95</mml:mn></mml:math></alternatives></inline-formula>
+      in a large sample of subjects drawn from their natural
+      distribution of ability and items drawn from their natural
+      distribution of difficulty (the marginal perspective). How much
+      the two probabilities differ depends on the standard deviations of
+      the random intercepts (the two probabilities are only equal if
+      both standard deviations are be zero). We want to use the
+      model-implied observed proportion of correct diagnoses in each
+      experimental condition as an insightful descriptive statistic to
+      determine plausible values for the random effect standard
+      deviations. We will simulate a large dataset (for which the
+      observed values of the descriptive statistic will be close to
+      their model-implied true values) and simply compute the relative
+      frequency of correct diagnoses for each experimental
       condition.</p>
           <code language="r script">library(tidyverse)
 set.seed(1)
@@ -3147,8 +3138,8 @@ precision %&gt;%
   geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 
                                 precision, ci.lwr, ci.upr)), 
     color = "white", size = 4) +
-  scale_fill_viridis_c(limits = c(0, 0.3), direction = -1) +
-  guides(fill = guide_legend(reverse=FALSE))</code>
+  scale_fill_viridis_c(limits = c(0, 0.2), direction = -1) +
+  guides(fill = guide_colourbar(reverse = TRUE))</code>
           <fig id="fig-finalprecision">
             <caption>
               <p>Figure 5: Simulation-based precision estimates
@@ -7041,7 +7032,7 @@ precision %&gt;%
       </fn>
     </fn-group>
   </back>
-  <sub-article article-type="notebook" id="nb-6-nb-article">
+  <sub-article article-type="notebook" id="nb-9-nb-article">
     <front-stub>
       <title-group>
         <article-title>A Tutorial on Tailored Simulation-Based Sample Size
@@ -7261,6 +7252,22 @@ library("papaja")</code>
         <code language="r script">library("pwr")
 r_refs("r-references.bib", append = FALSE)</code>
       </sec>
+      <boxed-text>
+        <disp-quote>
+          <p>
+            <bold>Important</bold>
+          </p>
+          <p>This manuscript has been accepted by the journal <italic>Advances
+    in Methods and Practices in Psychological Science (AMPPS)</italic>.
+    Please cite the official version of record as:</p>
+          <p>Pargent, F., K. Koch, T., Kleine, A.-K., Lermer, E., &amp; Gaube,
+    S. (2024). A tutorial on tailored simulation-based sample-size
+    planning for experimental designs with generalized linear mixed
+    models. <italic>Advances in Methods and Practices in Psychological
+    Science</italic>, 7(4).
+    <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1177/25152459241287132">https://doi.org/10.1177/25152459241287132</ext-link></p>
+        </disp-quote>
+      </boxed-text>
       <sec id="introduction-nb-article">
         <title>Introduction</title>
         <p>When planning experimental research, it is essential to determine
@@ -7660,10 +7667,10 @@ flextable::flextable(packagetable) %&gt;%
   sample size based on simulated datasets that contain missing values
   (for example, see
   <xref alt="Lane &amp; Hennes, 2018" rid="ref-lanePowerStrugglesEstimating2018-nb-article" ref-type="bibr">Lane
-  &amp; Hennes, 2018</xref>). As a byproduct, the simulated datasets can
-  also be used to test whether the intended data analysis provides the
-  expected (unbiased) results, despite the missing data. Although GLMMs
-  can handle a large variety of outcome variables, researchers are
+  &amp; Hennes, 2018</xref>). As a by-product, the simulated datasets
+  can also be used to test whether the intended data analysis provides
+  the expected (unbiased) results, despite the missing data. Although
+  GLMMs can handle a large variety of outcome variables, researchers are
   becoming increasingly aware that many datasets might profit from even
   more sophisticated models. Common examples are zero-inflated outcomes,
   censoring, and nonlinear predictor effects that can be modeled with
@@ -7722,20 +7729,20 @@ flextable::flextable(packagetable) %&gt;%
   <italic>OR</italic> <inline-formula><alternatives><tex-math><![CDATA[H_{02}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>H</mml:mi><mml:mn>02</mml:mn></mml:msub></mml:math></alternatives></inline-formula>
   <italic>OR</italic> both are rejected. If the global hypothesis
   <inline-formula><alternatives><tex-math><![CDATA[H_0]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>H</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></alternatives></inline-formula>
-  is combined with <italic>OR</italic>, the p-values of the single
-  hypotheses must be corrected for multiple testing to avoid
+  is combined with a logical <italic>OR</italic>, the p-values of the
+  single hypotheses must be corrected for multiple testing to avoid
   <inline-formula><alternatives><tex-math><![CDATA[\alpha]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mi>α</mml:mi></mml:math></alternatives></inline-formula>-inflation
   for the global hypothesis
   (<xref alt="Dmitrienko &amp; D’Agostino, 2013" rid="ref-dmitrienkoTraditionalMultiplicityAdjustment2013-nb-article" ref-type="bibr">Dmitrienko
   &amp; D’Agostino, 2013</xref>). However, if the global hypothesis
   <inline-formula><alternatives><tex-math><![CDATA[H_0]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>H</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></alternatives></inline-formula>
-  is combined with <italic>AND</italic>, a correction for multiple
-  testing is not necessary but rather a mistake that unnecessarily
-  reduces the power of the global HT. None of the software packages for
-  sample size planning in Table 1 can handle combined hypotheses and
-  only some can handle directed hypotheses. In contrast, our case study
-  will demonstrate how we can test directed combined hypotheses with
-  tailored simulation-based sample size planning.</p>
+  is combined with a logical <italic>AND</italic>, a correction for
+  multiple testing is not necessary but rather a mistake that
+  unnecessarily reduces the power of the global HT. None of the software
+  packages for sample size planning in Table 1 can handle combined
+  hypotheses and only some can handle directed hypotheses. In contrast,
+  our case study will demonstrate how we can test directed combined
+  hypotheses with tailored simulation-based sample size planning.</p>
         <p>Third, all available software packages for sample size planning
   with GLMMs are based on power analysis and do not support planning for
   precision. Thus, researchers that want to apply an estimation strategy
@@ -8128,7 +8135,7 @@ flextable::flextable(packagetable) %&gt;%
       <disp-formula><alternatives><tex-math><![CDATA[
       P_{si} = \text{inverse\_logit}(\eta_{si})
       ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mrow><mml:msub><mml:mi>P</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mrow></mml:math></alternatives></disp-formula>
-      with the inverse-logit link <inline-formula><alternatives><tex-math><![CDATA[g^{-1}(\eta_{si}) = inverse\_logit(\eta_{si}) = \frac{exp(\eta_{si})}{1 + exp(\eta_{si})}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:msup><mml:mi>g</mml:mi><mml:mrow><mml:mi>−</mml:mi><mml:mn>1</mml:mn></mml:mrow></mml:msup><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mi>i</mml:mi><mml:mi>n</mml:mi><mml:mi>v</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>l</mml:mi><mml:mi>o</mml:mi><mml:mi>g</mml:mi><mml:mi>i</mml:mi><mml:mi>t</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mfrac><mml:mrow><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mrow><mml:mrow><mml:mn>1</mml:mn><mml:mo>+</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mrow></mml:mfrac></mml:mrow></mml:math></alternatives></inline-formula>
+      with the inverse-logit link <inline-formula><alternatives><tex-math><![CDATA[g^{-1}(\eta_{si}) = \text{inverse\_logit}(\eta_{si}) = \frac{\text{exp}(\eta_{si})}{1 + \text{exp}(\eta_{si})}]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:msup><mml:mi>g</mml:mi><mml:mrow><mml:mi>−</mml:mi><mml:mn>1</mml:mn></mml:mrow></mml:msup><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mfrac><mml:mrow><mml:mtext mathvariant="normal">exp</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mrow><mml:mrow><mml:mn>1</mml:mn><mml:mo>+</mml:mo><mml:mtext mathvariant="normal">exp</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mrow></mml:mfrac></mml:mrow></mml:math></alternatives></inline-formula>
       or equivalently <disp-formula><alternatives><tex-math><![CDATA[
       \text{logit}(P_{si}) = \eta_{si}
       ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mrow><mml:mtext mathvariant="normal">logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>P</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:msub><mml:mi>η</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub></mml:mrow></mml:math></alternatives></disp-formula>
@@ -8172,18 +8179,18 @@ flextable::flextable(packagetable) %&gt;%
             </list>
             <p>In total, we assume the model <disp-formula><alternatives><tex-math><![CDATA[
       \begin{aligned}
-      \text{logit}[P_{si}] =\ (&\beta_0 + u_{0s} + u_{0i}) + \\
-      &\beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
-      &\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}
+      \text{logit}[P_{si}] =\ (&\beta_0 + u_{0s} + u_{0i})\\
+      &+ \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s\\
+      &+\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}
       \end{aligned}
-      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mtext mathvariant="normal">logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">[</mml:mo><mml:msub><mml:mi>P</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">]</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mspace width="0.222em"/><mml:mo stretchy="false" form="prefix">(</mml:mo></mml:mtd><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="false" form="postfix">)</mml:mo><mml:mo>+</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>+</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
+      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mtext mathvariant="normal">logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">[</mml:mo><mml:msub><mml:mi>P</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">]</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mspace width="0.222em"/><mml:mo stretchy="false" form="prefix">(</mml:mo></mml:mtd><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="false" form="postfix">)</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:mi>+</mml:mi><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:mi>+</mml:mi><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
       or equivalently <disp-formula><alternatives><tex-math><![CDATA[
       \begin{aligned}
-      P_{si} = \text{inverse\_logit}[&(\beta_0 + u_{0s} + u_{0i}) + \\
-      &\beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
-      &\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
+      P_{si} = \text{inverse\_logit}[&(\beta_0 + u_{0s} + u_{0i})\\
+      &+ \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s\\
+      &+ \beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
       \end{aligned}
-      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:msub><mml:mi>P</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mo stretchy="false" form="prefix">[</mml:mo></mml:mtd><mml:mtd columnalign="left" style="text-align: left"><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>+</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>+</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="false" form="postfix">]</mml:mo></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
+      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:msub><mml:mi>P</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mo stretchy="false" form="prefix">[</mml:mo></mml:mtd><mml:mtd columnalign="left" style="text-align: left"><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:mi>+</mml:mi><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:mi>+</mml:mi><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="false" form="postfix">]</mml:mo></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
       with model parameters <inline-formula><alternatives><tex-math><![CDATA[\beta_0]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></alternatives></inline-formula>,
       <inline-formula><alternatives><tex-math><![CDATA[\beta_e]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub></mml:math></alternatives></inline-formula>,
       <inline-formula><alternatives><tex-math><![CDATA[\beta_a]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub></mml:math></alternatives></inline-formula>,
@@ -8357,11 +8364,11 @@ b_ec = -1.393</code>
       an item accurately is given by:</p>
             <p><disp-formula><alternatives><tex-math><![CDATA[
       \begin{aligned}
-      P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0}) = \\
-      = \text{inverse\_logit}[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} + \beta_e \cdot expert_s + \\
-      &\beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
+      P(Y=1|\mathbf{X=x}, \mathbf{U} = \mathbf{0})\\
+      = \text{inverse\_logit}[&\beta_0 + \beta_a \cdot advice\_present_{si} + \beta_c \cdot advice\_correct_{si} +  \beta_e \cdot expert_s\\
+      &+ \beta_{ea} \cdot expert_{s} \cdot advice\_present_{si} + \beta_{ec} \cdot expert_{s} \cdot advice\_correct_{si}]
       \end{aligned}
-      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mi>P</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:mi>Y</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo stretchy="false" form="prefix">|</mml:mo><mml:mrow><mml:mi>𝐗</mml:mi><mml:mo mathvariant="bold">=</mml:mo><mml:mi>𝐱</mml:mi></mml:mrow><mml:mo>,</mml:mo><mml:mi>𝐔</mml:mi><mml:mo>=</mml:mo><mml:mn>𝟎</mml:mn><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mo stretchy="false" form="prefix">[</mml:mo></mml:mtd><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>+</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="false" form="postfix">]</mml:mo></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
+      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mi>P</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:mi>Y</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo stretchy="false" form="prefix">|</mml:mo><mml:mrow><mml:mi>𝐗</mml:mi><mml:mo mathvariant="bold">=</mml:mo><mml:mi>𝐱</mml:mi></mml:mrow><mml:mo>,</mml:mo><mml:mi>𝐔</mml:mi><mml:mo>=</mml:mo><mml:mn>𝟎</mml:mn><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mo stretchy="false" form="prefix">[</mml:mo></mml:mtd><mml:mtd columnalign="left" style="text-align: left"><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"/><mml:mtd columnalign="left" style="text-align: left"><mml:mi>+</mml:mi><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo>⋅</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mi>s</mml:mi></mml:msub><mml:mo>⋅</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:msub><mml:mi>t</mml:mi><mml:mrow><mml:mi>s</mml:mi><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="false" form="postfix">]</mml:mo></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
       In fact, we would only need the full equation if the subject is an
       expert and correct advice is presented. In all other experimental
       conditions, some terms drop from the equation because they are
@@ -8370,10 +8377,10 @@ b_ec = -1.393</code>
       solves an item with average difficulty when no advice is presented
       only requires the intercept: <disp-formula><alternatives><tex-math><![CDATA[
       \begin{aligned}
-      P(Y=1| advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0) = \\
+      P(Y=1| advice\_present = 0, advice\_correct = 0, expert = 0, u_{0s} = 0, u_{0i} = 0)\\
       = \text{inverse\_logit}[\beta_0]
       \end{aligned}
-      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mi>P</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:mi>Y</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo stretchy="false" form="prefix">|</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">[</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo stretchy="true" form="postfix">]</mml:mo></mml:mrow></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
+      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mi>P</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:mi>Y</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo stretchy="false" form="prefix">|</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">[</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo stretchy="true" form="postfix">]</mml:mo></mml:mrow></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula>
       We can revert this perspective by choosing plausible probability
       values based on domain knowledge and deriving the parameter values
       implied by these probabilities for each experimental
@@ -8387,12 +8394,12 @@ b_ec = -1.393</code>
   col2 =
     c("0.70", "0.90", "0.40", "0.85", "0.90", "0.95"),
   col3 = 
-    c("$logit(0.70) = \\beta_0<!-- (F2ED4C6E)[nb-article]:/Users/florianpargent/Documents/Forschung/glmm_simulation_tutorial/manuscript.qmd -->quot;,
-      "$logit(0.90) = \\beta_0 + \\beta_e<!-- (F2ED4C6E)[nb-article]:/Users/florianpargent/Documents/Forschung/glmm_simulation_tutorial/manuscript.qmd -->quot;, 
-      "$logit(0.40) = \\beta_0 + \\beta_a<!-- (F2ED4C6E)[nb-article]:/Users/florianpargent/Documents/Forschung/glmm_simulation_tutorial/manuscript.qmd -->quot;,
-      "$logit(0.85) = \\beta_0 + \\beta_e + \\beta_{a} + \\beta_{ea}<!-- (F2ED4C6E)[nb-article]:/Users/florianpargent/Documents/Forschung/glmm_simulation_tutorial/manuscript.qmd -->quot;,
-      "$logit(0.90) = \\beta_0 + \\beta_a + \\beta_c<!-- (F2ED4C6E)[nb-article]:/Users/florianpargent/Documents/Forschung/glmm_simulation_tutorial/manuscript.qmd -->quot;,
-      "$logit(0.95) = \\beta_0 + \\beta_e + \\beta_a + \\beta_c + \\beta_{ea} + \\beta_{ec}<!-- (F2ED4C6E)[nb-article]:/Users/florianpargent/Documents/Forschung/glmm_simulation_tutorial/manuscript.qmd -->quot;))
+    c("$\\text{logit}(0.70) = \\beta_0<!-- (F2ED4C6E)[nb-article]:/Users/florianpargent/Documents/Forschung/glmm_simulation_tutorial/manuscript.qmd -->quot;,
+      "$\\text{logit}(0.90) = \\beta_0 + \\beta_e<!-- (F2ED4C6E)[nb-article]:/Users/florianpargent/Documents/Forschung/glmm_simulation_tutorial/manuscript.qmd -->quot;, 
+      "$\\text{logit}(0.40) = \\beta_0 + \\beta_a<!-- (F2ED4C6E)[nb-article]:/Users/florianpargent/Documents/Forschung/glmm_simulation_tutorial/manuscript.qmd -->quot;,
+      "$\\text{logit}(0.85) = \\beta_0 + \\beta_e + \\beta_{a} + \\beta_{ea}<!-- (F2ED4C6E)[nb-article]:/Users/florianpargent/Documents/Forschung/glmm_simulation_tutorial/manuscript.qmd -->quot;,
+      "$\\text{logit}(0.90) = \\beta_0 + \\beta_a + \\beta_c<!-- (F2ED4C6E)[nb-article]:/Users/florianpargent/Documents/Forschung/glmm_simulation_tutorial/manuscript.qmd -->quot;,
+      "$\\text{logit}(0.95) = \\beta_0 + \\beta_e + \\beta_a + \\beta_c + \\beta_{ea} + \\beta_{ec}<!-- (F2ED4C6E)[nb-article]:/Users/florianpargent/Documents/Forschung/glmm_simulation_tutorial/manuscript.qmd -->quot;))
 knitr::kable(probtable, col.names = c("Experimental condition",
     "$P(Y=1 \\mid \\mathbf{X=x}, \\mathbf{U} = \\mathbf{0})<!-- (F2ED4C6E)[nb-article]:/Users/florianpargent/Documents/Forschung/glmm_simulation_tutorial/manuscript.qmd -->quot;,
     "Implied equation"), escape = FALSE)</code>
@@ -8404,8 +8411,8 @@ knitr::kable(probtable, col.names = c("Experimental condition",
                 <table>
                   <colgroup>
                     <col width="16%"/>
-                    <col width="33%"/>
-                    <col width="51%"/>
+                    <col width="32%"/>
+                    <col width="53%"/>
                   </colgroup>
                   <thead>
                     <tr>
@@ -8449,14 +8456,10 @@ knitr::kable(probtable, col.names = c("Experimental condition",
                       <td align="left">
                         <inline-formula>
                           <alternatives>
-                            <tex-math><![CDATA[logit(0.70) = \beta_0]]></tex-math>
+                            <tex-math><![CDATA[\text{logit}(0.70) = \beta_0]]></tex-math>
                             <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline">
                               <mml:mrow>
-                                <mml:mi>l</mml:mi>
-                                <mml:mi>o</mml:mi>
-                                <mml:mi>g</mml:mi>
-                                <mml:mi>i</mml:mi>
-                                <mml:mi>t</mml:mi>
+                                <mml:mtext mathvariant="normal">logit</mml:mtext>
                                 <mml:mrow>
                                   <mml:mo stretchy="true" form="prefix">(</mml:mo>
                                   <mml:mn>0.70</mml:mn>
@@ -8479,14 +8482,10 @@ knitr::kable(probtable, col.names = c("Experimental condition",
                       <td align="left">
                         <inline-formula>
                           <alternatives>
-                            <tex-math><![CDATA[logit(0.90) = \beta_0 + \beta_e]]></tex-math>
+                            <tex-math><![CDATA[\text{logit}(0.90) = \beta_0 + \beta_e]]></tex-math>
                             <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline">
                               <mml:mrow>
-                                <mml:mi>l</mml:mi>
-                                <mml:mi>o</mml:mi>
-                                <mml:mi>g</mml:mi>
-                                <mml:mi>i</mml:mi>
-                                <mml:mi>t</mml:mi>
+                                <mml:mtext mathvariant="normal">logit</mml:mtext>
                                 <mml:mrow>
                                   <mml:mo stretchy="true" form="prefix">(</mml:mo>
                                   <mml:mn>0.90</mml:mn>
@@ -8514,14 +8513,10 @@ knitr::kable(probtable, col.names = c("Experimental condition",
                       <td align="left">
                         <inline-formula>
                           <alternatives>
-                            <tex-math><![CDATA[logit(0.40) = \beta_0 + \beta_a]]></tex-math>
+                            <tex-math><![CDATA[\text{logit}(0.40) = \beta_0 + \beta_a]]></tex-math>
                             <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline">
                               <mml:mrow>
-                                <mml:mi>l</mml:mi>
-                                <mml:mi>o</mml:mi>
-                                <mml:mi>g</mml:mi>
-                                <mml:mi>i</mml:mi>
-                                <mml:mi>t</mml:mi>
+                                <mml:mtext mathvariant="normal">logit</mml:mtext>
                                 <mml:mrow>
                                   <mml:mo stretchy="true" form="prefix">(</mml:mo>
                                   <mml:mn>0.40</mml:mn>
@@ -8549,14 +8544,10 @@ knitr::kable(probtable, col.names = c("Experimental condition",
                       <td align="left">
                         <inline-formula>
                           <alternatives>
-                            <tex-math><![CDATA[logit(0.85) = \beta_0 + \beta_e + \beta_{a} + \beta_{ea}]]></tex-math>
+                            <tex-math><![CDATA[\text{logit}(0.85) = \beta_0 + \beta_e + \beta_{a} + \beta_{ea}]]></tex-math>
                             <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline">
                               <mml:mrow>
-                                <mml:mi>l</mml:mi>
-                                <mml:mi>o</mml:mi>
-                                <mml:mi>g</mml:mi>
-                                <mml:mi>i</mml:mi>
-                                <mml:mi>t</mml:mi>
+                                <mml:mtext mathvariant="normal">logit</mml:mtext>
                                 <mml:mrow>
                                   <mml:mo stretchy="true" form="prefix">(</mml:mo>
                                   <mml:mn>0.85</mml:mn>
@@ -8597,14 +8588,10 @@ knitr::kable(probtable, col.names = c("Experimental condition",
                       <td align="left">
                         <inline-formula>
                           <alternatives>
-                            <tex-math><![CDATA[logit(0.90) = \beta_0 + \beta_a + \beta_c]]></tex-math>
+                            <tex-math><![CDATA[\text{logit}(0.90) = \beta_0 + \beta_a + \beta_c]]></tex-math>
                             <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline">
                               <mml:mrow>
-                                <mml:mi>l</mml:mi>
-                                <mml:mi>o</mml:mi>
-                                <mml:mi>g</mml:mi>
-                                <mml:mi>i</mml:mi>
-                                <mml:mi>t</mml:mi>
+                                <mml:mtext mathvariant="normal">logit</mml:mtext>
                                 <mml:mrow>
                                   <mml:mo stretchy="true" form="prefix">(</mml:mo>
                                   <mml:mn>0.90</mml:mn>
@@ -8637,14 +8624,10 @@ knitr::kable(probtable, col.names = c("Experimental condition",
                       <td align="left">
                         <inline-formula>
                           <alternatives>
-                            <tex-math><![CDATA[logit(0.95) = \beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}]]></tex-math>
+                            <tex-math><![CDATA[\text{logit}(0.95) = \beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}]]></tex-math>
                             <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline">
                               <mml:mrow>
-                                <mml:mi>l</mml:mi>
-                                <mml:mi>o</mml:mi>
-                                <mml:mi>g</mml:mi>
-                                <mml:mi>i</mml:mi>
-                                <mml:mi>t</mml:mi>
+                                <mml:mtext mathvariant="normal">logit</mml:mtext>
                                 <mml:mrow>
                                   <mml:mo stretchy="true" form="prefix">(</mml:mo>
                                   <mml:mn>0.95</mml:mn>
@@ -8725,10 +8708,10 @@ c(b_0 = b_0, b_e = b_e, b_a = b_a, b_c = b_c, b_ea = b_ea, b_ec = b_ec)</code>
       transforming the parameter values back to probabilities, e.g. 
       <disp-formula><alternatives><tex-math><![CDATA[
       \begin{aligned}
-      P(Y=1|expert = 1, advice\_present = 1, advice\_correct = 1, u_{0s} = 0, u_{0i} = 0) = \\
-      = inverse\_logit[\beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}]
+      P(Y=1|expert = 1, advice\_present = 1, advice\_correct = 1, u_{0s} = 0, u_{0i} = 0)\\
+      = \text{inverse\_logit}[\beta_0 + \beta_e + \beta_a + \beta_c + \beta_{ea} + \beta_{ec}]
       \end{aligned}
-      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mi>P</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:mi>Y</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo stretchy="false" form="prefix">|</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mo>=</mml:mo><mml:mi>i</mml:mi><mml:mi>n</mml:mi><mml:mi>v</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>l</mml:mi><mml:mi>o</mml:mi><mml:mi>g</mml:mi><mml:mi>i</mml:mi><mml:mi>t</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">[</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">]</mml:mo></mml:mrow></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula></p>
+      ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mtable><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mi>P</mml:mi><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:mi>Y</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo stretchy="false" form="prefix">|</mml:mo><mml:mi>e</mml:mi><mml:mi>x</mml:mi><mml:mi>p</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>p</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>s</mml:mi><mml:mi>e</mml:mi><mml:mi>n</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:mi>a</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mi>i</mml:mi><mml:mi>c</mml:mi><mml:mi>e</mml:mi><mml:mi>_</mml:mi><mml:mi>c</mml:mi><mml:mi>o</mml:mi><mml:mi>r</mml:mi><mml:mi>r</mml:mi><mml:mi>e</mml:mi><mml:mi>c</mml:mi><mml:mi>t</mml:mi><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo><mml:msub><mml:mi>u</mml:mi><mml:mrow><mml:mn>0</mml:mn><mml:mi>i</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow></mml:mtd></mml:mtr><mml:mtr><mml:mtd columnalign="right" style="text-align: right"><mml:mo>=</mml:mo><mml:mtext mathvariant="normal">inverse_logit</mml:mtext><mml:mrow><mml:mo stretchy="true" form="prefix">[</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>e</mml:mi></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>a</mml:mi></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mi>c</mml:mi></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>a</mml:mi></mml:mrow></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>β</mml:mi><mml:mrow><mml:mi>e</mml:mi><mml:mi>c</mml:mi></mml:mrow></mml:msub><mml:mo stretchy="true" form="postfix">]</mml:mo></mml:mrow></mml:mtd></mml:mtr></mml:mtable></mml:math></alternatives></disp-formula></p>
             <p>which we compute in R as:</p>
             <sec specific-use="notebook-content">
               <code language="r script">plogis(b_0 + b_e + b_a + b_c + b_ea + b_ec)</code>
@@ -8791,21 +8774,22 @@ c(b_0 = b_0, b_e = b_e, b_a = b_a, b_c = b_c, b_ea = b_ea, b_ec = b_ec)</code>
       probability of <inline-formula><alternatives><tex-math><![CDATA[0.95]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mn>0.95</mml:mn></mml:math></alternatives></inline-formula>,
       that an expert with average ability solves an item with average
       difficulty when presented with correct advice (the conditional
-      perspective). However, even if the model assumptions were true, we
-      would not observe that 95% of experts responding to items
-      presented with correct advice from a big sample of subjects drawn
-      from their natural distribution of ability and items drawn from
-      their natural distribution of difficulty (the marginal
-      perspective). How much the two probabilities differ depends on the
-      standard deviations of the random intercepts (the two
-      probabilities are only equal if both standard deviations are be
-      zero). We want to use the model-implied observed proportion of
-      correct diagnoses in each experimental condition as an insightful
-      descriptive statistic to determine plausible values for the random
-      effect standard deviations. We will simulate a large dataset (for
-      which the observed values of the descriptive statistic will be
-      close to their model-implied true values) and simply compute the
-      relative frequency of correct diagnoses for each experimental
+      perspective). However, even if the model assumptions were true,
+      the relative frequency of experts that solve items presented with
+      correct advice would not be <inline-formula><alternatives><tex-math><![CDATA[0.95]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mn>0.95</mml:mn></mml:math></alternatives></inline-formula>
+      in a large sample of subjects drawn from their natural
+      distribution of ability and items drawn from their natural
+      distribution of difficulty (the marginal perspective). How much
+      the two probabilities differ depends on the standard deviations of
+      the random intercepts (the two probabilities are only equal if
+      both standard deviations are be zero). We want to use the
+      model-implied observed proportion of correct diagnoses in each
+      experimental condition as an insightful descriptive statistic to
+      determine plausible values for the random effect standard
+      deviations. We will simulate a large dataset (for which the
+      observed values of the descriptive statistic will be close to
+      their model-implied true values) and simply compute the relative
+      frequency of correct diagnoses for each experimental
       condition.</p>
             <sec specific-use="notebook-content">
               <code language="r script">library(tidyverse)
@@ -10398,8 +10382,8 @@ precision %&gt;%
   geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 
                                 precision, ci.lwr, ci.upr)), 
     color = "white", size = 4) +
-  scale_fill_viridis_c(limits = c(0, 0.3), direction = -1) +
-  guides(fill = guide_legend(reverse=FALSE))</code>
+  scale_fill_viridis_c(limits = c(0, 0.2), direction = -1) +
+  guides(fill = guide_colourbar(reverse = TRUE))</code>
               <fig id="fig-finalprecision-nb-article">
                 <caption>
                   <p>Figure 5: Simulation-based precision estimates
@@ -14294,7 +14278,7 @@ precision %&gt;%
       </fn-group>
     </back>
   </sub-article>
-  <sub-article article-type="notebook" id="nb-2-nb-1">
+  <sub-article article-type="notebook" id="nb-3-nb-1">
     <front-stub>
       <title-group>
         <article-title>R code from PRACTICE sections</article-title>
@@ -14595,7 +14579,7 @@ precision %&gt;%
     <back>
 </back>
   </sub-article>
-  <sub-article article-type="notebook" id="nb-4-nb-2">
+  <sub-article article-type="notebook" id="nb-6-nb-2">
     <front-stub>
       <title-group>
         <article-title>Run the full simulation for the case study
