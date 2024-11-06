@@ -290,6 +290,7 @@ precision %>%
   geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 
                                 precision, ci.lwr, ci.upr)), 
     color = "white", size = 4) +
-  scale_fill_viridis_c(limits = c(0, 0.3), direction = -1) +
-  guides(fill = guide_legend(reverse=FALSE))
+  scale_fill_viridis_c(limits = c(0, 0.2), direction = -1) +
+  guides(fill = guide_colourbar(reverse = TRUE)) +
+  xlab("number of subjects") + ylab("number of items")
 ```
