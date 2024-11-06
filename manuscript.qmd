@@ -1,8 +1,8 @@
 ---
-title: "A Tutorial on Tailored Simulation-Based Sample Size Planning for Experimental Designs with Generalized Linear Mixed Models"
+title: "A Tutorial on Tailored Simulation-Based Sample-Size Planning for Experimental Designs with Generalized Linear Mixed Models"
 shorttitle: "Simulation-Based Sample Size Planning for GLMMs"
 date: 2024-07-01
-date-modified: 2024-11-05
+date-modified: 2024-11-06
 date-format: iso
 author:
   - name: Florian Pargent
@@ -224,7 +224,7 @@ However, tailored simulation-based sample size planning can easily handle the pl
 <!-- ## No prior studies or pilot data -->
 
 Fourth, all frameworks for sample size planning require the user to make assumptions about the expected effect size. Assuming the true effect is of this size (or greater), one can compute the (minimum) power of a HT or the (maximum) expected width of a CI. Existing software packages for sample size planning for GLMMs usually require to provide the assumed effect in the unit of some standardized measure of effect size. When the researcher has access to similar studies or pilot data, providing such standardized effect sizes is feasible. However, choosing effect sizes based on small pilot studies is generally not recommended, as those estimates can be heavily biased [@albersWhenPowerAnalyses2018a; @lakensSampleSizeJustification2022].
-Providing an informed standardized effect size can be an almost impossible challenge when no prior studies of pilot data are available. This problem is further exacerbated by the fact that GLMMs are so flexible that general heuristics of what should be considered a small effect do not exist or are difficult to defend. In the absence of prior evidence, using domain knowledge to construct a tailored data simulation is considered the best solution to determine plausible effect sizes [see scenario 3 in @kumleEstimatingPowerGeneralized2021]. It would be possible to use these tailored simulations to compute standardized effect sizes that could then be inserted in existing software packages for sample size planning. However, we would argue that when tailored data simulations are necessary to determine effect sizes anyway, performing the whole sample size planning in a customized way is preferred over using the existing software packages.
+Providing an informed standardized effect size can be an almost impossible challenge when no prior studies or pilot data are available. This problem is further exacerbated by the fact that GLMMs are so flexible that general heuristics of what should be considered a small effect do not exist or are difficult to defend. In the absence of prior evidence, using domain knowledge to construct a tailored data simulation is considered the best solution to determine plausible effect sizes [see scenario 3 in @kumleEstimatingPowerGeneralized2021]. It would be possible to use these tailored simulations to compute standardized effect sizes that could then be inserted in existing software packages for sample size planning. However, we would argue that when tailored data simulations are necessary to determine effect sizes anyway, performing the whole sample size planning in a customized way is preferred over using the existing software packages.
 
 # General steps in tailored simulation-based sample size planning
 

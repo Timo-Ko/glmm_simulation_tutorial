@@ -5,7 +5,7 @@ and Interchange DTD v1.2 20190208//EN" "JATS-archivearticle1.dtd">
   <front>
     <article-meta>
       <title-group>
-        <article-title>A Tutorial on Tailored Simulation-Based Sample Size
+        <article-title>A Tutorial on Tailored Simulation-Based Sample-Size
 Planning for Experimental Designs with Generalized Linear Mixed
 Models</article-title>
       </title-group>
@@ -635,7 +635,7 @@ Science</italic>, 7(4).
   &amp; Lakens, 2018</xref>;
   <xref alt="Lakens, 2022a" rid="ref-lakensSampleSizeJustification2022" ref-type="bibr">Lakens,
   2022a</xref>). Providing an informed standardized effect size can be
-  an almost impossible challenge when no prior studies of pilot data are
+  an almost impossible challenge when no prior studies or pilot data are
   available. This problem is further exacerbated by the fact that GLMMs
   are so flexible that general heuristics of what should be considered a
   small effect do not exist or are difficult to defend. In the absence
@@ -7036,7 +7036,7 @@ precision %&gt;%
   <sub-article article-type="notebook" id="nb-9-nb-article">
     <front-stub>
       <title-group>
-        <article-title>A Tutorial on Tailored Simulation-Based Sample Size
+        <article-title>A Tutorial on Tailored Simulation-Based Sample-Size
 Planning for Experimental Designs with Generalized Linear Mixed
 Models</article-title>
       </title-group>
@@ -7771,7 +7771,7 @@ flextable::flextable(packagetable) %&gt;%
   &amp; Lakens, 2018</xref>;
   <xref alt="Lakens, 2022a" rid="ref-lakensSampleSizeJustification2022-nb-article" ref-type="bibr">Lakens,
   2022a</xref>). Providing an informed standardized effect size can be
-  an almost impossible challenge when no prior studies of pilot data are
+  an almost impossible challenge when no prior studies or pilot data are
   available. This problem is further exacerbated by the fact that GLMMs
   are so flexible that general heuristics of what should be considered a
   small effect do not exist or are difficult to defend. In the absence
@@ -14571,8 +14571,9 @@ precision %&gt;%
   geom_text(aes(label = sprintf("%.2f \n [%.2f; %.2f]", 
                                 precision, ci.lwr, ci.upr)), 
     color = "white", size = 4) +
-  scale_fill_viridis_c(limits = c(0, 0.3), direction = -1) +
-  guides(fill = guide_legend(reverse=FALSE))
+  scale_fill_viridis_c(limits = c(0, 0.2), direction = -1) +
+  guides(fill = guide_colourbar(reverse = TRUE)) +
+  xlab("number of subjects") + ylab("number of items")
     </code>
           </sec>
         </sec>

@@ -19,8 +19,11 @@ format:
     theme: pulse
     citation:
       type: article-journal
-      container-title: "PsyArXiv"
-      doi: "10.31234/osf.io/rpjem"
+      container-title: "Advances in Methods and Practices in Psychological Science"
+      doi: "10.1177/25152459241287132"
+      volume: 7
+      issue: 4
+      issued: 2024
   jats: default
   apaquarto-pdf:
     documentmode: man
